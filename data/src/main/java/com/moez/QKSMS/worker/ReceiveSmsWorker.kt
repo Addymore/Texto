@@ -61,6 +61,19 @@ class ReceiveSmsWorker(appContext: Context, workerParams: WorkerParameters)
 
         val message = messageRepo.getMessage(messageId) ?: return Result.failure(inputData)
 
+        val textoPolicy = dev.texto.privacy.TextoPolicy(applicationContext)
+        val textoRules = listOf(textoPolicy.decision(message.address, message.getText())) +
+            (conversationRepo.getOrCreateConversation(message.threadId)?.recipients?.map { textoPolicy.decision(it.address, message.getText()) } ?: emptyList())
+        if (textoRules.any { it.archived || it.blocked }) {
+            conversationRepo.updateConversations(listOf(message.threadId))
+            if (textoRules.any { it.archived }) conversationRepo.markArchived(message.threadId)
+            if (textoRules.any { it.blocked }) conversationRepo.markBlocked(listOf(message.threadId), -1, "Texto spam rule")
+            notificationManager.cancel(message.threadId.toInt())
+            shortcutManager.updateShortcuts()
+            updateBadge.execute(Unit)
+            return Result.success()
+        }
+
         val action = blockingClient.shouldBlock(message.address).blockingGet()
 
         when {

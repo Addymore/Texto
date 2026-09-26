@@ -154,6 +154,21 @@ class ReceiveMmsWorker(appContext: Context, workerParams: WorkerParameters)
                     val message = syncRepo.syncMessage(messageUri)
                         ?: return Result.failure(inputData)
 
+                    val textoPolicy = dev.texto.privacy.TextoPolicy(applicationContext)
+                    val textoRules = listOf(textoPolicy.decision(message.address, message.getText())) +
+                        (conversationRepo.getOrCreateConversation(message.threadId)?.recipients?.map { textoPolicy.decision(it.address, message.getText()) } ?: emptyList())
+                    if (textoRules.any { it.archived || it.blocked }) {
+                        conversationRepo.updateConversations(listOf(message.threadId))
+                        if (textoRules.any { it.archived }) conversationRepo.markArchived(message.threadId)
+                        if (textoRules.any { it.blocked }) conversationRepo.markBlocked(listOf(message.threadId), -1, "Texto spam rule")
+                        notificationManager.cancel(message.threadId.toInt())
+                        shortcutManager.updateShortcuts()
+                        updateBadge.execute(Unit)
+                        sendAcknowledgeInd(applicationContext, subscriptionId, notificationInd)
+                        sendNotifyRespInd(applicationContext, subscriptionId, notificationInd)
+                        return Result.success()
+                    }
+
                     // TODO: Ideally this is done when we're saving the MMS to ContentResolver
                     // This change can be made once we move the MMS storing code to the Data module
                     if (activeConversationManager.getActiveConversation() == message.threadId) {

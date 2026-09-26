@@ -84,6 +84,7 @@ class WidgetAdapter(intent: Intent) : RemoteViewsService.RemoteViewsFactory {
 
     override fun onDataSetChanged() {
         conversations = conversationRepo.getConversationsSnapshot(prefs.unreadAtTop.get())
+            .filter { c -> c.recipients.none { dev.texto.privacy.TextoPolicy(context).decision(it.address).let { it.archived || it.blocked } } }
 
         val remoteViews = RemoteViews(context.packageName, R.layout.widget)
         appWidgetManager.partiallyUpdateAppWidget(appWidgetId, remoteViews)

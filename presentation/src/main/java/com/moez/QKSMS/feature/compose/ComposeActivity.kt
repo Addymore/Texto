@@ -105,6 +105,7 @@ class ComposeActivity : QkThemedActivity(), ComposeView {
     @Inject lateinit var externalNavigator : ExternalNavigator
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private var textoThreadId: Long = 0
     private lateinit var binding: ComposeActivityBinding
 
     override val activityVisibleIntent: Subject<Boolean> = PublishSubject.create()
@@ -231,6 +232,8 @@ class ComposeActivity : QkThemedActivity(), ComposeView {
 
             binding.messageList.setHasFixedSize(true)
             binding.messageList.adapter = messageAdapter
+            dev.texto.privacy.TextoAppearance.smooth(binding.messageList)
+            dev.texto.privacy.TextoAppearance.refreshRate(this)
 
             binding.messageAttachments.adapter = composeAttachmentAdapter
 
@@ -433,11 +436,13 @@ class ComposeActivity : QkThemedActivity(), ComposeView {
 
 
     override fun render(state: ComposeState) {
+        if (!dev.texto.privacy.PrivacyGate.guardConversation(this, state.threadId)) return
         if (state.hasError) {
             finish()
             return
         }
 
+        textoThreadId = state.threadId
         threadId.onNext(state.threadId)
 
         title = when {
@@ -764,11 +769,16 @@ class ComposeActivity : QkThemedActivity(), ComposeView {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menu?.add(0, 98701, 0, "Contact profile & privacy")
         menuInflater.inflate(R.menu.compose, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == 98701) {
+            startActivity(Intent(this, dev.texto.privacy.ContactProfileActivity::class.java).putExtra("threadId", textoThreadId))
+            return true
+        }
         optionsItemIntent.onNext(item.itemId)
         return true
     }

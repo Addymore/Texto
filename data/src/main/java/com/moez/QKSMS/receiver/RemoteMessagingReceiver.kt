@@ -45,6 +45,10 @@ class RemoteMessagingReceiver : BroadcastReceiver() {
 
         val threadId = bundle.getLong("threadId")
 
+        if (conversationRepo.getConversation(threadId)?.recipients?.any {
+                dev.texto.privacy.TextoPolicy(context).decision(it.address).locked
+            } == true) return
+
         markRead.execute(listOf(threadId))
 
         val lastMessage = messageRepo.getMessages(threadId).lastOrNull()

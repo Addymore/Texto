@@ -54,12 +54,12 @@
     <string name="archived_empty_text">您存檔的對話將出現在這裡</string>
     <string name="main_fab_cd">開始新對話</string>
     <string name="main_default_sms_title">愛上發訊息</string>
-    <string name="main_default_sms_message">將QUIK設為預設信息應用程式</string>
+    <string name="main_default_sms_message">將Texto設為預設信息應用程式</string>
     <string name="main_default_sms_change">更改</string>
     <string name="main_permission_required">需要授權</string>
-    <string name="main_permission_sms">需要允許QUIK發送和查看SMS訊息</string>
-    <string name="main_permission_contacts">需要允許QUIK查看您的連絡人</string>
-    <string name="main_permission_notifications">QUIK needs permission to display notifications</string>
+    <string name="main_permission_sms">需要允許Texto發送和查看SMS訊息</string>
+    <string name="main_permission_contacts">需要允許Texto查看您的連絡人</string>
+    <string name="main_permission_notifications">Texto needs permission to display notifications</string>
     <string name="main_permission_allow">允許</string>
     <string name="drawer_inbox">收件箱</string>
     <string name="drawer_archived">已存檔</string>
@@ -70,7 +70,7 @@
     <string name="drawer_help">幫助與反饋</string>
     <string name="drawer_invite">邀請朋友</string>
     <string name="drawer_plus_banner_summary">解鎖驚人的新特性並支持開發</string>
-    <string name="rate_title">喜歡 QUIK？</string>
+    <string name="rate_title">喜歡 Texto？</string>
     <string name="rate_summary">在 Google Play 分享您的感受，並給我們評分！</string>
     <string name="rate_okay">好！</string>
     <string name="rate_dismiss">放棄</string>
@@ -249,7 +249,7 @@
     <string name="settings_mms_size_title">自動壓縮MMS附件</string>
     <string name="settings_sync_title">同步消息</string>
     <string name="settings_sync_summary">重新與安卓原生訊息數據庫進行同步</string>
-    <string name="settings_about_title">關於QUIK</string>
+    <string name="settings_about_title">關於Texto</string>
     <string name="settings_version">版本 %s</string>
     <string name="settings_logging_enabled">除錯日誌已啓用</string>
     <string name="settings_logging_disabled">出錯日誌已停用</string>
@@ -259,7 +259,7 @@
     <string name="blocking_drop_summary">直接刪除封鎖的簡訊，而非只有隱藏簡訊</string>
     <string name="blocking_conversations">封鎖的對話</string>
     <string name="blocking_manager_title">封鎖管理器</string>
-    <string name="blocking_manager_qksms_summary">QUIK內建封鎖功能</string>
+    <string name="blocking_manager_qksms_summary">Texto內建封鎖功能</string>
     <string name="blocking_manager_call_blocker_summary">使用黑名單與排程封鎖垃圾訊息、號碼和未知來電</string>
     <string name="blocking_manager_call_control_summary">自動過濾來電與簡訊！群眾智慧Community IQ™能讓你遠離不想要的垃圾簡訊</string>
     <string name="blocking_manager_sia_summary">使用\"Should I Answer\"應用過濾未知號碼的消息</string>
@@ -284,8 +284,8 @@
     <string name="about_title">關於</string>
     <string name="about_version_title">版本</string>
     <string name="about_developer_title">開發者</string>
-    <string name="about_source_title">源代碼</string>
-    <string name="about_changelog_title">更新日誌</string>
+    <string name="about_source_title">Upstream source (QUIK)</string>
+    <string name="about_changelog_title">Upstream changelog</string>
     <string name="about_contact_title">聯絡資訊</string>
     <string name="about_license_title">授權</string>
     <string name="about_copyright_title">版權</string>

@@ -60,12 +60,12 @@
     <string name="archived_empty_text">Conversațiile tale arhivate vor apărea aici</string>
     <string name="main_fab_cd">Începe o conversație nouă</string>
     <string name="main_default_sms_title">Iubește din nou schimbul de mesaje text</string>
-    <string name="main_default_sms_message">Fă QUIK aplicația prestabilită pentru SMS</string>
+    <string name="main_default_sms_message">Fă Texto aplicația prestabilită pentru SMS</string>
     <string name="main_default_sms_change">Schimbă</string>
     <string name="main_permission_required">Permisiune necesară</string>
-    <string name="main_permission_sms">QUIK are nevoie de permisiunea de a trimite și vizualiza mesaje SMS</string>
-    <string name="main_permission_contacts">QUIK are nevoie de permisiunea de a vizualiza contactele</string>
-    <string name="main_permission_notifications">QUIK are nevoie de permisiuni pentru a afișa notificări</string>
+    <string name="main_permission_sms">Texto are nevoie de permisiunea de a trimite și vizualiza mesaje SMS</string>
+    <string name="main_permission_contacts">Texto are nevoie de permisiunea de a vizualiza contactele</string>
+    <string name="main_permission_notifications">Texto are nevoie de permisiuni pentru a afișa notificări</string>
     <string name="main_permission_allow">Permite</string>
     <string name="scheduled_menu_send_now">Trimite acum</string>
     <string name="scheduled_menu_edit_message">Modifică mesajul</string>
@@ -78,7 +78,7 @@
     <string name="drawer_help">Ajutor și feedback</string>
     <string name="drawer_invite">Invită prieteni</string>
     <string name="drawer_plus_banner_summary">Deblochează funcții noi uimitoare și sprijină dezvoltarea</string>
-    <string name="rate_title">Îți place QUIK?</string>
+    <string name="rate_title">Îți place Texto?</string>
     <string name="rate_summary">Împărtășește-ne niște dragoste și dă-ne o notă pe Google Play!</string>
     <string name="rate_okay">BINE!</string>
     <string name="rate_dismiss">RESPINGE</string>
@@ -295,7 +295,7 @@
     <string name="settings_mms_weblink_title">Manipularea link-urilor în mesaje</string>
     <string name="settings_sync_title">Sincronizare mesaje</string>
     <string name="settings_sync_summary">Re-sincronizează mesajele cu baza de date Android SMS</string>
-    <string name="settings_about_title">Despre QUIK</string>
+    <string name="settings_about_title">Despre Texto</string>
     <string name="settings_version">Versiunea %s</string>
     <string name="settings_logging_enabled">Jurnalizare pentru depanare activată</string>
     <string name="settings_logging_disabled">Jurnalizare pentru depanare dezactivată</string>
@@ -305,7 +305,7 @@
     <string name="blocking_drop_summary">Șterge mesajele primite de la expeditorii blocați în loc să le ascunzi</string>
     <string name="blocking_conversations">Conversații blocate</string>
     <string name="blocking_manager_title">Manager de blocări</string>
-    <string name="blocking_manager_qksms_summary">Funcționalitate de blocare încorporată în QUIK</string>
+    <string name="blocking_manager_qksms_summary">Funcționalitate de blocare încorporată în Texto</string>
     <string name="blocking_manager_call_blocker_summary">Blocare mesaje spam, numere și apeluri necunoscute din lista neagră și Planificare</string>
     <string name="blocking_manager_call_control_summary">Filtrează automat apelurile și mesajele într-un loc convenabil! Community IQ™ îți permite să previi mesajele nedorite de la spamerii cunoscuți de comunitate</string>
     <string name="blocking_manager_sia_summary">Filtrează automat mesajele de la numere nesolicitate folosind aplicația \"Trebuie să răspund\"</string>
@@ -334,8 +334,8 @@
     <string name="about_title">Despre</string>
     <string name="about_version_title">Versiune</string>
     <string name="about_developer_title">Dezvoltator</string>
-    <string name="about_source_title">Cod sursă</string>
-    <string name="about_changelog_title">Jurnal modificări</string>
+    <string name="about_source_title">Upstream source (QUIK)</string>
+    <string name="about_changelog_title">Upstream changelog</string>
     <string name="about_contact_title">Contact</string>
     <string name="about_license_title">Licență</string>
     <string name="about_copyright_title">Drepturi de autor</string>

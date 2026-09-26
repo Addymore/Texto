@@ -61,6 +61,7 @@ import javax.inject.Singleton
 
 @Singleton
 class SyncRepositoryImpl @Inject constructor(
+    private val contexto: android.content.Context,
     private val contentResolver: ContentResolver,
     private val conversationRepo: ConversationRepository,
     private val cursorToConversation: CursorToConversation,
@@ -162,6 +163,7 @@ class SyncRepositoryImpl @Inject constructor(
                                     }
                                 }
                             }
+                            message.trashedAt = dev.texto.privacy.TrashStore(contexto).deletedAt(message)
                             realm.insertOrUpdate(message)
                         }
                     }
@@ -196,7 +198,7 @@ class SyncRepositoryImpl @Inject constructor(
                                     blockReason = persistedConversation.blockReason
                                     sendAsGroup = persistedConversation.sendAsGroup
                                 }
-                                lastMessage = realm.where(Message::class.java)
+                                lastMessage = realm.where(Message::class.java).equalTo("trashedAt", 0L)
                                     .sort("date", Sort.DESCENDING)
                                     .equalTo("threadId", id)
                                     .findFirst()
@@ -233,6 +235,13 @@ class SyncRepositoryImpl @Inject constructor(
                     }
                 }
 
+                val textoPolicy = dev.texto.privacy.TextoPolicy(contexto)
+                realm.where(Conversation::class.java).findAll().forEach { conversation ->
+                    val rules = conversation.recipients.map { textoPolicy.decision(it.address, conversation.lastMessage?.getText().orEmpty()) }
+                    conversation.textoLocked = rules.any { it.locked }
+                            if (rules.any { it.archived }) conversation.archived = true
+                    if (rules.any { it.blocked }) { conversation.blocked = true; conversation.blockReason = "Texto spam rule" }
+                }
                 syncProgress.onNext(SyncRepository.SyncProgress.ParsingEmojis(0, 0, true))
 
                 // Now that we have all the messages, we can scan for emoji reactions
@@ -242,6 +251,7 @@ class SyncRepositoryImpl @Inject constructor(
                         syncProgress.onNext(progress)
                     })
 
+                dev.texto.privacy.TrashStore.refresh(realm)
                 if (rxPrefs.getBoolean("autoDeduplicateMessages").get()) {
                     DeduplicateMessages(messageRepo.get())
                         .buildObservable(Unit)
@@ -318,6 +328,7 @@ class SyncRepositoryImpl @Inject constructor(
             val columnsMap = CursorToMessage.MessageColumns(cursor)
             cursorToMessage.map(Pair(cursor, columnsMap)).apply {
                 existingId?.let { this.id = it }
+                trashedAt = dev.texto.privacy.TrashStore(contexto).deletedAt(this)
 
                 if (isMms()) {
                     parts = RealmList<MmsPart>().apply {

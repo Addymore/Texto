@@ -54,12 +54,12 @@
     <string name="archived_empty_text">Các cuộc trò chuyện đã lưu trữ của bạn sẽ xuất hiện ở đây</string>
     <string name="main_fab_cd">Bắt đầu cuộc trò chuyện</string>
     <string name="main_default_sms_title">Hãy yêu thích việc nhắn tin một lần nữa</string>
-    <string name="main_default_sms_message">Đặt QUIK là ứng dụng SMS mặc định</string>
+    <string name="main_default_sms_message">Đặt Texto là ứng dụng SMS mặc định</string>
     <string name="main_default_sms_change">Thay đổi</string>
     <string name="main_permission_required">Yêu cầu quyền truy cập</string>
-    <string name="main_permission_sms">QUIK cần cấp quyền để gửi và xem tin nhắn SMS</string>
-    <string name="main_permission_contacts">QUIK cần cấp quyền để xem danh bạ</string>
-    <string name="main_permission_notifications">QUIK cần cấp quyền để hiển thị thông báo</string>
+    <string name="main_permission_sms">Texto cần cấp quyền để gửi và xem tin nhắn SMS</string>
+    <string name="main_permission_contacts">Texto cần cấp quyền để xem danh bạ</string>
+    <string name="main_permission_notifications">Texto cần cấp quyền để hiển thị thông báo</string>
     <string name="main_permission_allow">Cho phép</string>
     <string name="drawer_inbox">Trò chuyện</string>
     <string name="drawer_archived">Lưu trữ</string>
@@ -70,7 +70,7 @@
     <string name="drawer_help">Giúp đỡ và phản hồi</string>
     <string name="drawer_invite">Giới thiệu đến bạn bè</string>
     <string name="drawer_plus_banner_summary">Mở khoá những tính năng đặc sắc và hỗ trợ cho nhà phát triển</string>
-    <string name="rate_title">Bạn có thích QUIK không?</string>
+    <string name="rate_title">Bạn có thích Texto không?</string>
     <string name="rate_summary">Chia sẻ và vote chúng tôi trên Google Play!</string>
     <string name="rate_okay">Đồng ý!</string>
     <string name="rate_dismiss">Bỏ qua</string>
@@ -249,7 +249,7 @@
     <string name="settings_mms_size_title">Tự động nén các tệp đính kèm MMS</string>
     <string name="settings_sync_title">Đồng bộ tin nhắn</string>
     <string name="settings_sync_summary">Đồng bộ lại tin nhắn với thiết bị</string>
-    <string name="settings_about_title">Thông tin QUIK</string>
+    <string name="settings_about_title">Thông tin Texto</string>
     <string name="settings_version">Phiên bản: %s</string>
     <string name="settings_logging_enabled">Đã bật bản ghi gỡ lỗi</string>
     <string name="settings_logging_disabled">Đã tắt bản ghi gỡ lỗi</string>
@@ -259,7 +259,7 @@
     <string name="blocking_drop_summary">Loại bỏ các tin nhắn được gửi tới từ người gửi đã chặn thay vì ẩn chúng</string>
     <string name="blocking_conversations">Các cuộc trò chuyện đã chặn</string>
     <string name="blocking_manager_title">Quản lý danh sách chặn</string>
-    <string name="blocking_manager_qksms_summary">Chức năng chặn tích hợp sẵn trong QUIK</string>
+    <string name="blocking_manager_qksms_summary">Chức năng chặn tích hợp sẵn trong Texto</string>
     <string name="blocking_manager_call_blocker_summary">Chặn tin nhằn rác, số &amp; cuộc gọi không xác định bằng danh sách đen &amp; Lịch trình</string>
     <string name="blocking_manager_call_control_summary">Tự động lọc các cuộc gọi và tin nhắn của bạn ở một nơi thuận tiện! Cộng đồng IQ™ cho phép bạn ngăn chặn các tin nhắn từ những kẻ gửi tin rác được đóng góp bởi cộng đồng</string>
     <string name="blocking_manager_sia_summary">Tự động lọc tin nhắn từ số điện thoại không mong muốn bằng cách sử dụng ứng dụng \"Should I Answer\"</string>
@@ -284,8 +284,8 @@
     <string name="about_title">Giới thiệu</string>
     <string name="about_version_title">Phiên bản</string>
     <string name="about_developer_title">Nhà phát triển</string>
-    <string name="about_source_title">Mã nguồn</string>
-    <string name="about_changelog_title">Các thay đổi</string>
+    <string name="about_source_title">Upstream source (QUIK)</string>
+    <string name="about_changelog_title">Upstream changelog</string>
     <string name="about_contact_title">Liên hệ</string>
     <string name="about_license_title">Giấy phép</string>
     <string name="about_copyright_title">Bản quyền</string>
@@ -492,7 +492,7 @@
     <string name="settings_notification_silent_summary">Tắt thông báo cho các tin nhắn không có người nhận trong danh bạ của bạn</string>
     <string name="settings_unread_at_top_title">Chưa đọc ở trên cùng</string>
     <string name="settings_unread_at_top_summary">Hiển thị các cuộc trò chuyện chưa đọc ở trên cùng</string>
-    <string name="about_developer">Một đội ngũ tuyệt vời gồm những con người đến từ khắp nơi trên thế giới!</string>
+    <string name="about_developer">Addymore</string>
     <plurals name="toast_archived">
         <item quantity="other">Đã lưu trữ %d cuộc trò chuyện</item>
     </plurals>

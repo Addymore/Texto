@@ -20,7 +20,9 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdk 33
+    compileSdk 34
+    compileOptions { sourceCompatibility 1.8; targetCompatibility 1.8 }
+    kotlinOptions { jvmTarget = "1.8" }
 
     defaultConfig {
         minSdk 23
@@ -32,6 +34,7 @@ android {
 }
 
 dependencies {
+    testImplementation "junit:junit:4.13.2"
     implementation "androidx.core:core-ktx:$androidx_core_version"
     implementation "com.jakewharton.timber:timber:$timber_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"

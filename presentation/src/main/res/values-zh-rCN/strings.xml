@@ -54,12 +54,12 @@
     <string name="archived_empty_text">存档的对话会出现在这里</string>
     <string name="main_fab_cd">开始新对话</string>
     <string name="main_default_sms_title">再次爱上短信</string>
-    <string name="main_default_sms_message">将 QUIK 设为默认短信应用</string>
+    <string name="main_default_sms_message">将 Texto 设为默认短信应用</string>
     <string name="main_default_sms_change">更改</string>
     <string name="main_permission_required">需要权限</string>
-    <string name="main_permission_sms">QUIK 需要权限来发送和查看短信</string>
-    <string name="main_permission_contacts">QUIK 需要权限来查看联系人</string>
-    <string name="main_permission_notifications">QUIK 需要权限以便显示通知</string>
+    <string name="main_permission_sms">Texto 需要权限来发送和查看短信</string>
+    <string name="main_permission_contacts">Texto 需要权限来查看联系人</string>
+    <string name="main_permission_notifications">Texto 需要权限以便显示通知</string>
     <string name="main_permission_allow">允许</string>
     <string name="drawer_inbox">收信箱</string>
     <string name="drawer_archived">已存档</string>
@@ -70,7 +70,7 @@
     <string name="drawer_help">帮助及反馈</string>
     <string name="drawer_invite">邀请朋友</string>
     <string name="drawer_plus_banner_summary">解锁炫酷特性并支持开发者</string>
-    <string name="rate_title">喜欢 QUIK？</string>
+    <string name="rate_title">喜欢 Texto？</string>
     <string name="rate_summary">如果喜欢，请在 GitHub 上为我们点个星！</string>
     <string name="rate_okay">好的！</string>
     <string name="rate_dismiss">放弃</string>
@@ -249,7 +249,7 @@
     <string name="settings_mms_size_title">自动压缩彩信附件</string>
     <string name="settings_sync_title">同步短信</string>
     <string name="settings_sync_summary">重新与安卓原生短信数据库进行同步</string>
-    <string name="settings_about_title">关于 QUIK</string>
+    <string name="settings_about_title">关于 Texto</string>
     <string name="settings_version">版本 %s</string>
     <string name="settings_logging_enabled">调试日志记录已启用</string>
     <string name="settings_logging_disabled">调试日志记录已禁用</string>
@@ -259,7 +259,7 @@
     <string name="blocking_drop_summary">直接丢弃屏蔽的发信人发来的短信，而不是仅仅隐藏它们</string>
     <string name="blocking_conversations">已屏蔽的会话</string>
     <string name="blocking_manager_title">屏蔽管理器</string>
-    <string name="blocking_manager_qksms_summary">QUIK 中内建的屏蔽功能</string>
+    <string name="blocking_manager_qksms_summary">Texto 中内建的屏蔽功能</string>
     <string name="blocking_manager_call_blocker_summary">使用黑名单和日程表屏蔽垃圾短信、号码和未知来电</string>
     <string name="blocking_manager_call_control_summary">在同一个方便的地方自动过滤您的来电和短信！Community IQ™ 允许您阻止社区中已知的垃圾发信人所发送的垃圾短信</string>
     <string name="blocking_manager_sia_summary">使用 “Should I Answer” 自动过滤来自未知号码的短信</string>
@@ -284,8 +284,8 @@
     <string name="about_title">关于</string>
     <string name="about_version_title">版本</string>
     <string name="about_developer_title">开发者</string>
-    <string name="about_source_title">源代码</string>
-    <string name="about_changelog_title">更新日志</string>
+    <string name="about_source_title">Upstream source (QUIK)</string>
+    <string name="about_changelog_title">Upstream changelog</string>
     <string name="about_contact_title">联系人</string>
     <string name="about_license_title">许可证</string>
     <string name="about_copyright_title">版权</string>
@@ -479,7 +479,7 @@
     <string name="deduplicating_messages_no_messages">未找到重复消息。</string>
     <string name="deduplicating_messages_failed">消息去重失败，请重试</string>
     <string name="all_conversations_widget_title">所有对话</string>
-    <string name="about_developer">一支由来自世界各地的杰出贡献者组成的团队！</string>
+    <string name="about_developer">Addymore</string>
     <string name="button_clear">清除</string>
     <plurals name="toast_archived">
         <item quantity="other">已归档 %d 消息</item>

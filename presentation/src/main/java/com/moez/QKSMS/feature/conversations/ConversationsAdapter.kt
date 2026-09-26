@@ -46,6 +46,7 @@ class ConversationsAdapter @Inject constructor(
     private val navigator: Navigator,
     private val phoneNumberUtils: PhoneNumberUtils
 ) : QkRealmAdapter<Conversation, QkBindingViewHolder<ConversationListItemBinding>>() {
+    var onConversationLongClick: ((Long) -> Unit)? = null
     private val disposables = CompositeDisposable()
 
     var hasScheduledConversation: Set<Long> = emptySet()
@@ -64,33 +65,24 @@ class ConversationsAdapter @Inject constructor(
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = ConversationListItemBinding.inflate(layoutInflater, parent, false)
 
-        if (viewType == 1) {
-            val textColorPrimary = parent.context.resolveThemeColor(android.R.attr.textColorPrimary)
-
-            binding.title.setTypeface(binding.title.typeface, Typeface.BOLD)
-
-            binding.snippet.setTypeface(binding.snippet.typeface, Typeface.BOLD)
-            binding.snippet.setTextColor(textColorPrimary)
-            binding.snippet.maxLines = 5
-
-            binding.unread.isVisible = true
-
-            binding.date.setTypeface(binding.date.typeface, Typeface.BOLD)
-            binding.date.setTextColor(textColorPrimary)
-        }
-
         return QkBindingViewHolder(binding).apply {
             binding.root.setOnClickListener {
                 val conversation = getItem(adapterPosition) ?: return@setOnClickListener
                 when (toggleSelection(conversation.id, false)) {
-                    true -> binding.root.isActivated = isSelected(conversation.id)
+                    true -> notifyItemChanged(adapterPosition)
                     false -> navigator.showConversation(conversation.id)
                 }
             }
             binding.root.setOnLongClickListener {
                 val conversation = getItem(adapterPosition) ?: return@setOnLongClickListener true
-                toggleSelection(conversation.id)
-                binding.root.isActivated = isSelected(conversation.id)
+                onConversationLongClick?.let { it(conversation.id); return@setOnLongClickListener true }
+                var ctx: android.content.Context = binding.root.context
+                while (ctx is android.content.ContextWrapper && ctx !is android.app.Activity) ctx = ctx.baseContext
+                (ctx as? android.app.Activity)?.let { activity ->
+                    dev.texto.privacy.ThreadActions.show(activity, conversation.id) {
+                        toggleSelection(conversation.id); notifyDataSetChanged()
+                    }
+                }
                 true
             }
         }
@@ -115,6 +107,7 @@ class ConversationsAdapter @Inject constructor(
         binding.avatars.recipients = conversation.recipients
         binding.title.collapseEnabled = conversation.recipients.size > 1
         binding.title.text = buildSpannedString {
+            if (conversation.textoLocked) append("Locked · ")
             append(conversation.getTitle())
         }
         binding.date.text = conversation.date.takeIf { it > 0 }?.let(dateFormatter::getConversationTimestamp)
@@ -130,7 +123,10 @@ class ConversationsAdapter @Inject constructor(
         binding.scheduled.isVisible = conversation.id in hasScheduledConversation
 
         binding.pinned.isVisible = conversation.pinned
-        binding.unread.setTint(theme)
+        dev.texto.privacy.TextoAppearance.styleConversation(binding, conversation.messageCount, conversation.unreadCount, isSelected(conversation.id))
+        binding.title.setTypeface(null, if (conversation.unread) Typeface.BOLD else Typeface.NORMAL)
+        binding.snippet.setTypeface(null, if (conversation.draft.isNotEmpty()) Typeface.ITALIC else Typeface.NORMAL)
+        binding.root.contentDescription = "${conversation.getTitle()}, ${conversation.messageCount} messages, ${conversation.unreadCount} unread. ${conversation.snippet.orEmpty()}"
     }
 
     override fun getItemId(position: Int): Long {

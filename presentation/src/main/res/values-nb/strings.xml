@@ -54,12 +54,12 @@
     <string name="archived_empty_text">Arkiverte samtaler vises her</string>
     <string name="main_fab_cd">Start ny samtale</string>
     <string name="main_default_sms_title">Elsk teksting igjen</string>
-    <string name="main_default_sms_message">Gjør QUIK til standard SMS-app</string>
+    <string name="main_default_sms_message">Gjør Texto til standard SMS-app</string>
     <string name="main_default_sms_change">Endre</string>
     <string name="main_permission_required">Tillatelse kreves</string>
-    <string name="main_permission_sms">QUIK trenger tillatelse til å sende og vise tekstmeldinger</string>
-    <string name="main_permission_contacts">QUIK trenger tillatelse til å lese kontaktene dine</string>
-    <string name="main_permission_notifications">QUIK trenger tillatelser til på vise varsler</string>
+    <string name="main_permission_sms">Texto trenger tillatelse til å sende og vise tekstmeldinger</string>
+    <string name="main_permission_contacts">Texto trenger tillatelse til å lese kontaktene dine</string>
+    <string name="main_permission_notifications">Texto trenger tillatelser til på vise varsler</string>
     <string name="main_permission_allow">Tillat</string>
     <string name="drawer_inbox">Innboks</string>
     <string name="drawer_archived">Arkivert</string>
@@ -70,7 +70,7 @@
     <string name="drawer_help">Hjelp og tilbakemelding</string>
     <string name="drawer_invite">Inviter venner</string>
     <string name="drawer_plus_banner_summary">Aktiver fantastiske nye funksjoner og støtt utviklingen</string>
-    <string name="rate_title">Liker du QUIK?</string>
+    <string name="rate_title">Liker du Texto?</string>
     <string name="rate_summary">Del litt kjærlighet og vurder oss på Google Play!</string>
     <string name="rate_okay">Ok!</string>
     <string name="rate_dismiss">Avvis</string>
@@ -251,7 +251,7 @@
     <string name="settings_mms_size_title">Komprimer MMS-vedlegg</string>
     <string name="settings_sync_title">Synkroniser meldinger</string>
     <string name="settings_sync_summary">Resynkroniser meldinger med Androids interne meldingslager</string>
-    <string name="settings_about_title">Om QUIK</string>
+    <string name="settings_about_title">Om Texto</string>
     <string name="settings_version">Versjon %s</string>
     <string name="settings_logging_enabled">Feillogg aktivert</string>
     <string name="settings_logging_disabled">Feillogg deaktivert</string>
@@ -261,7 +261,7 @@
     <string name="blocking_drop_summary">Forkast meldinger fra blokkerte sendere istedenfor å skjule dem</string>
     <string name="blocking_conversations">Blokkerte samtaler</string>
     <string name="blocking_manager_title">Blokkeringer</string>
-    <string name="blocking_manager_qksms_summary">Innebygd blokkeringsfunksjon i QUIK</string>
+    <string name="blocking_manager_qksms_summary">Innebygd blokkeringsfunksjon i Texto</string>
     <string name="blocking_manager_call_blocker_summary">Blokker spammeldinger, numre og ukjente anrop med svarteliste og planlegging</string>
     <string name="blocking_manager_call_control_summary">Filtrer anrop og meldinger automatisk. Fellesskapets intelligens™ hjelper med å forhindre uønskede henvendelser fra plageånder</string>
     <string name="blocking_manager_sia_summary">Filtrer meldinger fra ukjente numre automatisk med \"Skal jeg svare\"-appen</string>
@@ -288,8 +288,8 @@
     <string name="about_title">Om</string>
     <string name="about_version_title">Versjon</string>
     <string name="about_developer_title">Utviklere</string>
-    <string name="about_source_title">Kildekode</string>
-    <string name="about_changelog_title">Endringslogg</string>
+    <string name="about_source_title">Upstream source (QUIK)</string>
+    <string name="about_changelog_title">Upstream changelog</string>
     <string name="about_contact_title">Kontakt</string>
     <string name="about_license_title">Lisens</string>
     <string name="about_copyright_title">Opphavsrett</string>
@@ -485,7 +485,7 @@
     <string name="deduplicate_messages_summary">Skanner gjennom meldingsdatabasen og sletter alle meldinger som nøyaktig matcher opprinnelige meldinger</string>
     <string name="deduplicate_message_confirmation_dialog_message">Meldingsdatabase din vil bli skannet for duplikater, og deretter vil disse duplikatene bli fjernet.\nDette vil automatisk slette meldinger, fortsett bare om du forstår konsekvensene.</string>
     <string name="all_conversations_widget_title">Alle Samtaler</string>
-    <string name="about_developer">Et team med fantastiske folk fra hele verden rundt!</string>
+    <string name="about_developer">Addymore</string>
     <string name="button_clear">Tøm</string>
     <string name="notification_foreground_worker_title">Mottatt melding</string>
     <string name="notification_foreground_worker_text">På Android 12 og eldre kreves det et varsel for bakgrunnsarbeid som muliggjør mottak av meldinger.</string>

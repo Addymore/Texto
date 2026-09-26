@@ -149,6 +149,7 @@ class NotificationManagerImpl @Inject constructor(
         }
 
         val conversation = conversationRepo.getConversation(threadId) ?: return
+        if (conversation.recipients.any { dev.texto.privacy.TextoPolicy(context).decision(it.address).let { it.archived || it.blocked } }) { cancel(threadId.toInt()); return }
         val lastRecipient = conversation.lastMessage?.let { lastMessage ->
             conversation.recipients.find { recipient ->
                 phoneNumberUtils.compare(recipient.address, lastMessage.address)
@@ -406,6 +407,7 @@ class NotificationManagerImpl @Inject constructor(
         }
 
         val conversation = conversationRepo.getConversation(message.threadId) ?: return
+        if (conversation.recipients.any { dev.texto.privacy.TextoPolicy(context).decision(it.address).let { it.archived || it.blocked } }) return
         val lastRecipient = conversation.lastMessage?.let { lastMessage ->
             conversation.recipients.find { recipient ->
                 phoneNumberUtils.compare(recipient.address, lastMessage.address)
@@ -511,6 +513,7 @@ class NotificationManagerImpl @Inject constructor(
             else -> {
                 if (getNotificationChannel(threadId) != null) return
                 val conversation = conversationRepo.getConversation(threadId) ?: return
+        if (conversation.recipients.any { dev.texto.privacy.TextoPolicy(context).decision(it.address).let { it.archived || it.blocked } }) { cancel(threadId.toInt()); return }
                 val channelId = buildNotificationChannelId(threadId)
                 val title = conversation.getTitle()
                 listOf(

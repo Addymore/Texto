@@ -80,6 +80,7 @@ class Colors @Inject constructor(
     fun theme(recipient: Recipient? = null): Theme {
         val pref = prefs.theme(recipient?.id ?: 0)
         val color = when {
+            dev.texto.privacy.TextoAppearance.prefs(context).getBoolean("dynamic_colors",false) && (recipient == null || !pref.isSet) -> dev.texto.privacy.TextoAppearance.accent(context)
             recipient == null || !prefs.autoColor.get() || pref.isSet -> pref.get()
             else -> generateColor(recipient)
         }
@@ -93,7 +94,7 @@ class Colors @Inject constructor(
             else -> prefs.theme(recipient.id, prefs.theme().get())
         }
         return pref.asObservable()
-                .map { color -> Theme(color, this) }
+                .map { color -> if(dev.texto.privacy.TextoAppearance.prefs(context).getBoolean("dynamic_colors",false) && (recipient == null || !pref.isSet)) theme(recipient) else Theme(color,this) }
     }
 
     fun highlightColorForTheme(theme: Int): Int = FloatArray(3)

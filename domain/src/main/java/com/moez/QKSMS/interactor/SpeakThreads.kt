@@ -27,6 +27,7 @@ import io.reactivex.Single
 import javax.inject.Inject
 
 class SpeakThreads @Inject constructor(
+    private val context: android.content.Context,
     private val conversationRepo: ConversationRepository,
     private val messageRepo: MessageRepository,
     private val speakManager: SpeakManager
@@ -49,6 +50,7 @@ class SpeakThreads @Inject constructor(
                   .toFlowable()
 
         return Flowable.fromIterable(threadIds)
+            .filter { id -> conversationRepo.getConversation(id)?.recipients?.none { dev.texto.privacy.TextoPolicy(context).decision(it.address).locked } == true }
             .doOnSubscribe { speakManager.startSpeakSession("threads:" + threadIds.sorted().joinToString()) }
             .mapNotNull { threadId -> conversationRepo.getConversationAndLastSenderContactName(threadId) }
             .map { (conversation, sender) ->

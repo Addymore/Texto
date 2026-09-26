@@ -54,12 +54,12 @@
     <string name="archived_empty_text">Je gearchiveerde conversaties verschijnen hier</string>
     <string name="main_fab_cd">Start nieuwe conversatie</string>
     <string name="main_default_sms_title">Love texting again</string>
-    <string name="main_default_sms_message">QUIK uw standaard SMS app maken</string>
+    <string name="main_default_sms_message">Texto uw standaard SMS app maken</string>
     <string name="main_default_sms_change">Wijzigen</string>
     <string name="main_permission_required">Toestemming vereist</string>
-    <string name="main_permission_sms">QUIK machtigen voor het verzenden en bekijken van SMS-berichten</string>
-    <string name="main_permission_contacts">QUIK machtigen om uw contactpersonen te bekijken</string>
-    <string name="main_permission_notifications">QUIK heeft toestemming nodig om mededelingen te tonen</string>
+    <string name="main_permission_sms">Texto machtigen voor het verzenden en bekijken van SMS-berichten</string>
+    <string name="main_permission_contacts">Texto machtigen om uw contactpersonen te bekijken</string>
+    <string name="main_permission_notifications">Texto heeft toestemming nodig om mededelingen te tonen</string>
     <string name="main_permission_allow">Toestaan</string>
     <string name="drawer_inbox">Inbox</string>
     <string name="drawer_archived">Archief</string>
@@ -70,7 +70,7 @@
     <string name="drawer_help">Help &amp; feedback</string>
     <string name="drawer_invite">Vrienden uitnodigen</string>
     <string name="drawer_plus_banner_summary">Ontgrendel geweldig nieuwe functies en ondersteun verdere ontwikkeling</string>
-    <string name="rate_title">Aan het genieten van QUIK?</string>
+    <string name="rate_title">Aan het genieten van Texto?</string>
     <string name="rate_summary">Deel je liefde voor QUIK door een beoordeling op Google Play te plaatsen!</string>
     <string name="rate_okay">Oke!</string>
     <string name="rate_dismiss">Sluiten</string>
@@ -251,7 +251,7 @@
     <string name="settings_mms_size_title">Auto-compress MMS bijlagen</string>
     <string name="settings_sync_title">Synchroniseer berichten</string>
     <string name="settings_sync_summary">Hersynchroniseer jouw berichten vanuit de SMS database op je telefoon</string>
-    <string name="settings_about_title">Over QUIK</string>
+    <string name="settings_about_title">Over Texto</string>
     <string name="settings_version">Versie %s</string>
     <string name="settings_logging_enabled">Foutenregistratie ingeschakeld</string>
     <string name="settings_logging_disabled">Foutenregistratie uitgeschakeld</string>
@@ -261,7 +261,7 @@
     <string name="blocking_drop_summary">Verwijder inkomende berichten van geblokkeerde afzenders in plaats van ze te verbergen</string>
     <string name="blocking_conversations">Geblokkeerde gesprekken</string>
     <string name="blocking_manager_title">Blokkeermanager</string>
-    <string name="blocking_manager_qksms_summary">Ingebouwde blokkeerfunctie in QUIK</string>
+    <string name="blocking_manager_qksms_summary">Ingebouwde blokkeerfunctie in Texto</string>
     <string name="blocking_manager_call_blocker_summary">Blokkeer spamberichten, nummers &amp; onbekende oproepen met blacklist &amp; Schedule</string>
     <string name="blocking_manager_call_control_summary">Filter je oproepen en berichten automatisch op één handige plaats! Community IQ™ stelt je in staat om ongewenste berichten van de bij community bekende spammers te blokkeren</string>
     <string name="blocking_manager_sia_summary">Automatisch filteren van berichten van ongevraagde nummers met behulp van de app \"Should I Answer\"</string>
@@ -288,8 +288,8 @@
     <string name="about_title">Over</string>
     <string name="about_version_title">Versie</string>
     <string name="about_developer_title">Ontwikkelaar</string>
-    <string name="about_source_title">Broncode</string>
-    <string name="about_changelog_title">Changelog</string>
+    <string name="about_source_title">Upstream source (QUIK)</string>
+    <string name="about_changelog_title">Upstream changelog</string>
     <string name="about_contact_title">Contact</string>
     <string name="about_license_title">Licentie</string>
     <string name="about_copyright_title">Copyright</string>

@@ -46,6 +46,14 @@ import dev.octoshrimpy.quik.injection.scope.ActivityScope
 
 @Module
 abstract class ActivityBuilderModule {
+    @ActivityScope
+    @ContributesAndroidInjector
+    abstract fun bindVaultActivity(): dev.texto.privacy.VaultActivity
+
+    @ActivityScope
+    @ContributesAndroidInjector
+    abstract fun bindThemesActivity(): dev.texto.privacy.ThemesActivity
+
 
     @ActivityScope
     @ContributesAndroidInjector(modules = [MainActivityModule::class])

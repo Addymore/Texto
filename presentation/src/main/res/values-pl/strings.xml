@@ -60,12 +60,12 @@
     <string name="archived_empty_text">Miejsce dla twoich zarchiwizowanych rozmów</string>
     <string name="main_fab_cd">Rozpocznij nową rozmowę</string>
     <string name="main_default_sms_title">Pokochaj SMS-owanie na nowo</string>
-    <string name="main_default_sms_message">Ustaw QUIK jako domyślną aplikację do SMSów i MMSów</string>
+    <string name="main_default_sms_message">Ustaw Texto jako domyślną aplikację do SMSów i MMSów</string>
     <string name="main_default_sms_change">Zmień</string>
     <string name="main_permission_required">Wymagane uprawnienie</string>
-    <string name="main_permission_sms">QUIK wymaga uprawnień do wysyłania i przeglądania wiadomości</string>
-    <string name="main_permission_contacts">QUIK wymaga uprawnień do przeglądania kontaktów</string>
-    <string name="main_permission_notifications">QUIK potrzebuje uprawnień do wyświetlania powiadomień</string>
+    <string name="main_permission_sms">Texto wymaga uprawnień do wysyłania i przeglądania wiadomości</string>
+    <string name="main_permission_contacts">Texto wymaga uprawnień do przeglądania kontaktów</string>
+    <string name="main_permission_notifications">Texto potrzebuje uprawnień do wyświetlania powiadomień</string>
     <string name="main_permission_allow">Zezwól</string>
     <string name="scheduled_menu_send_now">Wyślij teraz</string>
     <string name="scheduled_menu_edit_message">Edytuj wiadomość</string>
@@ -78,7 +78,7 @@
     <string name="drawer_help">Pomoc i opinie</string>
     <string name="drawer_invite">Poleć znajomym</string>
     <string name="drawer_plus_banner_summary">Odblokuj nowe funkcje i wesprzyj rozwój aplikacji</string>
-    <string name="rate_title">Lubisz QUIK?</string>
+    <string name="rate_title">Lubisz Texto?</string>
     <string name="rate_summary">Podziel się miłością i oceń nas w Sklepie Google Play!</string>
     <string name="rate_okay">W PORZĄDKU!</string>
     <string name="rate_dismiss">ODMAWIAM</string>
@@ -309,7 +309,7 @@
     <string name="blocking_drop_summary">Odrzuć przychodzące wiadomości od zablokowanych nadawców zamiast ich ukrywać</string>
     <string name="blocking_conversations">Zablokowane rozmowy</string>
     <string name="blocking_manager_title">Menadżer Blokowania</string>
-    <string name="blocking_manager_qksms_summary">Wbudowana funkcja blokowania w QUIK</string>
+    <string name="blocking_manager_qksms_summary">Wbudowana funkcja blokowania w Texto</string>
     <string name="blocking_manager_call_blocker_summary">Blokuj spam, numery i połączenia od nieznajomych za pomocą czarnej listy i harmonogramu</string>
     <string name="blocking_manager_call_control_summary">Automatycznie filtruj twoje rozmowy i wiadomości tekstowe w jednym wygodnym miejscu! Community IQ™ pozwala zapobiegać niechcianym wiadomościom od znanych spamerów</string>
     <string name="blocking_manager_sia_summary">Automatycznie filtruj wiadomości od niechcianych numerów za pomocą aplikacji \"Should I Answer?\"</string>
@@ -340,8 +340,8 @@
     <string name="about_title">O QUIK</string>
     <string name="about_version_title">Wersja</string>
     <string name="about_developer_title">Programiści</string>
-    <string name="about_source_title">Kod źródłowy</string>
-    <string name="about_changelog_title">Lista zmian</string>
+    <string name="about_source_title">Upstream source (QUIK)</string>
+    <string name="about_changelog_title">Upstream changelog</string>
     <string name="about_contact_title">Kontakt</string>
     <string name="about_license_title">Licencja</string>
     <string name="about_copyright_title">Prawa autorskie</string>
@@ -543,6 +543,6 @@
     <string name="deduplicating_messages_finished">Zakończono deduplikację wiadomości!</string>
     <string name="deduplicating_messages_no_messages">Nie znaleziono zduplikowanych wiadomości.</string>
     <string name="deduplicating_messages_failed">Deduplikacja wiadomości nie powiodła się. Spróbuj ponownie</string>
-    <string name="about_developer">Zespół wspaniałych ludzi z całego świata!</string>
+    <string name="about_developer">Addymore</string>
     <string name="notification_foreground_worker_channel_name">Powiadomienie dla modułu obsługującego odbiór wiadomości</string>
 </resources>

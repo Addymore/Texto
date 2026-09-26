@@ -37,7 +37,7 @@ class QkRealmMigration @Inject constructor(
 ) : RealmMigration {
 
     companion object {
-        const val SCHEMA_VERSION: Long = 15
+        const val SCHEMA_VERSION: Long = 17
     }
 
     @SuppressLint("ApplySharedPref")
@@ -298,6 +298,18 @@ class QkRealmMigration @Inject constructor(
             }
 
             version ++
+        }
+
+        if (version == 15L) {
+            realm.schema.get("Conversation")?.addField("textoLocked", Boolean::class.java, FieldAttribute.REQUIRED, FieldAttribute.INDEXED)
+            version++
+        }
+
+        if (version == 16L) {
+            realm.schema.get("Message")?.addField("trashedAt", Long::class.java, FieldAttribute.REQUIRED, FieldAttribute.INDEXED)
+            realm.schema.get("Conversation")?.addField("messageCount", Long::class.java, FieldAttribute.REQUIRED)
+                ?.addField("unreadCount", Long::class.java, FieldAttribute.REQUIRED)
+            version++
         }
 
         check(version >= SCHEMA_VERSION) {

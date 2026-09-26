@@ -54,12 +54,12 @@
     <string name="archived_empty_text">Dine arkiverede samtaler vil fremgå her</string>
     <string name="main_fab_cd">Start ny samtale</string>
     <string name="main_default_sms_title">Elsk at SMS\'e igen</string>
-    <string name="main_default_sms_message">Gør QUIK til din standard SMS-app</string>
+    <string name="main_default_sms_message">Gør Texto til din standard SMS-app</string>
     <string name="main_default_sms_change">Skift</string>
     <string name="main_permission_required">Tilladelse nødvendig</string>
-    <string name="main_permission_sms">QUIK behøver tilladelse til at sende og vise SMS\'er</string>
-    <string name="main_permission_contacts">QUIK behøver tilladelse til at se dine kontakter</string>
-    <string name="main_permission_notifications">QUIK behøver tilladelse til at vise notifikationer</string>
+    <string name="main_permission_sms">Texto behøver tilladelse til at sende og vise SMS\'er</string>
+    <string name="main_permission_contacts">Texto behøver tilladelse til at se dine kontakter</string>
+    <string name="main_permission_notifications">Texto behøver tilladelse til at vise notifikationer</string>
     <string name="main_permission_allow">Tillad</string>
     <string name="drawer_inbox">Indbakke</string>
     <string name="drawer_archived">Arkiveret</string>
@@ -70,7 +70,7 @@
     <string name="drawer_help">Hjælp og feedback</string>
     <string name="drawer_invite">Invitér venner</string>
     <string name="drawer_plus_banner_summary">Oplås fantastiske nye funktioner og støt udvikling</string>
-    <string name="rate_title">Synes om QUIK?</string>
+    <string name="rate_title">Synes om Texto?</string>
     <string name="rate_summary">Del og bedøm os på Google Play!</string>
     <string name="rate_okay">OKAY!</string>
     <string name="rate_dismiss">AFVIS</string>
@@ -251,7 +251,7 @@
     <string name="settings_mms_size_title">Auto-komprimér MMS-vedhæftninger</string>
     <string name="settings_sync_title">Beskedsynkronisering</string>
     <string name="settings_sync_summary">Gen-synkroniéer beskeder med den indbyggede Android SMS-database</string>
-    <string name="settings_about_title">Om QUIK</string>
+    <string name="settings_about_title">Om Texto</string>
     <string name="settings_version">Version %s</string>
     <string name="settings_logging_enabled">Fejlfindingslogning aktiveret</string>
     <string name="settings_logging_disabled">Fejlfindingslogning deaktiveret</string>
@@ -261,7 +261,7 @@
     <string name="blocking_drop_summary">Drop indgående beskeder fra blokerede afsendere i stedet for at skjule dem</string>
     <string name="blocking_conversations">Blokerede samtaler</string>
     <string name="blocking_manager_title">Blokeringshåndtering</string>
-    <string name="blocking_manager_qksms_summary">Indbygget blokeringsfunktionalitet i QUIK</string>
+    <string name="blocking_manager_qksms_summary">Indbygget blokeringsfunktionalitet i Texto</string>
     <string name="blocking_manager_call_blocker_summary">Blokér spambeskeder, numre &amp; ukendte opkald med sortliste &amp; tidsplan</string>
     <string name="blocking_manager_call_control_summary">Filtrér automatisk dine opkald og beskeder på ét praktisk sted! Community IQ™ giver dig mulighed for at forhindre uønskede beskeder fra spammere kendt af fællesskabet</string>
     <string name="blocking_manager_sia_summary">Filtrér automatisk beskeder fra uopfordrede numre vha. \"Should I Answer?\" app\'en</string>
@@ -288,8 +288,8 @@
     <string name="about_title">Om</string>
     <string name="about_version_title">Version</string>
     <string name="about_developer_title">Udvikler</string>
-    <string name="about_source_title">Kildekode</string>
-    <string name="about_changelog_title">Ændringslog</string>
+    <string name="about_source_title">Upstream source (QUIK)</string>
+    <string name="about_changelog_title">Upstream changelog</string>
     <string name="about_contact_title">Kontakt</string>
     <string name="about_license_title">Licens</string>
     <string name="about_copyright_title">Copyright</string>

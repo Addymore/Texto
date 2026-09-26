@@ -54,12 +54,12 @@
     <string name="archived_empty_text">Овде ће се појавити твоји сачувани разговори</string>
     <string name="main_fab_cd">Започни нов разговор</string>
     <string name="main_default_sms_title">Поново заволите СМС.</string>
-    <string name="main_default_sms_message">Постави QUIK као подразумевану СМС апликацију</string>
+    <string name="main_default_sms_message">Постави Texto као подразумевану СМС апликацију</string>
     <string name="main_default_sms_change">Промени</string>
     <string name="main_permission_required">Потребна је дозвола</string>
-    <string name="main_permission_sms">QUIK тражи дозволу да шаље и прима СМС поруке</string>
-    <string name="main_permission_contacts">QUIK тражи приступ твојим контактима</string>
-    <string name="main_permission_notifications">QUIK needs permission to display notifications</string>
+    <string name="main_permission_sms">Texto тражи дозволу да шаље и прима СМС поруке</string>
+    <string name="main_permission_contacts">Texto тражи приступ твојим контактима</string>
+    <string name="main_permission_notifications">Texto needs permission to display notifications</string>
     <string name="main_permission_allow">Дозволи</string>
     <string name="drawer_inbox">Примљено</string>
     <string name="drawer_archived">Сачувано</string>
@@ -70,7 +70,7 @@
     <string name="drawer_help">Помоћ и повратне информације</string>
     <string name="drawer_invite">Позови пријатеље</string>
     <string name="drawer_plus_banner_summary">Откључај нове могућности и подржи развој апликације</string>
-    <string name="rate_title">Да ли уживаш уз QUIK?</string>
+    <string name="rate_title">Да ли уживаш уз Texto?</string>
     <string name="rate_summary">Покажи мало љубави и оцени нас на Google Play!</string>
     <string name="rate_okay">ВАЖИ!</string>
     <string name="rate_dismiss">ОТКАЖИ</string>
@@ -263,7 +263,7 @@
     <string name="blocking_drop_summary">Одбиј поруке које стижу са блокираних бројева уместо да их сакријеш</string>
     <string name="blocking_conversations">Блокирани разговори</string>
     <string name="blocking_manager_title">Апликација за блокирање</string>
-    <string name="blocking_manager_qksms_summary">Уграђена могућност блокирања у QUIK</string>
+    <string name="blocking_manager_qksms_summary">Уграђена могућност блокирања у Texto</string>
     <string name="blocking_manager_call_blocker_summary">Блокирај нежељене поруке, бројеве и непознате позиве помоћу листе непожељних бројева</string>
     <string name="blocking_manager_call_control_summary">Аутоматски филтрирај позиве и поруке на једном месту! Community IQ™ ти омогућује да блокираш нежељене поруке од \"спамера\" познатих заједници</string>
     <string name="blocking_manager_sia_summary">Аутоматски фитрирај поруке са непожељних бројева користећи \"Should I Answer\" апликацију</string>
@@ -292,8 +292,8 @@
     <string name="about_title">О апликацији</string>
     <string name="about_version_title">Верзија</string>
     <string name="about_developer_title">Програмер</string>
-    <string name="about_source_title">Изворни код</string>
-    <string name="about_changelog_title">Историја измена</string>
+    <string name="about_source_title">Upstream source (QUIK)</string>
+    <string name="about_changelog_title">Upstream changelog</string>
     <string name="about_contact_title">Kontakt</string>
     <string name="about_license_title">Лиценца</string>
     <string name="about_copyright_title">Ауторска права</string>

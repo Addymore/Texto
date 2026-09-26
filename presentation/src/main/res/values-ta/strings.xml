@@ -54,12 +54,12 @@
     <string name="archived_empty_text">உம் காப்பகப்படுத்திய உரையாடல்கள் இங்கு தோன்றும்</string>
     <string name="main_fab_cd">புதிய உரையாடலைத் தொடங்கு</string>
     <string name="main_default_sms_title">Love texting again</string>
-    <string name="main_default_sms_message">QUIK-ஐ உம் இயல்புநிலை குறுஞ்செய்தி செயலியாக்கு</string>
+    <string name="main_default_sms_message">Texto-ஐ உம் இயல்புநிலை குறுஞ்செய்தி செயலியாக்கு</string>
     <string name="main_default_sms_change">மாற்று</string>
     <string name="main_permission_required">அனுமதி தேவை</string>
-    <string name="main_permission_sms">SMS செய்திகளை அனுப்பவும் பார்க்கவும் QUIK க்கு அனுமதி தேவை</string>
-    <string name="main_permission_contacts">உங்கள் தொடர்புகளைக் காண QUIK க்கு அனுமதி தேவை</string>
-    <string name="main_permission_notifications">QUIK needs permission to display notifications</string>
+    <string name="main_permission_sms">SMS செய்திகளை அனுப்பவும் பார்க்கவும் Texto க்கு அனுமதி தேவை</string>
+    <string name="main_permission_contacts">உங்கள் தொடர்புகளைக் காண Texto க்கு அனுமதி தேவை</string>
+    <string name="main_permission_notifications">Texto needs permission to display notifications</string>
     <string name="main_permission_allow">அனுமதி</string>
     <string name="drawer_inbox">உட்பெட்டி</string>
     <string name="drawer_archived">காப்பகப்படுத்தப்பட்டது</string>
@@ -70,7 +70,7 @@
     <string name="drawer_help">உதவி &amp; மீள்கருத்து</string>
     <string name="drawer_invite">நண்பர்களை அழைப்பிடு</string>
     <string name="drawer_plus_banner_summary">Unlock amazing new features, and support development</string>
-    <string name="rate_title">QUIKஐ அனுபவித்து மகிழ்கிறீரா?</string>
+    <string name="rate_title">Textoஐ அனுபவித்து மகிழ்கிறீரா?</string>
     <string name="rate_summary">Google Play இல் சில அன்பைப் பகிர்ந்துகொண்டு எங்களை மதிப்பிடுக!</string>
     <string name="rate_okay">சரி</string>
     <string name="rate_dismiss">நிராகரி</string>
@@ -251,7 +251,7 @@
     <string name="settings_mms_size_title">Auto-compress MMS image attachments</string>
     <string name="settings_sync_title">தகவல்களை ஒத்திசை</string>
     <string name="settings_sync_summary">Re-sync your messages with the native Android SMS database</string>
-    <string name="settings_about_title">QUIK பற்றி</string>
+    <string name="settings_about_title">Texto பற்றி</string>
     <string name="settings_version">பதிப்பு %s</string>
     <string name="settings_logging_enabled">பிழைத்திருத்த பதிவுசெய்தல் இயக்கப்பட்டது</string>
     <string name="settings_logging_disabled">பிழைத்திருத்த பதிவுசெய்தல் முடக்கப்பட்டது</string>
@@ -261,7 +261,7 @@
     <string name="blocking_drop_summary">தடுத்த அனுப்புநர்களிடமிருந்து வரும் தகவல்களை மறைப்பதற்கு பதிலாக கைவிடு</string>
     <string name="blocking_conversations">தடுக்கப்பட்ட உரையாடல்கள்</string>
     <string name="blocking_manager_title">தடுத்தல் மேலாளர்</string>
-    <string name="blocking_manager_qksms_summary">Built-in blocking functionality in QUIK</string>
+    <string name="blocking_manager_qksms_summary">Built-in blocking functionality in Texto</string>
     <string name="blocking_manager_call_blocker_summary">Block spam messages, numbers &amp; unknown calls with blacklist &amp; Schedule</string>
     <string name="blocking_manager_call_control_summary">Automatically filter your calls and messages in one convenient place! Community IQ™ allows you to prevent unwanted messages from community known spammers</string>
     <string name="blocking_manager_sia_summary">Automatically filter messages from unsolicited numbers by using the \"Should I Answer\" app</string>
@@ -288,8 +288,8 @@
     <string name="about_title">இதுபற்றி</string>
     <string name="about_version_title">பதிப்பு</string>
     <string name="about_developer_title">உருவாக்குநர்</string>
-    <string name="about_source_title">மூல குறியீடு</string>
-    <string name="about_changelog_title">மாற்றப்பதிவு</string>
+    <string name="about_source_title">Upstream source (QUIK)</string>
+    <string name="about_changelog_title">Upstream changelog</string>
     <string name="about_contact_title">தொடர்பு</string>
     <string name="about_license_title">உரிமம்</string>
     <string name="about_copyright_title">பதிப்புரிமை</string>

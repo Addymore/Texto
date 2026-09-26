@@ -1,0 +1,19 @@
+<resources>
+    <style name="TextoNavigation" parent="Widget.Material3.Button.TextButton">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="cornerRadius">24dp</item>
+    </style>
+    <style name="TextoTheme" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#375BCD</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorSecondary">#625B71</item>
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+    <style name="TextoControls">
+        <item name="colorPrimary">#375BCD</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorSecondary">#007E70</item>
+    </style>
+</resources>

@@ -100,7 +100,7 @@ open class MessageRepositoryImpl @Inject constructor(
 
     private fun getMessagesBase(threadId: Long, query: String) =
         Realm.getDefaultInstance()
-            .where(Message::class.java)
+            .where(Message::class.java).equalTo("trashedAt", 0L)
             .equalTo("threadId", threadId)
             .equalTo("isEmojiReaction", false)
             .let {
@@ -125,7 +125,7 @@ open class MessageRepositoryImpl @Inject constructor(
     override fun getMessage(messageId: Long) =
         Realm.getDefaultInstance()
             .also { it.refresh() }
-            .where(Message::class.java)
+            .where(Message::class.java).equalTo("trashedAt", 0L)
             .equalTo("id", messageId)
             .findFirst()
 
@@ -137,19 +137,19 @@ open class MessageRepositoryImpl @Inject constructor(
     override fun getMessages(messageIds: Collection<Long>): RealmResults<Message> =
         Realm.getDefaultInstance()
             .also { it.refresh() }
-            .where(Message::class.java)
+            .where(Message::class.java).equalTo("trashedAt", 0L)
             .anyOf("id", messageIds.toLongArray())
             .findAll()
 
     override fun getMessageForPart(id: Long) =
         Realm.getDefaultInstance()
-            .where(Message::class.java)
+            .where(Message::class.java).equalTo("trashedAt", 0L)
             .equalTo("parts.id", id)
             .findFirst()
 
     override fun getLastIncomingMessage(threadId: Long): RealmResults<Message> =
         Realm.getDefaultInstance()
-            .where(Message::class.java)
+            .where(Message::class.java).equalTo("trashedAt", 0L)
             .equalTo("threadId", threadId)
             .beginGroup()
             .beginGroup()
@@ -177,13 +177,13 @@ open class MessageRepositoryImpl @Inject constructor(
 
     override fun getPart(id: Long) =
         Realm.getDefaultInstance()
-            .where(MmsPart::class.java)
+            .where(MmsPart::class.java).equalTo("messages.trashedAt", 0L)
             .equalTo("id", id)
             .findFirst()
 
     override fun getPartsForConversation(threadId: Long): RealmResults<MmsPart> =
         Realm.getDefaultInstance()
-            .where(MmsPart::class.java)
+            .where(MmsPart::class.java).equalTo("messages.trashedAt", 0L)
             .equalTo("messages.threadId", threadId)
             .beginGroup()
             .contains("type", "image/")
@@ -256,7 +256,7 @@ open class MessageRepositoryImpl @Inject constructor(
     override fun getUnreadUnseenMessages(threadId: Long): RealmResults<Message> =
         Realm.getDefaultInstance()
             .also { it.refresh() }
-            .where(Message::class.java)
+            .where(Message::class.java).equalTo("trashedAt", 0L)
             .equalTo("seen", false)
             .equalTo("read", false)
             .equalTo("threadId", threadId)
@@ -265,7 +265,7 @@ open class MessageRepositoryImpl @Inject constructor(
 
     override fun getUnreadMessages(threadId: Long): RealmResults<Message> =
         Realm.getDefaultInstance()
-            .where(Message::class.java)
+            .where(Message::class.java).equalTo("trashedAt", 0L)
             .equalTo("read", false)
             .equalTo("threadId", threadId)
             .sort("date")
@@ -330,7 +330,7 @@ open class MessageRepositoryImpl @Inject constructor(
     override fun markAllSeen() =
         mutableSetOf<Long>().let { threadIds ->
             Realm.getDefaultInstance().use { realm ->
-                realm.where(Message::class.java)
+                realm.where(Message::class.java).equalTo("trashedAt", 0L)
                     .equalTo("seen", false)
                     .findAll()
                     .takeIf { it.isNotEmpty() }
@@ -349,7 +349,7 @@ open class MessageRepositoryImpl @Inject constructor(
 
     override fun markSeen(threadIds: Collection<Long>) =
         Realm.getDefaultInstance().use { realm ->
-            realm.where(Message::class.java)
+            realm.where(Message::class.java).equalTo("trashedAt", 0L)
                 .anyOf("threadId", threadIds.toLongArray())
                 .equalTo("seen", false)
                 .findAll()
@@ -366,7 +366,7 @@ open class MessageRepositoryImpl @Inject constructor(
         threadIds.takeIf { it.isNotEmpty() }
             ?.let {
                 Realm.getDefaultInstance()?.use { realm ->
-                    realm.where(Message::class.java)
+                    realm.where(Message::class.java).equalTo("trashedAt", 0L)
                         .anyOf("threadId", threadIds.toLongArray())
                         .beginGroup()
                         .equalTo("read", false)
@@ -377,6 +377,7 @@ open class MessageRepositoryImpl @Inject constructor(
                         .let { messages ->
                             realm.executeTransaction {
                                 messages.forEach { it.seen = true; it.read = true }
+                                dev.texto.privacy.TrashStore.refresh(realm, threadIds)
                             }
                         }
                 }.run {
@@ -396,6 +397,7 @@ open class MessageRepositoryImpl @Inject constructor(
 
                     realm.executeTransaction {
                         conversations.forEach { it.lastMessage?.read = false }
+                        dev.texto.privacy.TrashStore.refresh(realm, threadIds)
                     }
                 }.run {
                     telephonyMarkSeenRead(null, false, threadIds)
@@ -428,6 +430,7 @@ open class MessageRepositoryImpl @Inject constructor(
 
             cursorToMessage.map(Pair(cursor, CursorToMessage.MessageColumns(cursor))).apply {
                 this.sendAsGroup = sendAsGroup
+                trashedAt = dev.texto.privacy.TrashStore(context).deletedAt(this)
 
                 if (isMms()) {
                     parts = RealmList<MmsPart>().apply {
@@ -772,7 +775,7 @@ open class MessageRepositoryImpl @Inject constructor(
     override fun markAsSendingNow(messageId: Long) =
         Realm.getDefaultInstance().use { realm ->
             realm.refresh()
-            realm.where(Message::class.java)
+            realm.where(Message::class.java).equalTo("trashedAt", 0L)
                 .equalTo("id", messageId)
                 .findFirst()
                 ?.let { message ->
@@ -790,7 +793,7 @@ open class MessageRepositoryImpl @Inject constructor(
         Realm.getDefaultInstance().use { realm ->
             realm.refresh()
 
-            realm.where(Message::class.java)
+            realm.where(Message::class.java).equalTo("trashedAt", 0L)
                 .equalTo("id", messageId)
                 .findFirst()
                 ?.let { message ->
@@ -822,7 +825,7 @@ open class MessageRepositoryImpl @Inject constructor(
         Realm.getDefaultInstance().use { realm ->
             realm.refresh()
 
-            realm.where(Message::class.java).equalTo("id", messageId).findFirst()
+            realm.where(Message::class.java).equalTo("trashedAt", 0L).equalTo("id", messageId).findFirst()
                 ?.let { message ->
                     if (message.isSms()) {
                         // update the message in realm
@@ -857,7 +860,7 @@ open class MessageRepositoryImpl @Inject constructor(
 
             realm.refresh()
 
-            realm.where(Message::class.java).equalTo("id", messageId).findFirst()
+            realm.where(Message::class.java).equalTo("trashedAt", 0L).equalTo("id", messageId).findFirst()
                 ?.let { message ->
                     if (message.isSms()) {
                         if (message.boxId != Sms.MESSAGE_TYPE_FAILED) {
@@ -920,7 +923,7 @@ open class MessageRepositoryImpl @Inject constructor(
 
             realm.refresh()
 
-            realm.where(Message::class.java)
+            realm.where(Message::class.java).equalTo("trashedAt", 0L)
                 .equalTo("id", messageId)
                 .findFirst()
                 ?.let { message ->
@@ -952,7 +955,7 @@ open class MessageRepositoryImpl @Inject constructor(
 
             realm.refresh()
 
-            realm.where(Message::class.java)
+            realm.where(Message::class.java).equalTo("trashedAt", 0L)
                 .equalTo("id", messageId)
                 .findFirst()
                 ?.let { message ->
@@ -980,27 +983,11 @@ open class MessageRepositoryImpl @Inject constructor(
             Unit
         }
 
-    override fun deleteMessages(messageIds: Collection<Long>) =
-        Realm.getDefaultInstance().use { realm ->
-            realm.refresh()
-
-            realm.where(Message::class.java)
-                .anyOf("id", messageIds.toLongArray())
-                .findAll()
-                ?.let { messages ->
-                    messages.mapNotNull { message ->
-                        val uri = message.getUri()
-                        if (uri != Uri.EMPTY)
-                            context.contentResolver.delete(uri, null, null)
-                    }
-
-                    realm.executeTransaction { messages.deleteAllFromRealm() }
-                } ?: Unit
-        }
+    override fun deleteMessages(messageIds: Collection<Long>) = dev.texto.privacy.TrashStore(context).move(messageIds)
 
     override fun getOldMessageCounts(maxAgeDays: Int) =
         Realm.getDefaultInstance().use { realm ->
-            realm.where(Message::class.java)
+            realm.where(Message::class.java).equalTo("trashedAt", 0L)
                 .lessThan(
                     "date",
                     now() - TimeUnit.DAYS.toMillis(maxAgeDays.toLong())
@@ -1010,23 +997,13 @@ open class MessageRepositoryImpl @Inject constructor(
                 .eachCount()
         }
 
-    override fun deleteOldMessages(maxAgeDays: Int) =
-        Realm.getDefaultInstance().use { realm ->
-            val messages = realm.where(Message::class.java)
-                .lessThan(
-                    "date",
-                    now() - TimeUnit.DAYS.toMillis(maxAgeDays.toLong())
-                )
-                .findAll()
-
-            val uris = messages.map { it.getUri() }
-
-            realm.executeTransaction { messages.deleteAllFromRealm() }
-
-            uris.forEach {
-                uri -> context.contentResolver.delete(uri, null, null)
-            }
+    override fun deleteOldMessages(maxAgeDays: Int) {
+        val ids = Realm.getDefaultInstance().use { realm ->
+            realm.where(Message::class.java).equalTo("trashedAt", 0L).equalTo("trashedAt", 0L)
+                .lessThan("date", now() - TimeUnit.DAYS.toMillis(maxAgeDays.toLong())).findAll().map { it.id }
         }
+        deleteMessages(ids)
+    }
 
     override fun deduplicateMessages(): Flowable<MessageRepository.DeduplicationResult> =
         Flowable.fromCallable {
@@ -1049,7 +1026,7 @@ open class MessageRepositoryImpl @Inject constructor(
         val duplicateIds = ArrayList<Long>()
 
         Realm.getDefaultInstance().use { realm ->
-            val allMessages = realm.where(Message::class.java)
+            val allMessages = realm.where(Message::class.java).equalTo("trashedAt", 0L)
                 .sort("id", Sort.ASCENDING)
                 .findAll()
 

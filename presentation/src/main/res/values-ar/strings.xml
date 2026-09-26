@@ -54,12 +54,12 @@
     <string name="archived_empty_text">ستظهر المحادثات المؤرشفة الخاصة بك هنا</string>
     <string name="main_fab_cd">بدء محادثة جديدة</string>
     <string name="main_default_sms_title">ستحب المراسلة ثانية</string>
-    <string name="main_default_sms_message">جعل QUIK تطبيق الرسائل النصية الافتراضي لديك</string>
+    <string name="main_default_sms_message">جعل Texto تطبيق الرسائل النصية الافتراضي لديك</string>
     <string name="main_default_sms_change">تغيير</string>
     <string name="main_permission_required">الإذن مطلوب</string>
-    <string name="main_permission_sms">QUIK يحتاج إلى إذن لإرسال وعرض الرسائل النصية</string>
-    <string name="main_permission_contacts">QUIK يحتاج إلى إذن لعرض جهات الاتصال لديك</string>
-    <string name="main_permission_notifications">يحتاج تطبيق QUIK إلى إذن لعرض الإشعارات</string>
+    <string name="main_permission_sms">Texto يحتاج إلى إذن لإرسال وعرض الرسائل النصية</string>
+    <string name="main_permission_contacts">Texto يحتاج إلى إذن لعرض جهات الاتصال لديك</string>
+    <string name="main_permission_notifications">يحتاج تطبيق Texto إلى إذن لعرض الإشعارات</string>
     <string name="main_permission_allow">سماح</string>
     <string name="drawer_inbox">صندوق الوارد</string>
     <string name="drawer_archived">المؤرشفة</string>
@@ -70,7 +70,7 @@
     <string name="drawer_help">المساعدة والتواصل مع المبرمج</string>
     <string name="drawer_invite">دعوة الأصدقاء</string>
     <string name="drawer_plus_banner_summary">فتح ميزات رائعة جديدة ، و دعم التطوير</string>
-    <string name="rate_title">هل QUIK ممتع ؟</string>
+    <string name="rate_title">هل Texto ممتع ؟</string>
     <string name="rate_summary">أظهر محبتك وقيّمنا على متجر Google Play!</string>
     <string name="rate_okay">حسناً!</string>
     <string name="rate_dismiss">استبعاد</string>
@@ -259,7 +259,7 @@
     <string name="settings_mms_size_title">الضغط التلقائي لمرفقات رسائل الوسائط</string>
     <string name="settings_sync_title">مزامنة الرسائل</string>
     <string name="settings_sync_summary">إعادة مزامنة رسائلك مع قاعدة البيانات الأصلية للرسائل في النظام</string>
-    <string name="settings_about_title">حول QUIK</string>
+    <string name="settings_about_title">حول Texto</string>
     <string name="settings_version">النسخة %s</string>
     <string name="settings_logging_enabled">تسجيل التصحيح مفعَّل</string>
     <string name="settings_logging_disabled">تسجيل التصحيح معطَّل</string>
@@ -269,7 +269,7 @@
     <string name="blocking_drop_summary">قم بحذف الرسائل الواردة من المرسلين المحظورين بدلاً من إخفائها</string>
     <string name="blocking_conversations">المحادثات المحظورة</string>
     <string name="blocking_manager_title">مدير المحظورات</string>
-    <string name="blocking_manager_qksms_summary">وظيفة حظر مدمجة في برنامج QUIK</string>
+    <string name="blocking_manager_qksms_summary">وظيفة حظر مدمجة في برنامج Texto</string>
     <string name="blocking_manager_call_blocker_summary">حظر الرسائل المزعجة والأرقام والمكالمات غير المعروفة باستخدام القائمة السوداء وجدولة المكالمات</string>
     <string name="blocking_manager_call_control_summary">قم بتصفية مكالماتك ورسائلك تلقائيًا في مكان واحد مناسب! تتيح لك ميزة Community IQ™ منع الرسائل غير المرغوب فيها من مرسلي الرسائل المزعجة المعروفين في مجتمعك</string>
     <string name="blocking_manager_sia_summary">الترشيح التلقائي للرسائل من الأرقام غير المرغوبة باستخدام تطبيق \"Should I Answer\"</string>
@@ -304,8 +304,8 @@
     <string name="about_title">حول</string>
     <string name="about_version_title">النسخة</string>
     <string name="about_developer_title">المطوّر</string>
-    <string name="about_source_title">الشفرة المصدر</string>
-    <string name="about_changelog_title">سجل التغييرات</string>
+    <string name="about_source_title">Upstream source (QUIK)</string>
+    <string name="about_changelog_title">Upstream changelog</string>
     <string name="about_contact_title">للاتصال</string>
     <string name="about_license_title">الترخيص</string>
     <string name="about_copyright_title">حقوق النسخ</string>

@@ -54,12 +54,12 @@
     <string name="archived_empty_text">Tu sa zobrazia vaše archivované konverzácie</string>
     <string name="main_fab_cd">Začať novú konverzáciu</string>
     <string name="main_default_sms_title">Opäť si zamilujte písanie</string>
-    <string name="main_default_sms_message">Nastavte QUIK ako predvolenú SMS aplikáciu</string>
+    <string name="main_default_sms_message">Nastavte Texto ako predvolenú SMS aplikáciu</string>
     <string name="main_default_sms_change">Zmeniť</string>
     <string name="main_permission_required">Vyžadované povolenie</string>
-    <string name="main_permission_sms">QUIK potrebuje povolenie posielať a zobrazovať správy SMS</string>
-    <string name="main_permission_contacts">QUIK potrebuje povolenie na zobrazenie kontaktov</string>
-    <string name="main_permission_notifications">QUIK needs permission to display notifications</string>
+    <string name="main_permission_sms">Texto potrebuje povolenie posielať a zobrazovať správy SMS</string>
+    <string name="main_permission_contacts">Texto potrebuje povolenie na zobrazenie kontaktov</string>
+    <string name="main_permission_notifications">Texto needs permission to display notifications</string>
     <string name="main_permission_allow">Povoliť</string>
     <string name="drawer_inbox">Doručené</string>
     <string name="drawer_archived">Archivované</string>
@@ -70,7 +70,7 @@
     <string name="drawer_help">Nápoveda &amp; spätná väzba</string>
     <string name="drawer_invite">Pozvať priateľov</string>
     <string name="drawer_plus_banner_summary">Odomknutie úžasné nové funkcie a podporte vývoj</string>
-    <string name="rate_title">Máte radi QUIK?</string>
+    <string name="rate_title">Máte radi Texto?</string>
     <string name="rate_summary">Podeľte sa o trochu lásky a ohodnoťte nás na Google Play!</string>
     <string name="rate_okay">OUKEJ!</string>
     <string name="rate_dismiss">ODMIETNUŤ</string>
@@ -255,7 +255,7 @@
     <string name="settings_mms_size_title">Automaticky komprimovať MMS prílohy</string>
     <string name="settings_sync_title">Synchronizovať správy</string>
     <string name="settings_sync_summary">Opätovne synchronizovať vaše správy s natívnou SMS databázou</string>
-    <string name="settings_about_title">O aplikácii QUIK</string>
+    <string name="settings_about_title">O aplikácii Texto</string>
     <string name="settings_version">Verzia %s</string>
     <string name="settings_logging_enabled">Ladiace záznamy povolené</string>
     <string name="settings_logging_disabled">Ladiace záznamy vypnuté</string>
@@ -265,7 +265,7 @@
     <string name="blocking_drop_summary">Zahodiť prichádzajúce správy od blokovaných odosielateľov namiesto ich skrytia.</string>
     <string name="blocking_conversations">Blokované konverzácie</string>
     <string name="blocking_manager_title">Správca blokovaní</string>
-    <string name="blocking_manager_qksms_summary">Vstavané blokovanie v QUIK</string>
+    <string name="blocking_manager_qksms_summary">Vstavané blokovanie v Texto</string>
     <string name="blocking_manager_call_blocker_summary">Block spam messages, numbers &amp; unknown calls with blacklist &amp; Schedule</string>
     <string name="blocking_manager_call_control_summary">Automaticky filtrujte svoje hovory a správy na jednom mieste! Community IQ™ vám poskytuje ochranu pred spamom od komunitou označených spammerov.</string>
     <string name="blocking_manager_sia_summary">Automaticky filtrovať správy od nevyžiadaných čísiel pomocou aplikácie \"Should I Answer?\"</string>
@@ -296,8 +296,8 @@
     <string name="about_title">O aplikácii</string>
     <string name="about_version_title">Verzia</string>
     <string name="about_developer_title">Vývojár</string>
-    <string name="about_source_title">Zdrojový kód</string>
-    <string name="about_changelog_title">Zoznam zmien</string>
+    <string name="about_source_title">Upstream source (QUIK)</string>
+    <string name="about_changelog_title">Upstream changelog</string>
     <string name="about_contact_title">Konktakt</string>
     <string name="about_license_title">Licencia</string>
     <string name="about_copyright_title">Autorské práva</string>

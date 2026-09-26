@@ -1,0 +1,7 @@
+<resources>
+    <style name="TextoControls">
+        <item name="colorPrimary">#AFC3FF</item>
+        <item name="colorOnPrimary">#132962</item>
+        <item name="colorSecondary">#79D8C8</item>
+    </style>
+</resources>

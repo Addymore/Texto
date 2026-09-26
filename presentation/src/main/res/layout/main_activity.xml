@@ -24,9 +24,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <dev.texto.privacy.ReachableMessagesLayout
+        android:id="@+id/textoReachable"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/textoHeader" android:layout_width="match_parent" android:layout_height="240dp"
+            android:orientation="vertical" android:gravity="bottom" android:paddingStart="28dp" android:paddingEnd="28dp" android:paddingBottom="16dp"
+            app:layout_constraintTop_toTopOf="parent">
+            <TextView android:id="@+id/textoTitle" android:contentDescription="Texto. Long press for Archive." android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Texto" android:textSize="40sp" android:fontFamily="sans-serif-medium" android:textColor="?android:attr/textColorPrimary" />
+            <TextView android:id="@+id/textoSubtitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Messages, comfortably within reach" android:textSize="14sp" android:textColor="?android:attr/textColorSecondary" />
+        </LinearLayout>
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -35,7 +44,7 @@
             app:contentInsetStartWithNavigation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/textoHeader">
 
             <dev.octoshrimpy.quik.common.widget.QkTextView
                 android:id="@+id/toolbarTitle"
@@ -118,8 +127,11 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="?android:attr/divider"
-            app:layout_constraintBottom_toTopOf="@id/snackbar" />
+            app:layout_constraintBottom_toTopOf="@id/textoNavigation" />
 
+        <dev.texto.privacy.TextoTabBar android:id="@+id/textoNavigation" android:layout_width="0dp" android:layout_height="66dp"
+            android:layout_marginStart="18dp" android:layout_marginEnd="18dp" android:layout_marginTop="8dp" android:layout_marginBottom="12dp"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toTopOf="@id/snackbar" />
         <ViewStub
             android:id="@+id/snackbar"
             android:layout_width="match_parent"
@@ -136,7 +148,7 @@
             android:layout="@layout/main_syncing"
             app:layout_constraintBottom_toBottomOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </dev.texto.privacy.ReachableMessagesLayout>
 
     <include
         android:id="@+id/drawer"

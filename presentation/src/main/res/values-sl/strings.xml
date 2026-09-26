@@ -54,12 +54,12 @@
     <string name="archived_empty_text">Vaši arhivirani pogovori se bodo pojavili tukaj</string>
     <string name="main_fab_cd">Začni nov pogovor</string>
     <string name="main_default_sms_title">Znova vzljubite sporočanje</string>
-    <string name="main_default_sms_message">Napravi QUIK privzet program za sporočanje</string>
+    <string name="main_default_sms_message">Napravi Texto privzet program za sporočanje</string>
     <string name="main_default_sms_change">Spremeni</string>
     <string name="main_permission_required">Potrebno dovoljenje</string>
-    <string name="main_permission_sms">QUIK potrebuje dovoljenje za pošiljanje in branje SMS sporočil</string>
-    <string name="main_permission_contacts">QUIK potrebuje dovoljenje za dostop do stikov</string>
-    <string name="main_permission_notifications">QUIK needs permission to display notifications</string>
+    <string name="main_permission_sms">Texto potrebuje dovoljenje za pošiljanje in branje SMS sporočil</string>
+    <string name="main_permission_contacts">Texto potrebuje dovoljenje za dostop do stikov</string>
+    <string name="main_permission_notifications">Texto needs permission to display notifications</string>
     <string name="main_permission_allow">Dovoli</string>
     <string name="drawer_inbox">Prejeto</string>
     <string name="drawer_archived">Arhiv</string>
@@ -70,7 +70,7 @@
     <string name="drawer_help">Pošlji povratne informacije</string>
     <string name="drawer_invite">Povabi prijatelje</string>
     <string name="drawer_plus_banner_summary">Odkleni neverjetne nove funkcije in podpri razvoj</string>
-    <string name="rate_title">Uživate v QUIK?</string>
+    <string name="rate_title">Uživate v Texto?</string>
     <string name="rate_summary">Deli nekaj ljubezni in nas oceni na Google Play!</string>
     <string name="rate_okay">V REDU!</string>
     <string name="rate_dismiss">OPUSTI</string>
@@ -255,7 +255,7 @@
     <string name="settings_mms_size_title">Samodejno stisni MMS priponke</string>
     <string name="settings_sync_title">Sinhroniziraj sporočila</string>
     <string name="settings_sync_summary">Znova sinhroniziraj sporočila s sistemsko SMS bazo</string>
-    <string name="settings_about_title">Več o QUIK</string>
+    <string name="settings_about_title">Več o Texto</string>
     <string name="settings_version">Različica %s</string>
     <string name="settings_logging_enabled">Beleženje dnevnika za odpravljanje napak omogočeno</string>
     <string name="settings_logging_disabled">Beleženje dnevnika za odpravljanje napak onemogočeno</string>
@@ -265,7 +265,7 @@
     <string name="blocking_drop_summary">Opusti prihajajoča sporočila blokiranih pošiljateljev, namesto da jih skriješ</string>
     <string name="blocking_conversations">Blokirani pogovori</string>
     <string name="blocking_manager_title">Upravljalnik Blokiranja</string>
-    <string name="blocking_manager_qksms_summary">Vgrajena sposobnost blokiranja v QUIK</string>
+    <string name="blocking_manager_qksms_summary">Vgrajena sposobnost blokiranja v Texto</string>
     <string name="blocking_manager_call_blocker_summary">Blokiraj neželena sporočila, številke &amp; neznane klice s črnim seznamom &amp; Urnik</string>
     <string name="blocking_manager_call_control_summary">Samodejno razvrstite vaše klice in sporočila v eno priročno mesto! Skupnostni IQ™ omogoča, da preprečite prejemanje sporočil pošiljateljev neželenih sporočil, kateri so skupnosti poznani</string>
     <string name="blocking_manager_sia_summary">Samodejno razvrstite sporočila neželenih številk tako, da uporabiš \"Should I Answer\" aplikacijo</string>
@@ -296,8 +296,8 @@
     <string name="about_title">O aplikaciji</string>
     <string name="about_version_title">Različica</string>
     <string name="about_developer_title">Razvijalec</string>
-    <string name="about_source_title">Izvirna koda</string>
-    <string name="about_changelog_title">Dnevnik sprememb</string>
+    <string name="about_source_title">Upstream source (QUIK)</string>
+    <string name="about_changelog_title">Upstream changelog</string>
     <string name="about_contact_title">Stik</string>
     <string name="about_license_title">Licenca</string>
     <string name="about_copyright_title">Avtorske pravice</string>

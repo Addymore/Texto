@@ -26,6 +26,9 @@ import io.realm.annotations.PrimaryKey
 open class Conversation(
     @PrimaryKey var id: Long = 0,
     @Index var archived: Boolean = false,
+    @Index var textoLocked: Boolean = false,
+    var messageCount: Long = 0,
+    var unreadCount: Long = 0,
     @Index var blocked: Boolean = false,
     @Index var pinned: Boolean = false,
     var recipients: RealmList<Recipient> = RealmList(),
@@ -43,7 +46,7 @@ open class Conversation(
 
     val date: Long get() = lastMessage?.date ?: if (draft.isNotEmpty()) draftDate else 0
     val snippet: String? get() = lastMessage?.getSummary()
-    val unread: Boolean get() = lastMessage?.read == false
+    val unread: Boolean get() = unreadCount > 0
     val me: Boolean get() = lastMessage?.isMe() == true
 
     fun getTitle(): String {

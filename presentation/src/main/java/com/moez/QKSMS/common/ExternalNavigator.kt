@@ -47,7 +47,7 @@ class ExternalNavigator @Inject constructor(
     private val notificationManager: NotificationManager
 ) : QkNavigator(context) {
     fun showDeveloper() =
-        openExternalActivity("https://github.com/quik-sms/quik/graphs/contributors")
+        openExternalActivity("https://t.me/addymore")
 
     fun showSourceCode() = openExternalActivity("https://github.com/quik-sms/quik")
 
@@ -93,22 +93,7 @@ class ExternalNavigator @Inject constructor(
             "https://play.google.com/store/apps/details?id=org.mistergroup.shouldianswer"
         )
 
-    fun showSupport() {
-        val intent = Intent(Intent.ACTION_SENDTO)
-        intent.data = "mailto:".toUri()
-        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("quik@octo.sh"))
-        intent.putExtra(Intent.EXTRA_SUBJECT, "QUIK Support")
-        intent.putExtra(Intent.EXTRA_TEXT, StringBuilder("\n\n")
-            .append("\n\n--- Please write your message above this line ---\n\n")
-            .append("Package: ${context.packageName}\n")
-            .append("Version: ${BuildConfig.VERSION_NAME}\n")
-            .append("Device: ${Build.BRAND} ${Build.MODEL}\n")
-            .append("SDK: ${Build.VERSION.SDK_INT}\n")
-            .append("Upgraded"
-                .takeIf { billingManager.upgradeStatus.blockingFirst() } ?: "")
-            .toString())
-        startActivityExternal(intent)
-    }
+    fun showSupport() = openExternalActivity("https://t.me/addymore")
 
     fun showInvite() {
         Intent(Intent.ACTION_SEND)

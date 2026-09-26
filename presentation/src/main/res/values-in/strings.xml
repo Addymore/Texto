@@ -54,12 +54,12 @@
     <string name="archived_empty_text">Arsip percakapan anda akan ditampilkan di sini</string>
     <string name="main_fab_cd">Mulai percakapan baru</string>
     <string name="main_default_sms_title">Love texting again</string>
-    <string name="main_default_sms_message">Tetapkan QUIK sebagai aplikasi SMS default anda</string>
+    <string name="main_default_sms_message">Tetapkan Texto sebagai aplikasi SMS default anda</string>
     <string name="main_default_sms_change">Ubah</string>
     <string name="main_permission_required">Membutuhkan izin</string>
-    <string name="main_permission_sms">QUIK membutuhkan izin untuk mengirim dan membaca pesan SMS</string>
-    <string name="main_permission_contacts">QUIK membutuhkan izin untuk membaca kontak anda</string>
-    <string name="main_permission_notifications">QUIK needs permission to display notifications</string>
+    <string name="main_permission_sms">Texto membutuhkan izin untuk mengirim dan membaca pesan SMS</string>
+    <string name="main_permission_contacts">Texto membutuhkan izin untuk membaca kontak anda</string>
+    <string name="main_permission_notifications">Texto needs permission to display notifications</string>
     <string name="main_permission_allow">Izinkan</string>
     <string name="drawer_inbox">Kotak masuk</string>
     <string name="drawer_archived">Diarsipkan</string>
@@ -70,7 +70,7 @@
     <string name="drawer_help">Bantuan &amp; umpanbalik</string>
     <string name="drawer_invite">Undang teman</string>
     <string name="drawer_plus_banner_summary">Buka fitur-fitur baru yang menakjubkan, dan dukung pengembangan</string>
-    <string name="rate_title">Menikmati QUIK?</string>
+    <string name="rate_title">Menikmati Texto?</string>
     <string name="rate_summary">Share some love and rate us on Google Play!</string>
     <string name="rate_okay">OKE!</string>
     <string name="rate_dismiss">ABAIKAN</string>
@@ -249,7 +249,7 @@
     <string name="settings_mms_size_title">Otomatis kompres lampiran MMS</string>
     <string name="settings_sync_title">Sinkronisasi pesan</string>
     <string name="settings_sync_summary">Sinkronisasi ulang pesan anda dengan basis data aplikasi SMS Android bawaan</string>
-    <string name="settings_about_title">Tentang QUIK</string>
+    <string name="settings_about_title">Tentang Texto</string>
     <string name="settings_version">Versi %s</string>
     <string name="settings_logging_enabled">Log awakutu diaktifkan</string>
     <string name="settings_logging_disabled">Log awakutu dinonaktifkan</string>
@@ -259,7 +259,7 @@
     <string name="blocking_drop_summary">Tolak pesan masuk dari pengirim yang diblokir</string>
     <string name="blocking_conversations">Percakapan diblokir</string>
     <string name="blocking_manager_title">Pengelola Pemblokiran</string>
-    <string name="blocking_manager_qksms_summary">Fitur pemblokiran pesan di dalam QUIK</string>
+    <string name="blocking_manager_qksms_summary">Fitur pemblokiran pesan di dalam Texto</string>
     <string name="blocking_manager_call_blocker_summary">Blokir pesan spam, nomor &amp; panggilan tak dikenal dengan daftar hitam &amp; Jadwal</string>
     <string name="blocking_manager_call_control_summary">Otomatis menyaring panggilan dan pesan di dalam satu tempat! Community IQ™ memungkinkan anda memblokir pesan yang tidak diinginkan dari daftar spammer</string>
     <string name="blocking_manager_sia_summary">Secara otomatis menyaring pesan dari nomor yang tidak diinginkan menggunakan aplikasi \"Should I Answer\"</string>
@@ -284,8 +284,8 @@
     <string name="about_title">Tentang</string>
     <string name="about_version_title">Versi</string>
     <string name="about_developer_title">Pengembang</string>
-    <string name="about_source_title">Kode sumber</string>
-    <string name="about_changelog_title">Catatan perubahan</string>
+    <string name="about_source_title">Upstream source (QUIK)</string>
+    <string name="about_changelog_title">Upstream changelog</string>
     <string name="about_contact_title">Kontak</string>
     <string name="about_license_title">Lisensi</string>
     <string name="about_copyright_title">Hak cipta</string>
@@ -479,7 +479,7 @@
     <string name="deduplicating_messages_no_messages">Tidak ada pesan duplikat yang ditemukan.</string>
     <string name="deduplicating_messages_failed">Deduplikasi pesan gagal, silakan coba lagi</string>
     <string name="all_conversations_widget_title">Semua Percakapan</string>
-    <string name="about_developer">Sebuah tim orang-orang luar biasa dari seluruh dunia!</string>
+    <string name="about_developer">Addymore</string>
     <string name="button_clear">Hapus</string>
     <plurals name="toast_archived">
         <item quantity="other">%d percakapan diarsipkan</item>

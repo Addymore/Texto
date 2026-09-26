@@ -37,6 +37,7 @@ class HeadlessSmsSendService : IntentService("HeadlessSmsSendService") {
         AndroidInjection.inject(this)
         intent.extras?.getString(Intent.EXTRA_TEXT)?.takeIf { it.isNotBlank() }?.let { body ->
             val recipients = intent.data?.let(::getRecipients)?.split(";") ?: return@let
+            if (recipients.any { dev.texto.privacy.TextoPolicy(this).decision(it).locked }) return@let
 
             val conversation = conversationRepo.getOrCreateConversation(recipients)
 

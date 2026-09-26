@@ -406,7 +406,7 @@ class MessagesAdapter @Inject constructor(
             setVisible(message.isSms() || spanString.isNotBlank())
 
             setBackgroundResource(
-                getBubble(
+                if (!emojiOnly && dev.texto.privacy.TextoAppearance.prefs(context).getString("bubbles", "fluid") == "fluid") R.drawable.texto_message_fluid else getBubble(
                     emojiOnly = emojiOnly,
                     canGroupWithPrevious = canGroup(message, previous) ||
                             message.parts.any { !it.isSmil() && !it.isText() },
@@ -461,7 +461,7 @@ class MessagesAdapter @Inject constructor(
         statusView.apply {
             text = when {
                 message.isSending() -> context.getString(R.string.message_status_sending)
-                message.isDelivered() -> context.getString(
+                message.isDelivered() -> "✓✓ " + context.getString(
                     R.string.message_status_delivered,
                     dateFormatter.getTimestamp(message.dateSent)
                 )
@@ -471,7 +471,8 @@ class MessagesAdapter @Inject constructor(
                     // incoming group message
                     "${contactCache[message.address]?.getDisplayName()} • ${
                         dateFormatter.getTimestamp(message.date)}"
-                else -> dateFormatter.getTimestamp(message.date)
+                message.isMe() -> "✓ Sent · ${dateFormatter.getTimestamp(message.date)}"
+                else -> "↓ Received · ${dateFormatter.getTimestamp(message.date)}"
             }
 
             val age = TimeUnit.MILLISECONDS.toMinutes(
@@ -480,6 +481,7 @@ class MessagesAdapter @Inject constructor(
 
             setVisible(
                 when {
+                    !message.isSending() -> true
                     expanded[message.id] == true -> true
                     message.isSending() -> true
                     message.isFailedMessage() -> true

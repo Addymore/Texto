@@ -73,6 +73,7 @@ class QKApplication : Application(), HasActivityInjector, HasBroadcastReceiverIn
 
     override fun onCreate() {
         super.onCreate()
+        registerActivityLifecycleCallbacks(dev.texto.privacy.PrivacyGate)
 
         // set translated "no messages" string for speakThreads interactor
         SpeakThreads.setNoMessagesString(getString(R.string.speak_no_messages))
@@ -83,10 +84,23 @@ class QKApplication : Application(), HasActivityInjector, HasBroadcastReceiverIn
         Realm.init(this)
         Realm.setDefaultConfiguration(RealmConfiguration.Builder()
                 .compactOnLaunch()
+                .allowWritesOnUiThread(true) // Privacy flags must be committed before public screens open.
                 .migration(realmMigration)
                 .schemaVersion(QkRealmMigration.SCHEMA_VERSION)
                 .build())
 
+        // Rebuild derived privacy flags before any activity can query migrated conversations.
+        Realm.getDefaultInstance().use { realm -> realm.executeTransaction {
+            val trash = dev.texto.privacy.TrashStore(this)
+            trash.reconcile(realm)
+            if (!getSharedPreferences("texto_privacy", MODE_PRIVATE).getBoolean("counts_v17", false)) dev.texto.privacy.TrashStore.refresh(realm)
+            val policy = dev.texto.privacy.TextoPolicy(this)
+            realm.where(dev.octoshrimpy.quik.model.Conversation::class.java).findAll().forEach { conversation ->
+                conversation.textoLocked = conversation.recipients.any { policy.decision(it.address).locked }
+                if (conversation.textoLocked) conversation.archived = true
+            }
+        } }
+        getSharedPreferences("texto_privacy", MODE_PRIVATE).edit().putBoolean("counts_v17", true).apply()
         qkMigration.performMigration()
 
         GlobalScope.launch(Dispatchers.IO) {
@@ -98,7 +112,8 @@ class QKApplication : Application(), HasActivityInjector, HasBroadcastReceiverIn
         nightModeManager.updateCurrentTheme()
 
         // configure timber logging
-        Timber.plant(Timber.DebugTree(), fileLoggingTree)
+        // Avoid persisting message/address diagnostics in a privacy-focused app.
+        Timber.plant(object : Timber.Tree() { override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {} })
 
         // configure emoji compatibility with bundled package
         // (bundled library works with no play-services/gsm os versions)
@@ -129,6 +144,7 @@ class QKApplication : Application(), HasActivityInjector, HasBroadcastReceiverIn
 
         // register, or re-register, housekeeping work manager
         HousekeepingWorker.register(applicationContext)
+        dev.texto.privacy.TrashStore.schedule(this)
     }
 
     override fun activityInjector(): AndroidInjector<Activity> {

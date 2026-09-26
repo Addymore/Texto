@@ -54,12 +54,12 @@
     <string name="archived_empty_text">Tavo archyvuoti pokalbiai bus čia</string>
     <string name="main_fab_cd">Pradėti naują pokalbį</string>
     <string name="main_default_sms_title">Love texting again</string>
-    <string name="main_default_sms_message">Make QUIK your default SMS app</string>
+    <string name="main_default_sms_message">Make Texto your default SMS app</string>
     <string name="main_default_sms_change">Change</string>
     <string name="main_permission_required">Permission required</string>
-    <string name="main_permission_sms">QUIK needs permission to send and view SMS messages</string>
-    <string name="main_permission_contacts">QUIK needs permission to view your contacts</string>
-    <string name="main_permission_notifications">QUIK needs permission to display notifications</string>
+    <string name="main_permission_sms">Texto needs permission to send and view SMS messages</string>
+    <string name="main_permission_contacts">Texto needs permission to view your contacts</string>
+    <string name="main_permission_notifications">Texto needs permission to display notifications</string>
     <string name="main_permission_allow">Allow</string>
     <string name="drawer_inbox">Žinutės</string>
     <string name="drawer_archived">Archyvas</string>
@@ -70,7 +70,7 @@
     <string name="drawer_help">Pagalba ir atsiliepimai</string>
     <string name="drawer_invite">Invite friends</string>
     <string name="drawer_plus_banner_summary">Unlock amazing new features, and support development</string>
-    <string name="rate_title">Patinka QUIK?</string>
+    <string name="rate_title">Patinka Texto?</string>
     <string name="rate_summary">Įvertink mūsų programėlę Google Play!</string>
     <string name="rate_okay">OK!</string>
     <string name="rate_dismiss">ATMESTI</string>
@@ -255,7 +255,7 @@
     <string name="settings_mms_size_title">Auto-compress MMS image attachments</string>
     <string name="settings_sync_title">Sinchronizuoti pranešimus</string>
     <string name="settings_sync_summary">Iš naujo sinchronizuoti Android pranešimų duomenų bazę</string>
-    <string name="settings_about_title">Apie QUIK</string>
+    <string name="settings_about_title">Apie Texto</string>
     <string name="settings_version">Versija %s</string>
     <string name="settings_logging_enabled">Debug logging enabled</string>
     <string name="settings_logging_disabled">Debug logging disabled</string>
@@ -265,7 +265,7 @@
     <string name="blocking_drop_summary">Drop incoming messages from blocked senders instead of hiding them</string>
     <string name="blocking_conversations">Blocked conversations</string>
     <string name="blocking_manager_title">Blocking Manager</string>
-    <string name="blocking_manager_qksms_summary">Built-in blocking functionality in QUIK</string>
+    <string name="blocking_manager_qksms_summary">Built-in blocking functionality in Texto</string>
     <string name="blocking_manager_call_blocker_summary">Block spam messages, numbers &amp; unknown calls with blacklist &amp; Schedule</string>
     <string name="blocking_manager_call_control_summary">Automatically filter your calls and messages in one convenient place! Community IQ™ allows you to prevent unwanted messages from community known spammers</string>
     <string name="blocking_manager_sia_summary">Automatiškai filtruoti žinutes nuo nežinomų numerių su „Ar reikia atsakyti“ programėle</string>
@@ -296,8 +296,8 @@
     <string name="about_title">Apie</string>
     <string name="about_version_title">Versija</string>
     <string name="about_developer_title">Kūrėjas</string>
-    <string name="about_source_title">Šaltinio kodas</string>
-    <string name="about_changelog_title">Pakeitimų sąrašas</string>
+    <string name="about_source_title">Upstream source (QUIK)</string>
+    <string name="about_changelog_title">Upstream changelog</string>
     <string name="about_contact_title">Kontaktai</string>
     <string name="about_license_title">Licencija</string>
     <string name="about_copyright_title">Autorinės teisės</string>

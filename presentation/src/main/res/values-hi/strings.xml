@@ -54,12 +54,12 @@
     <string name="archived_empty_text">आपके संग्रहीत वार्तालाप यहां दिखाई देंगे</string>
     <string name="main_fab_cd">नई वार्तालाप प्रारंभ करें</string>
     <string name="main_default_sms_title">फिर से टेक्स्टिंग करिये</string>
-    <string name="main_default_sms_message">QUIK अपना डिफ़ॉल्ट SMS एप्लिकेशन बनाएं</string>
+    <string name="main_default_sms_message">Texto अपना डिफ़ॉल्ट SMS एप्लिकेशन बनाएं</string>
     <string name="main_default_sms_change">बदलें</string>
     <string name="main_permission_required">अनुमति आवश्यक</string>
-    <string name="main_permission_sms">QUIK भेजने और एसएमएस संदेश देखने के लिए अनुमति की जरूरत है</string>
-    <string name="main_permission_contacts">QUIK अपने संपर्कों को देखने के लिए अनुमति की जरूरत है</string>
-    <string name="main_permission_notifications">QUIK needs permission to display notifications</string>
+    <string name="main_permission_sms">Texto भेजने और एसएमएस संदेश देखने के लिए अनुमति की जरूरत है</string>
+    <string name="main_permission_contacts">Texto अपने संपर्कों को देखने के लिए अनुमति की जरूरत है</string>
+    <string name="main_permission_notifications">Texto needs permission to display notifications</string>
     <string name="main_permission_allow">अनुमति दे</string>
     <string name="drawer_inbox">इनबॉक्स</string>
     <string name="drawer_archived">संग्रहीत</string>
@@ -70,7 +70,7 @@
     <string name="drawer_help">मदद और प्रतिक्रिया</string>
     <string name="drawer_invite">मित्रों को आमंत्रित करें</string>
     <string name="drawer_plus_banner_summary">अद्भुत नई सुविधाओं को अनलॉक करें, और विकास का समर्थन करें</string>
-    <string name="rate_title">QUIK का आनंद ले रहे?</string>
+    <string name="rate_title">Texto का आनंद ले रहे?</string>
     <string name="rate_summary">कुछ प्यार साझा करें और गूगल प्ले पर हमें मूल्यांकन करें</string>
     <string name="rate_okay">ठीक!</string>
     <string name="rate_dismiss">खारिज</string>
@@ -251,7 +251,7 @@
     <string name="settings_mms_size_title">एमएमएस अनुलग्नकों को स्व-संपीड़ित करें</string>
     <string name="settings_sync_title">संदेशों को समन्वयित करें</string>
     <string name="settings_sync_summary">अपने संदेशों को मूल एंड्रॉइड एसएमएस डेटाबेस के साथ पुन: समन्वयित करें</string>
-    <string name="settings_about_title">QUIK के बारे में</string>
+    <string name="settings_about_title">Texto के बारे में</string>
     <string name="settings_version">संस्करण %s</string>
     <string name="settings_logging_enabled">Debug logging enabled</string>
     <string name="settings_logging_disabled">Debug logging disabled</string>
@@ -261,7 +261,7 @@
     <string name="blocking_drop_summary">आने वाले संदेशों को छिपाने के बजाय अवरुद्ध प्रेषकों से ड्रॉप करें</string>
     <string name="blocking_conversations">अवरुद्ध बातचीत</string>
     <string name="blocking_manager_title">अवरोध प्रबंधक</string>
-    <string name="blocking_manager_qksms_summary">QUIK में अंतर्निहित अवरोधन कार्यक्षमता</string>
+    <string name="blocking_manager_qksms_summary">Texto में अंतर्निहित अवरोधन कार्यक्षमता</string>
     <string name="blocking_manager_call_blocker_summary">Block spam messages, numbers &amp; unknown calls with blacklist &amp; Schedule</string>
     <string name="blocking_manager_call_control_summary">Automatically filter your calls and messages in one convenient place! Community IQ™ allows you to prevent unwanted messages from community known spammers</string>
     <string name="blocking_manager_sia_summary">Automatically filter messages from unsolicited numbers by using the \"Should I Answer\" app</string>
@@ -288,8 +288,8 @@
     <string name="about_title">जानकारी</string>
     <string name="about_version_title">संस्करण</string>
     <string name="about_developer_title">विकासक</string>
-    <string name="about_source_title">श्रोत कोड</string>
-    <string name="about_changelog_title">बदलाव</string>
+    <string name="about_source_title">Upstream source (QUIK)</string>
+    <string name="about_changelog_title">Upstream changelog</string>
     <string name="about_contact_title">संपर्क</string>
     <string name="about_license_title">लाइसेंस</string>
     <string name="about_copyright_title">कॉपीराइट</string>

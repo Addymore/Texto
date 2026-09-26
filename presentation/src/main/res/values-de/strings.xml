@@ -54,12 +54,12 @@
     <string name="archived_empty_text">Archivierte Unterhaltungen werden hier angezeigt</string>
     <string name="main_fab_cd">Neue Unterhaltung starten</string>
     <string name="main_default_sms_title">Liebe es, wieder SMS zu schreiben</string>
-    <string name="main_default_sms_message">QUIK als Standard-SMS-App festlegen</string>
+    <string name="main_default_sms_message">Texto als Standard-SMS-App festlegen</string>
     <string name="main_default_sms_change">Ändern</string>
     <string name="main_permission_required">Berechtigung erforderlich</string>
-    <string name="main_permission_sms">QUIK benötigt die Berechtigung zum Senden und Anzeigen von SMS-Nachrichten</string>
-    <string name="main_permission_contacts">QUIK benötigt die Berechtigung zum Zugreifen auf die Kontakte</string>
-    <string name="main_permission_notifications">QUIK benötigt die Berechtigung, um Benachrichtigungen anzuzeigen</string>
+    <string name="main_permission_sms">Texto benötigt die Berechtigung zum Senden und Anzeigen von SMS-Nachrichten</string>
+    <string name="main_permission_contacts">Texto benötigt die Berechtigung zum Zugreifen auf die Kontakte</string>
+    <string name="main_permission_notifications">Texto benötigt die Berechtigung, um Benachrichtigungen anzuzeigen</string>
     <string name="main_permission_allow">Zulassen</string>
     <string name="drawer_inbox">Posteingang</string>
     <string name="drawer_archived">Archiviert</string>
@@ -70,7 +70,7 @@
     <string name="drawer_help">Hilfe &amp; Rückmeldung</string>
     <string name="drawer_invite">Freunde einladen</string>
     <string name="drawer_plus_banner_summary">Schalte tolle neue Funktionen frei und unterstütze die Entwicklung</string>
-    <string name="rate_title">Gefällt dir QUIK?</string>
+    <string name="rate_title">Gefällt dir Texto?</string>
     <string name="rate_summary">Teile etwas von deiner Liebe und gib uns einen Stern auf GitHub!</string>
     <string name="rate_okay">OKAY!</string>
     <string name="rate_dismiss">VERWERFEN</string>
@@ -251,7 +251,7 @@
     <string name="settings_mms_size_title">MMS-Anhänge automatisch komprimieren</string>
     <string name="settings_sync_title">Nachrichten synchronisieren</string>
     <string name="settings_sync_summary">Nachrichten mit der Android-SMS-Datenbank abgleichen</string>
-    <string name="settings_about_title">Über QUIK</string>
+    <string name="settings_about_title">Über Texto</string>
     <string name="settings_version">Version %s</string>
     <string name="settings_logging_enabled">Protokollierung zur Fehlerbehebung aktiviert</string>
     <string name="settings_logging_disabled">Protokollierung zur Fehlerbehebung deaktiviert</string>
@@ -261,7 +261,7 @@
     <string name="blocking_drop_summary">Eingehende Nachrichten von blockierten Absendern verwerfen, anstatt sie auszublenden</string>
     <string name="blocking_conversations">Blockierte Unterhaltungen</string>
     <string name="blocking_manager_title">Blockierverwaltung</string>
-    <string name="blocking_manager_qksms_summary">In QUIK integrierte Blockierfunktion</string>
+    <string name="blocking_manager_qksms_summary">In Texto integrierte Blockierfunktion</string>
     <string name="blocking_manager_call_blocker_summary">Spam-Nachrichten und Nummern &amp; unbekannte Anrufe mit Sperrliste &amp; Zeitplan blockieren</string>
     <string name="blocking_manager_call_control_summary">Filtere deine Anrufe und Nachrichten automatisch an einem praktischen Ort! Mit Community IQ™ kannst du unerwünschte Nachrichten von bekannten Community-Spammern verhindern</string>
     <string name="blocking_manager_sia_summary">Nachrichten von unerwünschten Nummern automatisch mit Hilfe der App \"Should I Answer?\" filtern</string>
@@ -288,8 +288,8 @@
     <string name="about_title">Über</string>
     <string name="about_version_title">Version</string>
     <string name="about_developer_title">Entwickler</string>
-    <string name="about_source_title">Quelltext</string>
-    <string name="about_changelog_title">Änderungsprotokoll</string>
+    <string name="about_source_title">Upstream source (QUIK)</string>
+    <string name="about_changelog_title">Upstream changelog</string>
     <string name="about_contact_title">Kontakt</string>
     <string name="about_license_title">Lizenz</string>
     <string name="about_copyright_title">Urheberrecht</string>
@@ -507,5 +507,5 @@
     <string name="deduplicating_messages_no_messages">Keine doppelten Nachrichten gefunden.</string>
     <string name="deduplicating_messages_failed">Die Deduplizierung der Nachrichten ist fehlgeschlagen. Bitte versuche es erneut</string>
     <string name="compose_reactions_title">Reaktionen</string>
-    <string name="about_developer">Ein Team aus wunderbaren Menschen aus aller Welt!</string>
+    <string name="about_developer">Addymore</string>
 </resources>

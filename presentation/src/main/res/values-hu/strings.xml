@@ -54,12 +54,12 @@
     <string name="archived_empty_text">Az archivált beszélgetései itt jelennek meg</string>
     <string name="main_fab_cd">Új beszélgetés kezdeményezése</string>
     <string name="main_default_sms_title">Szeresse meg újból az SMS-ezést</string>
-    <string name="main_default_sms_message">A QUIK beállítása alapértelmezett SMS-alkalmazásként</string>
+    <string name="main_default_sms_message">A Texto beállítása alapértelmezett SMS-alkalmazásként</string>
     <string name="main_default_sms_change">Módosítás</string>
     <string name="main_permission_required">Engedély szükséges</string>
-    <string name="main_permission_sms">A QUIK-nek engedélyre van szüksége az SMS-ek küldéséhez és megtekintéséhez</string>
-    <string name="main_permission_contacts">A QUIK-nek engedélyre van szüksége a névjegyek megtekintéséhez</string>
-    <string name="main_permission_notifications">A QUIK-nek engedélyre van szüksége az értesítések megjelenítéséhez</string>
+    <string name="main_permission_sms">A Texto-nek engedélyre van szüksége az SMS-ek küldéséhez és megtekintéséhez</string>
+    <string name="main_permission_contacts">A Texto-nek engedélyre van szüksége a névjegyek megtekintéséhez</string>
+    <string name="main_permission_notifications">A Texto-nek engedélyre van szüksége az értesítések megjelenítéséhez</string>
     <string name="main_permission_allow">Engedélyezés</string>
     <string name="drawer_inbox">Bejövő üzenetek</string>
     <string name="drawer_archived">Archivált</string>
@@ -70,7 +70,7 @@
     <string name="drawer_help">Súgó és visszajelzés</string>
     <string name="drawer_invite">Barátok meghívása</string>
     <string name="drawer_plus_banner_summary">Jusson hozzá a fantasztikus új funkciókhoz, és támogassa a fejlesztést</string>
-    <string name="rate_title">Tetszik a QUIK?</string>
+    <string name="rate_title">Tetszik a Texto?</string>
     <string name="rate_summary">Mutassa ki támogatását, és hagyjon nekünk egy csillagot a GitHubon!</string>
     <string name="rate_okay">OK!</string>
     <string name="rate_dismiss">MELLŐZÉS</string>
@@ -251,7 +251,7 @@
     <string name="settings_mms_size_title">MMS-képmellékletek automatikus tömörítése</string>
     <string name="settings_sync_title">Üzenetek szinkronizálása</string>
     <string name="settings_sync_summary">Üzenetek újraszinkronizálása az Android natív SMS-adatbázisával</string>
-    <string name="settings_about_title">A QUIK névjegye</string>
+    <string name="settings_about_title">A Texto névjegye</string>
     <string name="settings_version">%s verzió</string>
     <string name="settings_logging_enabled">Hibanaplózás engedélyezve</string>
     <string name="settings_logging_disabled">Hibanaplózás letiltva</string>
@@ -261,7 +261,7 @@
     <string name="blocking_drop_summary">Üzenetek eldobása a tiltott küldőktől az elrejtésük helyett</string>
     <string name="blocking_conversations">Letiltott beszélgetések</string>
     <string name="blocking_manager_title">Tiltáskezelő</string>
-    <string name="blocking_manager_qksms_summary">A QUIK beépített tiltási funkciója</string>
+    <string name="blocking_manager_qksms_summary">A Texto beépített tiltási funkciója</string>
     <string name="blocking_manager_call_blocker_summary">Tiltja a kéretlen tartalmú üzeneteket, számokat és ismeretlen hívásokat a tiltólistával és az ütemezéssel</string>
     <string name="blocking_manager_call_control_summary">Automatikus hívás- és üzenetszűrés egy kényelmes helyen! A Community IQ™ segítségével megakadályozhatja a közösségben ismert kéretlen tartalom küldők üzeneteinek érkezését</string>
     <string name="blocking_manager_sia_summary">Automatikusan szűrheti az üzeneteket a számok alapján a „Should I Answer” alkalmazás használatával</string>
@@ -288,8 +288,8 @@
     <string name="about_title">Névjegy</string>
     <string name="about_version_title">Verzió</string>
     <string name="about_developer_title">Fejlesztők</string>
-    <string name="about_source_title">Forráskód</string>
-    <string name="about_changelog_title">Változáslista</string>
+    <string name="about_source_title">Upstream source (QUIK)</string>
+    <string name="about_changelog_title">Upstream changelog</string>
     <string name="about_contact_title">Kapcsolat</string>
     <string name="about_license_title">Licenc</string>
     <string name="about_copyright_title">Copyright</string>
@@ -507,6 +507,6 @@
     <string name="deduplicating_messages_no_messages">Nem találhatók ismétlődő üzenetek.</string>
     <string name="deduplicating_messages_failed">Az ismétlődések kiszűrése sikertelen, próbálja meg újra</string>
     <string name="compose_reactions_title">Reakciók</string>
-    <string name="about_developer">Egy csodálatos emberekből álló csapat a világ minden tájáról!</string>
+    <string name="about_developer">Addymore</string>
     <string name="notification_foreground_worker_channel_name">Üzenetfogadás értesítés</string>
 </resources>

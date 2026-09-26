@@ -205,7 +205,7 @@ class EmojiReactionRepositoryImpl @Inject constructor(
         // But since order can occasionally be messed up (in MMS usually) add a tolerance of 60 seconds
         val latestDate = reactionDate?.plus(MESSAGE_DATE_TOLERANCE_MS)
 
-        fun candidateQuery() = realm.where(Message::class.java)
+        fun candidateQuery() = realm.where(Message::class.java).equalTo("trashedAt",0L)
             .equalTo("threadId", threadId)
             .apply { latestDate?.let { lessThanOrEqualTo("date", it) } }
 
@@ -312,12 +312,12 @@ class EmojiReactionRepositoryImpl @Inject constructor(
         val startTime = System.currentTimeMillis()
 
         realm.delete(EmojiReaction::class.java)
-        realm.where(Message::class.java)
+        realm.where(Message::class.java).equalTo("trashedAt",0L)
             .equalTo("isEmojiReaction", true)
             .findAll()
             .forEach { it.isEmojiReaction = false }
 
-        val allMessages = realm.where(Message::class.java)
+        val allMessages = realm.where(Message::class.java).equalTo("trashedAt",0L)
             .beginGroup()
                 .beginGroup()
                     .equalTo("type", "sms")

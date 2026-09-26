@@ -39,6 +39,7 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
@@ -48,12 +49,19 @@
     <application
         android:name=".common.QKApplication"
         android:allowBackup="false"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/texto_icon"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:theme="@style/AppLaunchTheme">
 
+        <activity android:name="dev.texto.privacy.ThemesActivity" android:exported="false" android:theme="@style/TextoTheme" />
+        <activity android:name="dev.texto.privacy.TrashActivity" android:exported="false" android:theme="@style/TextoTheme" />
+        <activity android:name="dev.texto.privacy.VaultActivity" android:exported="false" android:theme="@style/TextoTheme" />
+        <activity android:name="dev.texto.privacy.ContactDirectoryActivity" android:exported="false" android:theme="@style/TextoTheme" />
+        <activity android:name="dev.texto.privacy.ContactProfileActivity" android:exported="false" android:theme="@style/TextoTheme" />
+        <activity android:name="dev.texto.privacy.ProtectionActivity" android:exported="false" android:theme="@style/TextoTheme" />
+        <activity android:name="dev.texto.privacy.UnlockActivity" android:exported="false" android:excludeFromRecents="true" android:launchMode="singleTop" android:theme="@style/TextoTheme" />
         <activity
             android:name=".feature.main.MainActivity"
             android:exported="true"

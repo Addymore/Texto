@@ -17,7 +17,7 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
   --><resources>
-    <string name="app_name" translatable="false">QUIK</string>
+    <string name="app_name" translatable="false">Texto</string>
     <string name="shortcut_compose_long_label">Nouvelle conversation</string>
     <string name="shortcut_compose_short_label">Rédiger</string>
     <string name="shortcut_compose_disabled_message">Raccourci désactivé</string>
@@ -62,12 +62,12 @@
     <string name="archived_empty_text">Vos conversations archivées apparaîtront ici</string>
     <string name="main_fab_cd">Débuter une nouvelle conversation</string>
     <string name="main_default_sms_title">Réapprenez à aimer les textos</string>
-    <string name="main_default_sms_message">Faire de QUIK votre appli SMS par défaut</string>
+    <string name="main_default_sms_message">Faire de Texto votre appli SMS par défaut</string>
     <string name="main_default_sms_change">Changer</string>
     <string name="main_permission_required">Autorisation requise</string>
-    <string name="main_permission_sms">QUIK a besoin de l’autorisation d’envoyer et de consulter les messages SMS</string>
-    <string name="main_permission_contacts">QUIK a besoin de l’autorisation d’accéder aux contacts</string>
-    <string name="main_permission_notifications">QUIK a besoin de l’autorisation d’afficher des notifications</string>
+    <string name="main_permission_sms">Texto a besoin de l’autorisation d’envoyer et de consulter les messages SMS</string>
+    <string name="main_permission_contacts">Texto a besoin de l’autorisation d’accéder aux contacts</string>
+    <string name="main_permission_notifications">Texto a besoin de l’autorisation d’afficher des notifications</string>
     <string name="main_permission_allow">Autoriser</string>
     <string name="scheduled_menu_send_now">Envoyer maintenant</string>
     <string name="scheduled_menu_edit_message">Modifier le message</string>
@@ -82,7 +82,7 @@
     <string name="drawer_invite">Inviter des amis</string>
     <string name="drawer_plus_banner_title" translatable="false">DEPRECATED - drawer_plus_banner_title</string>
     <string name="drawer_plus_banner_summary">Débloquez des nouvelles fonctionnalités incroyables et soutenez le développement</string>
-    <string name="rate_title">Vous aimez QUIK ?</string>
+    <string name="rate_title">Vous aimez Texto ?</string>
     <string name="rate_summary">Partagez votre amour et laissez nous une étoile sur GitHub !</string>
     <string name="rate_okay">OK !</string>
     <string name="rate_dismiss">ANNULER</string>
@@ -306,7 +306,7 @@
     <string name="settings_diable_screenshots_summary">Empêche l’OS et les autres applications de prendre des captures d’écran de l’application.</string>
     <string name="settings_sync_title">Synchroniser les messages</string>
     <string name="settings_sync_summary">Resynchroniser les messages avec la base de données Android native</string>
-    <string name="settings_about_title">À propos de QUIK</string>
+    <string name="settings_about_title">À propos de Texto</string>
     <string name="settings_version">Version %s</string>
     <string name="settings_logging_enabled">Journal de débogage activé</string>
     <string name="settings_logging_disabled">Journal de débogage désactivé</string>
@@ -316,7 +316,7 @@
     <string name="blocking_drop_summary">Supprimer les messages entrants des expéditeurs bloqués au lieu de les masquer</string>
     <string name="blocking_conversations">Conversations bloquées</string>
     <string name="blocking_manager_title">Gestionnaire de blocage</string>
-    <string name="blocking_manager_qksms_summary">Fonction de blocage intégrée dans QUIK</string>
+    <string name="blocking_manager_qksms_summary">Fonction de blocage intégrée dans Texto</string>
     <string name="blocking_manager_call_blocker_title" translatable="false">Call Blocker - Incoming/Outgoing</string>
     <string name="blocking_manager_call_blocker_summary">Bloquer les spams, les numéros &amp; les appels inconnus avec une liste noire &amp; planifier</string>
     <string name="blocking_manager_call_control_title" translatable="false">Call Control</string>
@@ -348,8 +348,8 @@
     <string name="about_title">À propos</string>
     <string name="about_version_title">Version</string>
     <string name="about_developer_title">Développeurs</string>
-    <string name="about_source_title">Code source</string>
-    <string name="about_changelog_title">Liste des modifications</string>
+    <string name="about_source_title">Upstream source (QUIK)</string>
+    <string name="about_changelog_title">Upstream changelog</string>
     <string name="about_contact_title">Contact</string>
     <string name="about_license_title">Licence</string>
     <string name="about_copyright_title">Droits d’auteur</string>
@@ -400,12 +400,12 @@
     <string name="theme_plus" translatable="false">Custom Color</string>
     <string name="theme_hex">HEX</string>
     <string name="theme_apply">Appliquer</string>
-    <string name="about_developer" translatable="false">Une équipe de merveilleux développeurs du monde entier !</string>
+    <string name="about_developer" translatable="false">Addymore</string>
     <string name="about_source" translatable="false">https://github.com/octoshrimpy/quik</string>
     <string name="about_changelog" translatable="false">https://github.com/octoshrimpy/quik/releases</string>
-    <string name="about_contact" translatable="false">quik@octo.sh</string>
+    <string name="about_contact" translatable="false">Telegram · @addymore</string>
     <string name="about_license" translatable="false">GNU General Public License v3.0</string>
-    <string name="about_copyright" translatable="false">© 2014–2024</string>
+    <string name="about_copyright" translatable="false">Texto by Addymore · Based on QUIK / QKSMS, original copyrights retained</string>
     <string name="changelog_title" translatable="false">New in QUIK</string>
     <string name="changelog_version" translatable="false">Version %s</string>
     <string name="changelog_added" translatable="false">Added</string>

@@ -44,6 +44,7 @@ class QkChooserTargetService : ChooserTargetService() {
 
     override fun onGetChooserTargets(targetActivityName: ComponentName?, matchedFilter: IntentFilter?): List<ChooserTarget> {
         return conversationRepo.getTopConversations()
+                .filter { c -> c.recipients.none { dev.texto.privacy.TextoPolicy(this).decision(it.address).let { it.archived || it.blocked } } }
                 .take(3)
                 .map(this::createShortcutForConversation)
     }

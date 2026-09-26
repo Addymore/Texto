@@ -71,6 +71,7 @@ class ConversationRepositoryImpl @Inject constructor(
             .notEqualTo("id", 0L)
             .equalTo("archived", archived)
             .equalTo("blocked", false)
+            .equalTo("textoLocked", false)
             .isNotEmpty("recipients")
             .beginGroup()
             .isNotNull("lastMessage")
@@ -96,7 +97,7 @@ class ConversationRepositoryImpl @Inject constructor(
 
     override fun getTopConversations() =
         Realm.getDefaultInstance().use { realm ->
-            realm.where(Conversation::class.java)
+            realm.where(Conversation::class.java).isNotNull("lastMessage")
                 .notEqualTo("id", 0L)
                 .isNotNull("lastMessage")
                 .beginGroup()
@@ -109,6 +110,7 @@ class ConversationRepositoryImpl @Inject constructor(
                 .endGroup()
                 .equalTo("archived", false)
                 .equalTo("blocked", false)
+            .equalTo("textoLocked", false)
                 .isNotEmpty("recipients")
                 .findAll()
                 .let(realm::copyFromRealm)
@@ -116,7 +118,7 @@ class ConversationRepositoryImpl @Inject constructor(
                         conversation -> conversation.pinned
                 }
                     .thenByDescending { conversation ->
-                        realm.where(Message::class.java)
+                        realm.where(Message::class.java).equalTo("trashedAt", 0L)
                             .equalTo("threadId", conversation.id)
                             .greaterThan(
                                 "date",
@@ -148,12 +150,13 @@ class ConversationRepositoryImpl @Inject constructor(
             .notEqualTo("id", 0L)
             .isNotNull("lastMessage")
             .equalTo("blocked", false)
+            .equalTo("textoLocked", false)
             .isNotEmpty("recipients")
             .sort("pinned", Sort.DESCENDING, "lastMessage.date", Sort.DESCENDING)
             .findAll())
 
         val messagesByConversation = realm.copyFromRealm(realm
-            .where(Message::class.java)
+            .where(Message::class.java).equalTo("trashedAt", 0L)
             .beginGroup()
             .contains("body", searchQuery, Case.INSENSITIVE)
             .or()
@@ -180,6 +183,7 @@ class ConversationRepositoryImpl @Inject constructor(
         Realm.getDefaultInstance()
             .where(Conversation::class.java)
             .equalTo("blocked", true)
+            .equalTo("textoLocked", false)
             .sort(
                 arrayOf("lastMessage.date"),
                 arrayOf(Sort.DESCENDING)
@@ -190,6 +194,7 @@ class ConversationRepositoryImpl @Inject constructor(
         Realm.getDefaultInstance()
             .where(Conversation::class.java)
             .equalTo("blocked", true)
+            .equalTo("textoLocked", false)
             .sort(
                 arrayOf("lastMessage.date"),
                 arrayOf(Sort.DESCENDING)
@@ -230,6 +235,7 @@ class ConversationRepositoryImpl @Inject constructor(
                 .notEqualTo("id", 0L)
                 .equalTo("archived", archived)
                 .equalTo("blocked", false)
+                .equalTo("textoLocked", false)
                 .equalTo("lastMessage.seen", false)
                 .sort(
                     arrayOf("lastMessage.date"),
@@ -247,6 +253,7 @@ class ConversationRepositoryImpl @Inject constructor(
                 .notEqualTo("id", 0L)
                 .equalTo("archived", archived)
                 .equalTo("blocked", false)
+                .equalTo("textoLocked", false)
                 .equalTo("lastMessage.read", false)
                 .sort(
                     arrayOf("lastMessage.date"),
@@ -284,6 +291,7 @@ class ConversationRepositoryImpl @Inject constructor(
                 .isNotNull("lastMessage")
                 .equalTo("archived", false)
                 .equalTo("blocked", false)
+                .equalTo("textoLocked", false)
                 .isNotEmpty("recipients")
                 .limit(5)
                 .findAllAsync()
@@ -373,7 +381,7 @@ class ConversationRepositoryImpl @Inject constructor(
                 ?.map { conversation ->
                     Pair(
                         conversation,
-                        realm.where(Message::class.java)
+                        realm.where(Message::class.java).equalTo("trashedAt", 0L)
                             .equalTo("threadId", conversation.id)
                             .sort("date", Sort.DESCENDING)
                             .findFirst()
@@ -383,6 +391,11 @@ class ConversationRepositoryImpl @Inject constructor(
                     realm.executeTransaction {
                         conversationAndMessages.forEach { (conversation, message) ->
                             conversation.lastMessage = message
+                            dev.texto.privacy.TrashStore.refresh(realm, listOf(conversation.id))
+                            val rules = conversation.recipients.map { dev.texto.privacy.TextoPolicy(context).decision(it.address, message?.getText().orEmpty()) }
+                            conversation.textoLocked = rules.any { it.locked }
+                            if (rules.any { it.archived }) conversation.archived = true
+                            if (rules.any { it.blocked }) { conversation.blocked = true; conversation.blockReason = "Texto spam rule" }
                         }
                     }
                 }
@@ -405,7 +418,7 @@ class ConversationRepositoryImpl @Inject constructor(
                 .anyOf("id", threadIds.toLongArray())
                 .findAll()
 
-            realm.executeTransaction { conversations.forEach { it.archived = false } }
+            realm.executeTransaction { conversations.forEach { conversation -> if (conversation.recipients.none { dev.texto.privacy.TextoPolicy(context).decision(it.address).archived }) conversation.archived = false } }
         }
 
     override fun markPinned(vararg threadIds: Long) =
@@ -458,27 +471,14 @@ class ConversationRepositoryImpl @Inject constructor(
         }
 
     override fun deleteConversations(vararg threadIds: Long) {
-        Realm.getDefaultInstance().use { realm ->
-            val conversation = realm.where(Conversation::class.java)
-                .anyOf("id", threadIds)
-                .findAll()
-            val messages = realm.where(Message::class.java)
-                .anyOf("threadId", threadIds)
-                .findAll()
-
+        val ids = Realm.getDefaultInstance().use { realm ->
+            val ids = realm.where(Message::class.java).equalTo("trashedAt", 0L).`in`("threadId", threadIds.toTypedArray()).equalTo("trashedAt", 0L).findAll().map { it.id }
             realm.executeTransaction {
-                conversation.deleteAllFromRealm()
-                messages.deleteAllFromRealm()
+                realm.where(Conversation::class.java).`in`("id", threadIds.toTypedArray()).findAll().forEach { it.draft = "" }
             }
+            ids
         }
-
-        threadIds.forEach {
-            context.contentResolver.delete(
-                ContentUris.withAppendedId(TelephonyCompat.THREADS_CONTENT_URI, it),
-                null,
-                null
-            )
-        }
+        dev.texto.privacy.TrashStore(context).move(ids)
     }
 
     /**
@@ -520,12 +520,14 @@ class ConversationRepositoryImpl @Inject constructor(
                         conversation.apply {
                             recipients.clear()
                             recipients.addAll(matchedRecipients)
+                textoLocked = recipients.any { dev.texto.privacy.TextoPolicy(context).decision(it.address).locked }
+                if (textoLocked) archived = true
 
                             this.sendAsGroup =
                                 if (recipients.size <= 1) false
                                 else sendAsGroup
 
-                            lastMessage = realm.where(Message::class.java)
+                            lastMessage = realm.where(Message::class.java).equalTo("trashedAt", 0L)
                                 .equalTo("threadId", threadId)
                                 .sort("date", Sort.DESCENDING)
                                 .findFirst()
@@ -561,6 +563,8 @@ class ConversationRepositoryImpl @Inject constructor(
                 id = threadId
                 recipients.clear()
                 recipients.addAll(matchedRecipients)
+                textoLocked = recipients.any { dev.texto.privacy.TextoPolicy(context).decision(it.address).locked }
+                if (textoLocked) archived = true
                 this.sendAsGroup =
                     if (recipients.size <= 1) false
                     else sendAsGroup

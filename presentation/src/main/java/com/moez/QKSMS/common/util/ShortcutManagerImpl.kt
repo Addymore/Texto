@@ -58,6 +58,7 @@ class ShortcutManagerImpl @Inject constructor(
         if (shortcutManager.isRateLimitingActive) return
 
         val shortcuts: List<ShortcutInfoCompat> = conversationRepo.getTopConversations()
+            .filter { c -> c.recipients.none { dev.texto.privacy.TextoPolicy(context).decision(it.address).let { it.archived || it.blocked } } }
             .take(
                 shortcutManager.maxShortcutCountPerActivity -
                         shortcutManager.manifestShortcuts.size
@@ -74,6 +75,7 @@ class ShortcutManagerImpl @Inject constructor(
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) return null
 
         val conv = conversationRepo.getConversation(threadId) ?: return null
+        if (conv.recipients.any { dev.texto.privacy.TextoPolicy(context).decision(it.address).let { it.archived || it.blocked } }) return null
         val sc = createShortcutForConversation(conv)
         pushShortcut(sc, conv)
 

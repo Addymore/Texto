@@ -1,0 +1,29 @@
+name: Texto Android build
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - name: Install Android platform
+        run: sdkmanager "platforms;android-34" "build-tools;34.0.0"
+      - name: Build and test
+        run: bash ./gradlew :presentation:assembleDebug :common:testDebugUnitTest --no-daemon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Texto-development-build
+          path: |
+            presentation/build/outputs/apk/debug/*.apk
+            common/build/reports/tests/testDebugUnitTest/

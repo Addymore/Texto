@@ -97,7 +97,7 @@ abstract class QkActivity : AppCompatActivity() {
     }
 
     private fun disableScreenshots(disableScreenshots: Boolean) {
-        if (disableScreenshots) {
+        if (disableScreenshots || dev.texto.privacy.PrivacyGate.requiresSecureWindow(this)) {
             window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         } else {
             window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)

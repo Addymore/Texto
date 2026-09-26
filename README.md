@@ -1,93 +1,67 @@
-![octoshrimpy/QUIK](.github/octoshrimpy_quik.jpg)
+![Texto — Messages, made personal](docs/images/banner.svg)
 
-# QUIK
+# Texto
 
-[![Manual Release](https://github.com/octoshrimpy/quik/actions/workflows/manual-release.yml/badge.svg)](https://github.com/octoshrimpy/quik/actions/workflows/manual-release.yml)
-<a href="https://hosted.weblate.org/engage/quik/"><img src="https://hosted.weblate.org/widget/quik/svg-badge.svg" alt="Translation status" /></a>
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/octoshrimpy/quik)
+A customizable Kotlin SMS/MMS app for Android by **[Addymore](https://github.com/Addymore)**, built on [QUIK](https://github.com/quik-sms/quik) and QKSMS. Reachable navigation, consistent public and private conversations, and a theme that feels like yours.
 
-QUIK is an open source replacement to the [stock messaging app](https://github.com/android/platform_packages_apps_mms) on Android. It is a continuation of [QKSMS](https://github.com/moezbhatti/qksms). 
+[Download 1.3](https://github.com/Addymore/Texto/releases/tag/v1.3.0) · [Changelog](CHANGELOG.md) · [Report a bug](https://github.com/Addymore/Texto/issues) · [Telegram](https://t.me/addymore)
 
-## Features
+**Development preview:** the downloadable APK is debug-signed, not a Play Store release. Android 6+; physical OnePlus 13 / Android 16 and carrier validation are still required. See [validation](VALIDATION.md).
 
-- Scheduled messages
-- Message backup
-- Speech-to-text and text-to-speech integrated within the app
-- Message blocking and archiving
-- Voice messages
-- Attachments of any type of file
-- Message sorting
-- Message pinning
-- Delayed sending
-- Quick reply from notifications
-- Swipe actions
-- Emoji reaction handling
-- and much, much more
+## A look of your own
 
-## Download
+<table><tr><td><img src="docs/images/inbox.png" width="280" alt="Texto conversation cards with message totals and unread badges" /></td><td><img src="docs/images/themes.png" width="280" alt="Live theme preview and accent palettes" /></td><td><img src="docs/images/theme-options.png" width="280" alt="Card finish, spacing and preview controls" /></td></tr></table>
 
-Grab QUIK from the official [github releases page](https://github.com/octoshrimpy/quik/releases), or keep up with updates with the following:
+Screenshots use synthetic messages and sample contacts. Private screens are protected from capture.
 
+- **One consistent layout.** Public and private lists share conversation cards, avatars, dates, message totals and unread badges. Private SMS/MMS opens in the same full conversation screen.
+- **Personal themes.** Eight palettes, custom hex accents, wallpaper colors, light/dark/system appearance, AMOLED, card shapes and finishes, spacing, preview lengths, avatar/count toggles and unread dots or number badges.
+- **Reachable navigation.** A collapsible large heading and floating Messages / Themes / Settings navigation. Contacts live in Settings.
+- **Private conversations.** Persistent number rules, PIN/strong biometrics, silent notifications and exclusion from public search, widgets and shortcuts. Future messages from locked numbers stay private.
+- **Recoverable deletion.** A protected recycle bin retains SMS/MMS attachments, with restore and 30/60/90-day expiry.
+- **Control over unwanted messages.** Exact-number, prefix and phrase rules, trusted exceptions, a blocklist and recoverable quarantine.
+- **The QUIK foundation.** SMS/MMS, group messages, attachments, dual SIM, scheduling, delayed sending, backups, reactions, search, pinning, speech and notification quick reply remain in the fork. Full device regression is not yet complete.
 
-<a href="https://f-droid.org/repository/browse/?fdid=dev.octoshrimpy.quik.fdroid"><img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="100"></a>
-<a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://app/{%22id%22:%22dev.octoshrimpy.quik%22,%22url%22:%22https://github.com/octoshrimpy/quik%22,%22author%22:%22octoshrimpy%22,%22name%22:%22QUIK%22,%22additionalSettings%22:%22{\%22apkFilterRegEx\%22:\%22release\%22,\%22invertAPKFilter\%22:false,\%22about\%22:\%22QUIK%20is%20an%20open%20source%20replacement%20for%20the%20stock%20messaging%20app%20on%20Android.%20It%20is%20a%20continuation%20of%20QKSMS.\%22}%22}"><img src="https://raw.githubusercontent.com/ImranR98/Obtainium/b1c8ac6f2ab08497189721a788a5763e28ff64cd/assets/graphics/badge_obtainium.png" alt="Get it on Obtainium" height="100"></a>
-<a href="https://github.com/octoshrimpy/quik/releases">
-<img src="https://user-images.githubusercontent.com/69304392/148696068-0cfea65d-b18f-4685-82b5-329a330b1c0d.png"
-alt="Download from GitHub releases" height="100" /></a>
-<!--
-</a><a href="https://play.google.com/store/apps/details?id=dev.octoshrimpy.quik"><img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" alt="Download on Google Play" height="100">
--->
+## Install
 
-## Matrix Chat
-You can chat with the community over at [#quik-sms:matrix.org](https://matrix.to/#/#quik-sms:matrix.org)
+1. Download `Texto-1.3.0-debug.apk` from the [release](https://github.com/Addymore/Texto/releases/tag/v1.3.0).
+2. Install it and select Texto as your default SMS app. Allow the permissions needed for messaging and contacts.
+3. Personalize it in **Themes** and configure your privacy PIN and number rules in **Settings → Privacy & protection**.
 
-## Reporting bugs
+The development app ID is `app.texto.sms.debug`, so it can coexist with QUIK. An upgrade from an earlier Texto development build must use the same signing certificate. Keep a verified backup before replacing your primary SMS workflow.
 
-A great bug report contains a description of the problem and steps to reproduce the problem. We need to know what we're looking for and where to look for it.
+## Privacy and limitations
 
-When reporting a bug, please make sure to provide the following information:
-- Steps to reproduce the issue
-- QUIK version
-- Device / OS information
+Texto privacy is **app-level protection**, not encryption of Android's shared SMS/MMS provider. Other SMS-authorized apps, root access and exported backups are outside this protection. The bin keeps provider records until expiry; clearing Texto data removes its local deletion markers. Background cleanup may be deferred by Android.
 
-## Contributing
-Contributions are very welcome! Please see the [contributing guidelines](/CONTRIBUTING.md) for details.
+RCS is not implemented: ordinary third-party SMS apps cannot provide the privileged carrier/OEM IMS integration it needs. SMS delivery reports depend on the carrier; SMS read receipts are not claimed. High-refresh display requests depend on your device and power settings.
 
-## Translations
-If you'd like to add translations to QUIK, please join the project on [Weblate](https://hosted.weblate.org/engage/quik/)! Translations that are committed directly to source files will not be accepted. For more information see the [translation guidelines](/CONTRIBUTING.md#translate).
+See [privacy details](PRIVACY.md), [device checks](DEVICE-TESTS.md) and [validation results](VALIDATION.md).
 
-<a href="https://hosted.weblate.org/engage/quik/">
-<img src="https://hosted.weblate.org/widget/quik/multi-auto.svg" alt="Translation status" />
-</a>
+## Build
 
-## Thank you
+Use **JDK 17**, Android SDK **34**, and the included Gradle wrapper. Set `sdk.dir` in a local `local.properties` file.
 
-A special thank you to Jake ([@klinker41](https://github.com/klinker41)) and Luke Klinker ([@klinker24](https://github.com/klinker24)) for their work on [android-smsmms](https://github.com/klinker41/android-smsmms), which has been an unspeakably large help in implementing MMS into QUIK.
+```sh
+./gradlew :presentation:assembleDebug :common:testDebugUnitTest
+```
 
-A giant thank you to Moez [moezbhatti](https://github.com/moezbhatti) for creating and maintaining QKSMS, of which QUIK would not exist without.
+On Windows:
 
-## Contact
+```powershell
+./build-texto.ps1
+```
 
-QUIK is developed and maintained by [Marcos Jones](https://github.com/octoshrimpy).
+The Windows helper uses a short Unix-socket path for JDK 17. APK output is in `presentation/build/outputs/apk/debug/`. A private release keystore is required for production distribution; no signing keys are included. CI artifacts are independently debug-signed and are not guaranteed to upgrade a downloaded release APK.
 
----
+## Contribute and support
 
-## Star History
+See [CONTRIBUTING.md](CONTRIBUTING.md). Report the Texto version, phone/Android version and reproduction steps. Remove real phone numbers and message contents from screenshots and logs.
 
-<a href="https://star-history.dera.page/#quik-sms/quik&type=Date">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://star-history.dera.page/svg?repos=quik-sms/quik&type=Date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://star-history.dera.page/svg?repos=quik-sms/quik&type=Date" />
-    <img alt="Star History Chart" src="https://star-history.dera.page/svg?repos=quik-sms/quik&type=Date" />
-  </picture>
-</a>
+Texto developer: **Addymore** · [Telegram @addymore](https://t.me/addymore).
 
----
+## Credits and license
 
-<!-- <a href="https://liberapay.com/octoshrimpy/donate"><img alt="Donate using Liberapay" src="https://img.shields.io/badge/Liberapay-F6C915?style=for-the-badge&logo=liberapay&logoColor=black"></a> -->
-<a style="background-color: #5e40c2;" href="https://ko-fi.com/octoshrimpy/donate"><img alt="Donate using Ko-Fi" src="https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white"></a>
-<a href="https://patreon.com/octoshrimpy"><img alt="Donate using Patreon" src="https://img.shields.io/badge/Patreon-F96854?style=for-the-badge&logo=patreon&logoColor=white"></a>
+Texto derives from QUIK commit `4b942fe71ceaa56f43266de115d14aa5b30d99db`. Thank you to QUIK contributors, Moez Bhatti and QKSMS, and Jake and Luke Klinker for android-smsmms. Original notices and history are retained; [UPSTREAM.md](UPSTREAM.md) preserves the upstream README.
 
-## License
-
-QUIK is released under the **The GNU General Public License v3.0 (GPLv3)**, which can be found in the [LICENSE](LICENSE) file in the root of this project.
+[GNU GPL v3 or later](LICENSE), consistent with inherited source notices. Corresponding source accompanies the APK. The design draws inspiration from Samsung Messages, iOS navigation and ColorOS; Texto is independent and is not affiliated with those vendors.

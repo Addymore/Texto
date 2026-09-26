@@ -53,6 +53,7 @@ import javax.inject.Inject
  * an activity does not depend on the theme
  */
 abstract class QkThemedActivity : QkActivity() {
+    private var textoDynamicColors = false
 
     @Inject lateinit var colors: Colors
     @Inject lateinit var conversationRepo: ConversationRepository
@@ -97,6 +98,10 @@ abstract class QkThemedActivity : QkActivity() {
     @SuppressLint("InlinedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(getActivityThemeRes(prefs.black.get()))
+        textoDynamicColors = dev.texto.privacy.TextoPolicy(this).preferences.getBoolean("dynamic_colors", false)
+        if (textoDynamicColors) {
+            com.google.android.material.color.DynamicColors.applyToActivityIfAvailable(this)
+        }
         super.onCreate(savedInstanceState)
 
         // When certain preferences change, we need to recreate the activity
@@ -153,6 +158,11 @@ abstract class QkThemedActivity : QkActivity() {
     /**
      * This can be overridden in case an activity does not want to use the default themes
      */
+    override fun onResume() {
+        super.onResume()
+        if (textoDynamicColors != dev.texto.privacy.TextoPolicy(this).preferences.getBoolean("dynamic_colors", false)) recreate()
+    }
+
     open fun getActivityThemeRes(black: Boolean) = when {
         black -> R.style.AppTheme_Black
         else -> R.style.AppTheme

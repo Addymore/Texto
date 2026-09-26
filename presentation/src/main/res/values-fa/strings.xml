@@ -54,12 +54,12 @@
     <string name="archived_empty_text">بایگانی‌هایتان اینجا نمایش داده می‌شود</string>
     <string name="main_fab_cd">آغاز گفتگوی نو</string>
     <string name="main_default_sms_title">دوباره دوستدار پیامک‌ شوید</string>
-    <string name="main_default_sms_message">QUIK را برنامه پیش‌فرض پیامکتان کنید</string>
+    <string name="main_default_sms_message">Texto را برنامه پیش‌فرض پیامکتان کنید</string>
     <string name="main_default_sms_change">تغییر</string>
     <string name="main_permission_required">مجوز لازم است</string>
-    <string name="main_permission_sms">QUIK برای فرستادن و دیدن پیامک‌ها نیاز به مجوز دارد</string>
-    <string name="main_permission_contacts">QUIK نیاز به مجوز برای دیدن مخاطبین شما دارد</string>
-    <string name="main_permission_notifications">QUIK به مجوز برای نمایش اعلان‌ها نیاز دارد</string>
+    <string name="main_permission_sms">Texto برای فرستادن و دیدن پیامک‌ها نیاز به مجوز دارد</string>
+    <string name="main_permission_contacts">Texto نیاز به مجوز برای دیدن مخاطبین شما دارد</string>
+    <string name="main_permission_notifications">Texto به مجوز برای نمایش اعلان‌ها نیاز دارد</string>
     <string name="main_permission_allow">اجازه دادن</string>
     <string name="drawer_inbox">دریافتی</string>
     <string name="drawer_archived">بایگانی شده</string>
@@ -70,7 +70,7 @@
     <string name="drawer_help">کمک و بازخورد</string>
     <string name="drawer_invite">نِوِستن دوستان</string>
     <string name="drawer_plus_banner_summary">ویژگی های شگفت‌انگیز نو را گشوده اود از پیشرفت برنامه پشتیبانی کنید</string>
-    <string name="rate_title">از QUIK خرسند‌ید؟</string>
+    <string name="rate_title">از Texto خرسند‌ید؟</string>
     <string name="rate_summary">مهرورزی نمایید اود برایمان در گیت‌هاب ستاره‌ای بگذارید!</string>
     <string name="rate_okay">باشد!</string>
     <string name="rate_dismiss">رد کردن</string>
@@ -249,7 +249,7 @@
     <string name="settings_mms_size_title">فشرده‌سازی خودکار تصاویر پیوست‌شده در MMS</string>
     <string name="settings_sync_title">همگام‌سازی پیام‌ها</string>
     <string name="settings_sync_summary">همگام‌سازی دوباره پیام‌ها با پایگاه‌داده بومی پیامک اندروید</string>
-    <string name="settings_about_title">درباره QUIK</string>
+    <string name="settings_about_title">درباره Texto</string>
     <string name="settings_version">نگارش %s</string>
     <string name="settings_logging_enabled">گزارش‌گیری اشکال‌زدایی فعال است</string>
     <string name="settings_logging_disabled">گزارش‌گیری اشکال‌زدایی غیرفعال است</string>
@@ -259,7 +259,7 @@
     <string name="blocking_drop_summary">پیام‌های دریافتی از فرستنده‌های مسدود شده را به جای مخفی کردن، دور بیانداز</string>
     <string name="blocking_conversations">گفتگوهای مسدود شده</string>
     <string name="blocking_manager_title">مدیت مسدود شدگان</string>
-    <string name="blocking_manager_qksms_summary">قابلیت مسدودسازی داخلی در QUIK</string>
+    <string name="blocking_manager_qksms_summary">قابلیت مسدودسازی داخلی در Texto</string>
     <string name="blocking_manager_call_blocker_summary">مسدود کردن پیام‌های هرزنامه، شماره‌ها و زنگ‌های ناشناخته با لیست سیاه اود برنامه‌ریزی</string>
     <string name="blocking_manager_call_control_summary">زنگ‌ها و پیام‌های خود را خودکار پالایش کنید! Community IQ™ به شما دسترسی می دهد تا از پیام‌های ناخواسته از هرزفرست‌های شناخته شده جلوگیری کنید</string>
     <string name="blocking_manager_sia_summary">با بکارگیری برنامه «می‌شود پاسخ دهم»، پیام‌ها را از شماره‌های ناخواسته خودکار فیلتر کنید</string>
@@ -286,8 +286,8 @@
     <string name="about_title">درباره</string>
     <string name="about_version_title">نگارش</string>
     <string name="about_developer_title">برنامه‌نویس</string>
-    <string name="about_source_title">بن‌مایه‌ی دستور</string>
-    <string name="about_changelog_title">گزارش دگرگونی‌</string>
+    <string name="about_source_title">Upstream source (QUIK)</string>
+    <string name="about_changelog_title">Upstream changelog</string>
     <string name="about_contact_title">پیوند گرفتن</string>
     <string name="about_license_title">پروانه</string>
     <string name="about_copyright_title">هوده‌ی پچین</string>
@@ -507,5 +507,5 @@
     <string name="deduplicating_messages_finished">حذف پیام‌های تکراری به پایان رسید!</string>
     <string name="deduplicating_messages_no_messages">هیچ پیام تکراری پیدا نشد.</string>
     <string name="deduplicating_messages_failed">حذف پیام‌های تکراری ناموفق بود، لطفاً دوباره امتحان کنید</string>
-    <string name="about_developer">تیمی از افراد فوق‌العاده از سراسر جهان!</string>
+    <string name="about_developer">Addymore</string>
 </resources>

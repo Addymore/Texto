@@ -144,6 +144,16 @@ class MainActivity : QkThemedActivity(), MainView {
         super.onCreate(savedInstanceState)
         binding = MainActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.textoNavigation.onTabSelected = { tab ->
+            when (tab) {
+                0 -> binding.drawer.inbox.performClick()
+                1 -> startActivity(Intent(this, dev.texto.privacy.ThemesActivity::class.java))
+                2 -> binding.drawer.settings.performClick()
+            }
+        }
+        binding.drawer.archived.visibility = View.GONE
+        binding.textoTitle.setOnLongClickListener { binding.drawer.archived.performClick(); true }
+        binding.textoReachable.onPrivatePull = { dev.texto.privacy.PrivacyGate.pullDown(this) }
         viewModel.bindView(this)
         onNewIntentIntent.onNext(intent)
 
@@ -203,6 +213,16 @@ class MainActivity : QkThemedActivity(), MainView {
                 }
     }
 
+    override fun onResume() {
+        super.onResume()
+        activityResumedIntent.onNext(true)
+        if (::binding.isInitialized) {
+            dev.texto.privacy.TextoAppearance.smooth(binding.recyclerView)
+            dev.texto.privacy.TextoAppearance.refreshRate(this)
+            conversationsAdapter.notifyDataSetChanged()
+        }
+    }
+
     override fun onNewIntent(intent: Intent?) =
         intent?.let {
             super.onNewIntent(intent)
@@ -215,6 +235,9 @@ class MainActivity : QkThemedActivity(), MainView {
             return
         }
 
+        binding.textoHeader.isVisible = state.page !is Searching && resources.configuration.orientation != android.content.res.Configuration.ORIENTATION_LANDSCAPE
+        binding.textoNavigation.select(0)
+        binding.textoReachable.privatePullEnabled = state.page is Inbox
         conversationsAdapter.hasScheduledConversation = state.scheduledConversationIds
 
         val addContact = when (state.page) {
@@ -380,8 +403,7 @@ class MainActivity : QkThemedActivity(), MainView {
         }
     }
 
-    override fun onResume() =
-        super.onResume().also { activityResumedIntent.onNext(true) }
+
 
     override fun onPause() =
         super.onPause().also { activityResumedIntent.onNext(false) }

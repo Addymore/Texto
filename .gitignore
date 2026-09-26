@@ -1,3 +1,4 @@
+.tmp/
 # Built application files
 *.apk
 *.ap_
@@ -59,3 +60,15 @@ keystore.p12
 config.yml
 *.jks
 
+.android-test/
+
+# Local development and publication helpers
+.tools/
+__pycache__/
+implement-120.py
+wire-120.py
+style-120.py
+texto_customize.py
+texto_refine.py
+texto_harden.py
+update_texto_110.py

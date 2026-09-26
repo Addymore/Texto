@@ -93,6 +93,12 @@ class SettingsController : QkController<SettingsControllerBinding, SettingsView,
     }
 
     override fun onViewCreated() {
+        binding.textoContactsSettings.setOnClickListener { activity?.let { it.startActivity(android.content.Intent(it, dev.texto.privacy.ContactDirectoryActivity::class.java)) } }
+        binding.textoBinSettings.setOnClickListener { activity?.let { dev.texto.privacy.PrivacyGate.openBin(it) } }
+
+        binding.textoPrivacySettings.setOnClickListener {
+            activity?.let { it.startActivity(android.content.Intent(it, dev.texto.privacy.ProtectionActivity::class.java)) }
+        }
         binding.preferences.postDelayed({ binding.preferences.animateLayoutChanges = true }, 100)
 
         when (Build.VERSION.SDK_INT >= 29) {
