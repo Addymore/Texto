@@ -54,7 +54,11 @@ On Windows:
 ./build-texto.ps1
 ```
 
-The Windows helper uses a short Unix-socket path for JDK 17. APK output is in `presentation/build/outputs/apk/debug/`. A private release keystore is required for production distribution; no signing keys are included. CI artifacts are independently debug-signed and are not guaranteed to upgrade a downloaded release APK.
+The Windows helper uses a short Unix-socket path for JDK 17. APK output is in `presentation/build/outputs/apk/debug/`. Release builds are unsigned by default so F-Droid can build and sign them; no signing keys are included. CI artifacts are independently debug-signed and are not guaranteed to upgrade a downloaded release APK.
+
+## F-Droid
+
+The F-Droid submission is being prepared; the app is not listed there yet. See [packaging and installation notes](fdroid/README.md). The proposed package `app.texto.sms` installs separately from the development preview.
 
 ## Contribute and support
 

@@ -1,0 +1,1 @@
+Readable phone numbers and links in light, dark and AMOLED conversations. Consistent selected-accent controls, Settings cards and scheduling pickers. Less repeated work while scrolling SMS/MMS. About links now point to Texto. F-Droid packaging builds an unsigned release from source; F-Droid handles signing.

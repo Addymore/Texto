@@ -64,7 +64,8 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            // F-Droid builds unsigned APKs and applies its own signing key.
+            if (project.hasProperty("textoSignRelease")) signingConfig signingConfigs.release
         }
         debug {
             applicationIdSuffix ".debug"
@@ -77,7 +78,7 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            signingConfig null
             matchingFallbacks = ['release']
             applicationIdSuffix ".fdroid"
             resValue "string", "application_id", "app.texto.sms.fdroid"
@@ -215,13 +216,4 @@ dependencies {
     implementation project(':data')
     implementation project(':domain')
 
-}
-// Check to make sure that the keystore file is present when building a release
-gradle.taskGraph.whenReady { taskGraph ->
-    if ((taskGraph.hasTask(':assembleRelease') ||
-            taskGraph.allTasks.any { it.name == 'assembleRelease' }) &&
-            !file('./.gradle/.gradlerc').exists() &&
-            System.getenv("CI") != "true") {
-        throw new GradleException("Keystore properties file not found")
-    }
 }

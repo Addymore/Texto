@@ -1,0 +1,17 @@
+Texto is an SMS/MMS messenger by Addymore, based on QUIK and QKSMS.
+
+• Personal themes: accent palettes, custom colors, light/dark/AMOLED appearance, conversation cards and adjustable spacing.
+• Reachable navigation with message totals and unread indicators.
+• Private conversations protected by a PIN or supported device biometrics. Number rules keep future messages private too.
+• Archive, contact profiles, scheduled messages, delayed sending, search and backups.
+• Local spam rules for numbers, prefixes and phrases, trusted exceptions and a blocklist.
+• A PIN-protected recycle bin with restore and 30, 60 or 90-day retention.
+• MMS attachments, group messaging and dual-SIM support where provided by the device and carrier.
+
+Set Texto as your default SMS app to send and receive messages. Carrier charges may apply. SMS delivery reports depend on your carrier; RCS and SMS read receipts are not supported.
+
+Private space is app-level protection, not encryption of Android's shared message storage. Other SMS-authorized apps and exported backups are outside this protection. Clearing app data removes local privacy and recycle-bin rules. Android may defer automatic cleanup.
+
+Optional integrations can open separately installed proprietary blocking apps; Texto's own blocking rules work without them.
+
+The F-Droid application uses app.texto.sms. It installs separately from the GitHub development preview (app.texto.sms.debug). Saved themes, PINs and privacy rules do not migrate automatically between these installations.

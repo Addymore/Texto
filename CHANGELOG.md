@@ -1,5 +1,15 @@
 # Changelog
 
+## F-Droid packaging — 1.4.0 source revision
+
+- Build unsigned release APKs without a private keystore; remove unused Google Services and Crashlytics build plugins.
+- Add Texto store descriptions, icon, screenshots and an F-Droid build recipe.
+- Replace inherited QUIK store metadata and generated repository indexes.
+- Validate release builds and F-Droid metadata in CI.
+
+This prepares submission; it does not mean F-Droid has accepted or published the app.
+
+
 ## 1.4.0 — 27 September 2026
 
 - About now links to Texto source and changelog.

@@ -1,0 +1,30 @@
+AntiFeatures:
+  NonFreeAdd:
+    en-US: Optional integrations link to separately installed proprietary blocking apps.
+
+Categories:
+  - Phone & SMS
+License: GPL-3.0-only
+AuthorName: Addymore
+AuthorWebSite: https://t.me/addymore
+SourceCode: https://github.com/Addymore/Texto
+IssueTracker: https://github.com/Addymore/Texto/issues
+Changelog: https://github.com/Addymore/Texto/blob/master/CHANGELOG.md
+
+AutoName: Texto
+
+RepoType: git
+Repo: https://github.com/Addymore/Texto.git
+
+Builds:
+  - versionName: 1.4.0
+    versionCode: 2270
+    commit: v1.4.0-fdroid1
+    subdir: presentation
+    gradle:
+      - yes
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags ^v[0-9]+\.[0-9]+\.[0-9]+-fdroid[0-9]+$
+CurrentVersion: 1.4.0
+CurrentVersionCode: 2270

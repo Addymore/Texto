@@ -23,10 +23,27 @@ jobs:
       - name: Install Android platform
         run: sdkmanager "platforms;android-34" "build-tools;34.0.0"
       - name: Build and test
-        run: bash ./gradlew :presentation:assembleDebug :common:testDebugUnitTest --no-daemon
+        run: bash ./gradlew :presentation:assembleDebug :presentation:assembleRelease :common:testDebugUnitTest --no-daemon
       - uses: actions/upload-artifact@v4
         with:
           name: Texto-development-build
           path: |
             presentation/build/outputs/apk/debug/*.apk
+            presentation/build/outputs/apk/release/*-unsigned.apk
             common/build/reports/tests/testDebugUnitTest/
+
+  fdroid-metadata:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install F-Droid metadata tooling
+        run: python -m pip install fdroidserver==2.4.5
+      - name: Validate F-Droid recipe
+        working-directory: fdroid
+        run: |
+          fdroid readmeta
+          fdroid rewritemeta app.texto.sms
+          fdroid lint app.texto.sms
