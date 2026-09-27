@@ -44,6 +44,12 @@ jobs:
       - name: Validate F-Droid recipe
         working-directory: fdroid
         run: |
+          mkdir -p config
+          curl --fail --location https://gitlab.com/fdroid/fdroiddata/-/raw/399e81a49d58c389fd008a8a9753ca236980b38d/config/categories.yml -o config/categories.yml
+          curl --fail --location https://gitlab.com/fdroid/fdroiddata/-/raw/399e81a49d58c389fd008a8a9753ca236980b38d/config/antiFeatures.yml -o config/antiFeatures.yml
           fdroid readmeta
           fdroid rewritemeta app.texto.sms
           fdroid lint app.texto.sms
+      - name: Scan source for F-Droid compatibility
+        working-directory: fdroid
+        run: fdroid scanner app.texto.sms

@@ -19,7 +19,7 @@ The recipe in `metadata/app.texto.sms.yml` uses the normal release variant. The 
 
 ## Validation
 
-The local unsigned release build passed in 6m 26s and all 19 JVM tests passed. The inherited lint configuration reports 81 ExtraTranslation errors for unused translated strings and does not stop the build; these are not a clean lint result. Release startup and F-Droid metadata CI are being checked separately.
+The local unsigned release build passed in 6m 26s and all 19 JVM tests passed. The inherited lint configuration reports 81 ExtraTranslation errors for unused translated strings and does not stop the build; these are not a clean lint result. A local-only signed copy of the optimized release installed and opened its synthetic inbox on Android 14. F-Droid metadata lint and source scanning run separately in Linux CI; signing this test copy does not change the unsigned build artifact.
 
 ## Listing and scope
 
