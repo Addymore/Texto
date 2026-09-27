@@ -40,6 +40,7 @@ class AvatarView @JvmOverloads constructor(
     @Inject lateinit var colors: Colors
     @Inject lateinit var navigator: Navigator
 
+    private var renderedKey: List<Any?>? = null
     private var lookupKey: String? = null
     private var fullName: String? = null
     private var photoUri: String? = null
@@ -80,6 +81,9 @@ class AvatarView @JvmOverloads constructor(
     }
 
     private fun updateView() {
+        val key = listOf(lookupKey, fullName, photoUri, lastUpdated, theme.theme)
+        if (renderedKey == key) return
+        renderedKey = key
         // Apply theme
         setBackgroundTint(theme.theme)
         layout.initial.setTextColor(theme.textPrimary)
@@ -101,6 +105,7 @@ class AvatarView @JvmOverloads constructor(
             layout.icon.visibility = VISIBLE
         }
 
+        GlideApp.with(layout.photo).clear(layout.photo)
         layout.photo.setImageDrawable(null)
         photoUri?.let { photoUri ->
             GlideApp.with(layout.photo)

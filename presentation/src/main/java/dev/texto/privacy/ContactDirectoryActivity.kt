@@ -39,7 +39,7 @@ class ContactDirectoryActivity : AppCompatActivity() {
     private val dark get() = resources.configuration.uiMode and 0x30 == 0x20
     private fun dp(n: Int) = (n * resources.displayMetrics.density).toInt()
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.TextoTheme); super.onCreate(savedInstanceState)
+        setTheme(R.style.TextoTheme); TextoTheme.apply(this); super.onCreate(savedInstanceState)
         showPhotos = settings.getBoolean("contact_photos", true)
         render()
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED)
@@ -110,7 +110,7 @@ class ContactDirectoryActivity : AppCompatActivity() {
             val row = LinearLayout(this@ContactDirectoryActivity).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL; setPadding(dp(14), dp(14), dp(14), dp(14)); background = GradientDrawable().apply { cornerRadius = dp(22).toFloat(); setColor(if (dark) 0xFF25272E.toInt() else 0xFFF4F5F9.toInt()) } }
             row.layoutParams = RecyclerView.LayoutParams(-1, -2).apply { bottomMargin = dp(8) }
             val avatar = FrameLayout(this@ContactDirectoryActivity)
-            val initial = TextView(this@ContactDirectoryActivity).apply { textSize = 21f; gravity = Gravity.CENTER; setTextColor(0xFF375BCD.toInt()); background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(0xFFE2E8FF.toInt()) } }
+            val initial = TextView(this@ContactDirectoryActivity).apply { textSize = 21f; gravity = Gravity.CENTER; setTextColor(TextoTheme.onColor(TextoAppearance.accent(this@ContactDirectoryActivity))); background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(TextoAppearance.accent(this@ContactDirectoryActivity)) } }
             val image = ImageView(this@ContactDirectoryActivity).apply { scaleType = ImageView.ScaleType.CENTER_CROP }
             avatar.addView(initial, FrameLayout.LayoutParams(-1,-1)); avatar.addView(image, FrameLayout.LayoutParams(-1,-1)); row.addView(avatar, LinearLayout.LayoutParams(dp(54),dp(54)))
             val words = LinearLayout(this@ContactDirectoryActivity).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(14),0,dp(4),0) }

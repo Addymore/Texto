@@ -22,7 +22,6 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Typeface
 import android.net.Uri
-import android.os.Build
 import android.text.Layout
 import android.text.Spannable
 import android.text.SpannableString
@@ -48,11 +47,9 @@ import dev.octoshrimpy.quik.common.util.Colors
 import dev.octoshrimpy.quik.common.util.DateFormatter
 import dev.octoshrimpy.quik.common.util.TextViewStyler
 import dev.octoshrimpy.quik.common.util.extensions.dpToPx
-import dev.octoshrimpy.quik.common.util.extensions.setBackgroundTint
 import dev.octoshrimpy.quik.common.util.extensions.setPadding
 import dev.octoshrimpy.quik.common.util.extensions.setTint
 import dev.octoshrimpy.quik.common.util.extensions.setVisible
-import dev.octoshrimpy.quik.common.util.extensions.withAlpha
 import dev.octoshrimpy.quik.compat.SubscriptionManagerCompat
 import dev.octoshrimpy.quik.extensions.isSmil
 import dev.octoshrimpy.quik.extensions.isText
@@ -164,6 +161,7 @@ class MessagesAdapter @Inject constructor(
         }
 
         body.hyphenationFrequency = Layout.HYPHENATION_FREQUENCY_NONE
+        body.breakStrategy = Layout.BREAK_STRATEGY_SIMPLE
 
         // register recycler view with compose activity for context menus
         partContextMenuRegistrar.onNext(parts)
@@ -260,7 +258,7 @@ class MessagesAdapter @Inject constructor(
             // bind the resend icon view
             if (message.isFailedMessage()) {
                 binding.resendIcon.visibility = View.VISIBLE
-                binding.resendIcon.clicks().subscribe {
+                binding.resendIcon.setOnClickListener {
                     resendClicks.onNext(message.id)
                     binding.resendIcon.visibility = View.GONE
                 }
@@ -268,14 +266,6 @@ class MessagesAdapter @Inject constructor(
                 binding.resendIcon.visibility = View.GONE
             }
 
-            body.apply {
-                highlightColor = theme.theme.withAlpha(0x5d)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    textSelectHandle?.setTint(theme.theme.withAlpha(0xad))
-                    textSelectHandleLeft?.setTint(theme.theme.withAlpha(0xad))
-                    textSelectHandleRight?.setTint(theme.theme.withAlpha(0xad))
-                }
-            }
         } else {
             val binding = MessageListItemInBinding.bind(holder.itemView)
             timestamp = binding.timestamp
@@ -293,16 +283,7 @@ class MessagesAdapter @Inject constructor(
                 setVisible(!canGroup(message, next), View.INVISIBLE)
             }
 
-            body.apply {
-                setTextColor(theme.textPrimary)
-                setBackgroundTint(theme.theme)
-                highlightColor = R.attr.bubbleColor.withAlpha(0x5d)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    textSelectHandle?.setTint(R.attr.bubbleColor.withAlpha(0x7d))
-                    textSelectHandleLeft?.setTint(R.attr.bubbleColor.withAlpha(0x7d))
-                    textSelectHandleRight?.setTint(R.attr.bubbleColor.withAlpha(0x7d))
-                }
-            }
+
         }
 
         val subject = message.getCleansedSubject()
@@ -416,12 +397,26 @@ class MessagesAdapter @Inject constructor(
             )
         }
 
-        // Bind the parts
-        parts.adapter = partsAdapterProvider.get().apply {
-            this.theme = theme
-            setData(message, previous, next, holder, audioState)
-            contextMenuValue = message.id
-            clicks.subscribe(partClicks)    // part clicks gets passed back to compose view model
+        // Apply after the drawable and spans: recycled rows and links share bubble contrast.
+        dev.texto.privacy.MessageBodyStyle.apply(body, isOutgoing, theme.theme, emojiOnly)
+
+        // SMS rows need no attachment adapter. MMS rows reuse their adapter and click stream.
+        val hasAttachments = message.parts.any { !it.isSmil() && !it.isText() }
+        parts.visibility = if (hasAttachments) View.VISIBLE else View.GONE
+        if (hasAttachments) {
+            val attachmentAdapter = (parts.adapter as? PartsAdapter) ?: partsAdapterProvider.get().also {
+                parts.adapter = it
+                parts.itemAnimator = null
+                it.clicks.subscribe(partClicks)
+            }
+            attachmentAdapter.theme = theme
+            attachmentAdapter.setData(message, previous, next, holder, audioState)
+            attachmentAdapter.contextMenuValue = message.id
+            // Grouping and theme can change even when attachment IDs are unchanged.
+            attachmentAdapter.notifyDataSetChanged()
+        } else if (parts.adapter != null) {
+            // Clear references when a recycled MMS holder displays SMS.
+            (parts.adapter as? PartsAdapter)?.data = emptyList()
         }
 
         showEmojiReactions(reactions, reactionText, message)

@@ -288,8 +288,8 @@
     <string name="about_title">Om</string>
     <string name="about_version_title">Versjon</string>
     <string name="about_developer_title">Utviklere</string>
-    <string name="about_source_title">Upstream source (QUIK)</string>
-    <string name="about_changelog_title">Upstream changelog</string>
+    <string name="about_source_title">Texto source</string>
+    <string name="about_changelog_title">Texto changelog</string>
     <string name="about_contact_title">Kontakt</string>
     <string name="about_license_title">Lisens</string>
     <string name="about_copyright_title">Opphavsrett</string>

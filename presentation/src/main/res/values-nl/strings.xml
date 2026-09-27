@@ -288,8 +288,8 @@
     <string name="about_title">Over</string>
     <string name="about_version_title">Versie</string>
     <string name="about_developer_title">Ontwikkelaar</string>
-    <string name="about_source_title">Upstream source (QUIK)</string>
-    <string name="about_changelog_title">Upstream changelog</string>
+    <string name="about_source_title">Texto source</string>
+    <string name="about_changelog_title">Texto changelog</string>
     <string name="about_contact_title">Contact</string>
     <string name="about_license_title">Licentie</string>
     <string name="about_copyright_title">Copyright</string>

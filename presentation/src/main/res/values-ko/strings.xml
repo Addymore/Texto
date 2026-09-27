@@ -284,8 +284,8 @@
     <string name="about_title">정보</string>
     <string name="about_version_title">버전</string>
     <string name="about_developer_title">개발자</string>
-    <string name="about_source_title">Upstream source (QUIK)</string>
-    <string name="about_changelog_title">Upstream changelog</string>
+    <string name="about_source_title">Texto source</string>
+    <string name="about_changelog_title">Texto changelog</string>
     <string name="about_contact_title">연락처</string>
     <string name="about_license_title">라이선스</string>
     <string name="about_copyright_title">저작권</string>

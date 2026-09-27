@@ -25,7 +25,7 @@ class ThemesActivity : QkThemedActivity() {
     private var scroller: ScrollView? = null
     private var dialog: androidx.appcompat.app.AlertDialog? = null
     private fun dp(n: Int) = (n*resources.displayMetrics.density).toInt()
-    override fun onCreate(state: Bundle?) { AndroidInjection.inject(this); super.onCreate(state); getTheme().applyStyle(dev.octoshrimpy.quik.R.style.TextoControls,true); render() }
+    override fun onCreate(state: Bundle?) { AndroidInjection.inject(this); super.onCreate(state); render() }
     override fun onPause() { dialog?.dismiss(); super.onPause() }
     private fun render() {
         val position = scroller?.scrollY ?: 0
@@ -74,6 +74,7 @@ class ThemesActivity : QkThemedActivity() {
                 this.text=text; textSize=16f; setTextColor(if(!outgoing) TextoAppearance.onAccent(this@ThemesActivity) else if(night) Color.WHITE else 0xFF20232B.toInt())
                 setPadding(dp(16),dp(12),dp(16),dp(12))
                 background=GradientDrawable().apply { setColor(fill); cornerRadius=dp(if(appearance.getString("bubbles","fluid")=="fluid") 24 else 16).toFloat() }
+                MessageBodyStyle.apply(this,outgoing,accent,false)
             },LinearLayout.LayoutParams(-2,-2).apply { gravity=if(outgoing) Gravity.END else Gravity.START; bottomMargin=dp(6) })
         }
         bubble("See you soon!",false); bubble("On my way  ✓✓",true); content.addView(bubbles)

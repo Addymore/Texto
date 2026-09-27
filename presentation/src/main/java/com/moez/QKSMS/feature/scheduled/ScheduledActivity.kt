@@ -68,6 +68,7 @@ class ScheduledActivity : QkThemedActivity(), ScheduledView {
 
         scheduledMessageAdapter.emptyView = binding.empty
         binding.messages.adapter = scheduledMessageAdapter
+        dev.texto.privacy.TextoAppearance.smooth(binding.messages)
 
         colors.theme().let { theme ->
             binding.sampleMessage.setBackgroundTint(theme.theme)

@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 
 object TextoAppearance {
-    fun prefs(context: Context) = TextoPolicy(context).preferences
+    fun prefs(context: Context) = context.applicationContext.getSharedPreferences("texto_privacy", Context.MODE_PRIVATE)
     fun accent(context: Context): Int {
         if (android.os.Build.VERSION.SDK_INT >= 31 && prefs(context).getBoolean("dynamic_colors",false))
             return context.getColor(android.R.color.system_accent1_600)
@@ -23,8 +23,8 @@ object TextoAppearance {
         val radius = when(p.getString("card_shape", "soft")) { "minimal" -> 12; "round" -> 30; else -> 22 }
         val base = if(dark) 0xFF23262D.toInt() else 0xFFF3F5F9.toInt()
         val finish = p.getString("card_finish","neutral")
-        val fill = if (selected) (accent(context) and 0x00FFFFFF or 0x33000000) else if (finish == "tinted") androidx.core.graphics.ColorUtils.blendARGB(base,accent(context),if(dark) .16f else .08f) else base
-        val shape = GradientDrawable().apply { cornerRadius = radius * context.resources.displayMetrics.density; setColor(fill); if (finish == "outlined") setStroke((context.resources.displayMetrics.density).toInt().coerceAtLeast(1), androidx.core.graphics.ColorUtils.blendARGB(base,accent(context),.45f)) }
+        val fill = if (selected) androidx.core.graphics.ColorUtils.blendARGB(base,accent(context),.24f) else if (finish == "tinted") androidx.core.graphics.ColorUtils.blendARGB(base,accent(context),if(dark) .16f else .08f) else base
+        val shape = GradientDrawable().apply { cornerRadius = radius * context.resources.displayMetrics.density; setColor(ColorStateList(arrayOf(intArrayOf(android.R.attr.state_activated), intArrayOf()), intArrayOf(androidx.core.graphics.ColorUtils.blendARGB(base,accent(context),.24f), fill))); if (finish == "outlined") setStroke((context.resources.displayMetrics.density).toInt().coerceAtLeast(1), androidx.core.graphics.ColorUtils.blendARGB(base,accent(context),.45f)) }
         return RippleDrawable(ColorStateList.valueOf(accent(context) and 0x00FFFFFF or 0x22000000),shape,null)
     }
     fun onAccent(context: Context): Int = if (androidx.core.graphics.ColorUtils.calculateLuminance(accent(context)) > .179) Color.BLACK else Color.WHITE
@@ -50,9 +50,27 @@ object TextoAppearance {
         binding.unread.setPadding(if(dot) 0 else (8*d).toInt(),0,if(dot) 0 else (8*d).toInt(),0)
         binding.unread.background = GradientDrawable().apply { cornerRadius=12*d; setColor(accent(context)) }
     }
+    fun styleSettingsCard(view: View) {
+        val d = view.resources.displayMetrics.density
+        view.backgroundTintList = null
+        view.background = card(view.context)
+        // MaterialButton transfers its stored support tint when a custom drawable is assigned.
+        if (view is com.google.android.material.button.MaterialButton) view.supportBackgroundTintList = null
+        view.backgroundTintList = null
+        view.minimumHeight = (64*d).toInt()
+        (view.layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.let {
+            it.setMargins((16*d).toInt(),(4*d).toInt(),(16*d).toInt(),(4*d).toInt())
+            view.layoutParams = it
+        }
+        if (view is android.widget.TextView) {
+            view.setTextColor(if (view.resources.configuration.uiMode and 0x30 == 0x20) Color.WHITE else 0xFF20232B.toInt())
+            view.gravity = android.view.Gravity.START or android.view.Gravity.CENTER_VERTICAL
+            view.setPadding((20*d).toInt(),(12*d).toInt(),(20*d).toInt(),(12*d).toInt())
+        }
+    }
     fun smooth(list: RecyclerView) {
-        list.setHasFixedSize(true); list.setItemViewCacheSize(12)
-        (list.layoutManager as? LinearLayoutManager)?.initialPrefetchItemCount = 6
+        list.setHasFixedSize(true); list.setItemViewCacheSize(20)
+        (list.layoutManager as? LinearLayoutManager)?.initialPrefetchItemCount = 4
         (list.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         if (prefs(list.context).getBoolean("reduce_motion",false)) list.itemAnimator = null
         list.overScrollMode = View.OVER_SCROLL_IF_CONTENT_SCROLLS

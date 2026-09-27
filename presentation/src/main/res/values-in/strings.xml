@@ -284,8 +284,8 @@
     <string name="about_title">Tentang</string>
     <string name="about_version_title">Versi</string>
     <string name="about_developer_title">Pengembang</string>
-    <string name="about_source_title">Upstream source (QUIK)</string>
-    <string name="about_changelog_title">Upstream changelog</string>
+    <string name="about_source_title">Texto source</string>
+    <string name="about_changelog_title">Texto changelog</string>
     <string name="about_contact_title">Kontak</string>
     <string name="about_license_title">Lisensi</string>
     <string name="about_copyright_title">Hak cipta</string>

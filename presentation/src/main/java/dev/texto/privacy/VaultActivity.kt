@@ -28,7 +28,7 @@ class VaultActivity : QkThemedActivity() {
     override fun onCreate(state: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(state)
-        getTheme().applyStyle(R.style.TextoControls,true)
+        TextoTheme.apply(this)
         window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
         if (!PrivacyGate.unlocked) { finish(); return }
         setContentView(R.layout.texto_vault)

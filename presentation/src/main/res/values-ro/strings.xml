@@ -334,8 +334,8 @@
     <string name="about_title">Despre</string>
     <string name="about_version_title">Versiune</string>
     <string name="about_developer_title">Dezvoltator</string>
-    <string name="about_source_title">Upstream source (QUIK)</string>
-    <string name="about_changelog_title">Upstream changelog</string>
+    <string name="about_source_title">Texto source</string>
+    <string name="about_changelog_title">Texto changelog</string>
     <string name="about_contact_title">Contact</string>
     <string name="about_license_title">Licență</string>
     <string name="about_copyright_title">Drepturi de autor</string>

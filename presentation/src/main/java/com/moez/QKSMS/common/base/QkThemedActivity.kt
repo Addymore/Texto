@@ -54,6 +54,7 @@ import javax.inject.Inject
  */
 abstract class QkThemedActivity : QkActivity() {
     private var textoDynamicColors = false
+    private var textoAppearanceKey = ""
 
     @Inject lateinit var colors: Colors
     @Inject lateinit var conversationRepo: ConversationRepository
@@ -102,10 +103,12 @@ abstract class QkThemedActivity : QkActivity() {
         if (textoDynamicColors) {
             com.google.android.material.color.DynamicColors.applyToActivityIfAvailable(this)
         }
+        dev.texto.privacy.TextoTheme.apply(this)
+        textoAppearanceKey = dev.texto.privacy.TextoTheme.appearanceKey(this)
         super.onCreate(savedInstanceState)
 
         // When certain preferences change, we need to recreate the activity
-        val triggers = listOf(prefs.nightMode, prefs.night, prefs.black, prefs.textSize, prefs.systemFont)
+        val triggers = listOf(prefs.nightMode, prefs.night, prefs.black, prefs.textSize, prefs.systemFont, prefs.theme())
         Observable.merge(triggers.map { it.asObservable().skip(1) })
                 .debounce(400, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -160,7 +163,7 @@ abstract class QkThemedActivity : QkActivity() {
      */
     override fun onResume() {
         super.onResume()
-        if (textoDynamicColors != dev.texto.privacy.TextoPolicy(this).preferences.getBoolean("dynamic_colors", false)) recreate()
+        if (textoAppearanceKey != dev.texto.privacy.TextoTheme.appearanceKey(this)) recreate()
     }
 
     open fun getActivityThemeRes(black: Boolean) = when {

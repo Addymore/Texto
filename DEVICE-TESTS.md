@@ -52,3 +52,12 @@ The bin covers received/sent SMS and MMS routed through normal message/conversat
 3. Search inside the private list, then confirm the same private text remains absent from public search. Background or lock Texto and confirm private screens cannot reopen without fresh authentication.
 4. Check dark/light/system appearance, AMOLED, wallpaper colors and text sizes. Reject invalid custom hex colors. Reset appearance and confirm messages, PIN, privacy rules and retention are unchanged.
 5. Confirm public lock confirmations, denied access, protection descriptions and scrolling tips do not tell an observer how to enter private messages.
+
+## Texto 1.4 acceptance
+
+- Read linked phone numbers, URLs and email addresses in sent/received and private conversations using light, dark, AMOLED and custom accents; verify link confirmation and copy/select behavior.
+- Pick Jade, Rose and a custom hex color. Reopen Settings, Themes, Contacts, scheduled messages and privacy settings. Verify controls follow the accent, cards follow shape/finish, and toolbar text remains readable.
+- Open both scheduled-message date/time pickers and scheduled dark-mode time pickers. Verify the accent and confirm the chosen date/time remains correct.
+- Open About and verify Texto source/changelog destinations; upstream credits remain in the repository.
+- Fling a long conversation containing SMS, photos, files, audio and contact cards. Verify attachments open the right message after repeated scrolling, playback controls still work, and measure frame pacing on OnePlus 13.
+- Exact custom platform-dialog accents use Android 11+ resource loaders; older Android needs separate visual regression.

@@ -348,8 +348,8 @@
     <string name="about_title">À propos</string>
     <string name="about_version_title">Version</string>
     <string name="about_developer_title">Développeurs</string>
-    <string name="about_source_title">Upstream source (QUIK)</string>
-    <string name="about_changelog_title">Upstream changelog</string>
+    <string name="about_source_title">Texto source</string>
+    <string name="about_changelog_title">Texto changelog</string>
     <string name="about_contact_title">Contact</string>
     <string name="about_license_title">Licence</string>
     <string name="about_copyright_title">Droits d’auteur</string>

@@ -38,8 +38,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:backgroundTint="#375BCD"
-            android:textColor="#FFFFFF"
+
+
             android:text="Privacy &amp; protection"
             android:textAllCaps="false" />
 
@@ -47,8 +47,8 @@
             style="@style/PreferenceCategory"
             android:text="@string/settings_category_appearance" />
 
-        <com.google.android.material.button.MaterialButton android:id="@+id/textoContactsSettings" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Contacts" android:backgroundTint="#375BCD" android:textColor="#FFFFFF" android:layout_marginHorizontal="20dp" />
-        <com.google.android.material.button.MaterialButton android:id="@+id/textoBinSettings" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Recycle bin · PIN protected" android:backgroundTint="#375BCD" android:textColor="#FFFFFF" android:layout_marginHorizontal="20dp" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/textoContactsSettings" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Contacts"   android:layout_marginHorizontal="20dp" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/textoBinSettings" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Recycle bin · PIN protected"   android:layout_marginHorizontal="20dp" />
         <dev.octoshrimpy.quik.common.widget.PreferenceView
             android:id="@+id/theme"
             android:layout_width="match_parent"

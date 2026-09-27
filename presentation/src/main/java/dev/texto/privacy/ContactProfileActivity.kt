@@ -15,6 +15,7 @@ import io.realm.Realm
 class ContactProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.TextoTheme)
+        TextoTheme.apply(this)
         super.onCreate(savedInstanceState)
         val id = intent.getLongExtra("threadId", 0)
         val conversation = Realm.getDefaultInstance().use { realm ->

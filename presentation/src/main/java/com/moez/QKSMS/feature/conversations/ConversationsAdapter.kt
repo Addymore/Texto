@@ -92,22 +92,11 @@ class ConversationsAdapter @Inject constructor(
         val conversation = getItem(position) ?: return
         val binding = holder.binding
 
-        // If the last message wasn't incoming, then the colour doesn't really matter anyway
-        val lastMessage = conversation.lastMessage
-        val recipient = when {
-            conversation.recipients.size == 1 || lastMessage == null -> conversation.recipients.firstOrNull()
-            else -> conversation.recipients.find { recipient ->
-                phoneNumberUtils.compare(recipient.address, lastMessage.address)
-            }
-        }
-        val theme = colors.theme(recipient).theme
-
         holder.itemView.isActivated = isSelected(conversation.id)
 
         binding.avatars.recipients = conversation.recipients
         binding.title.collapseEnabled = conversation.recipients.size > 1
         binding.title.text = buildSpannedString {
-            if (conversation.textoLocked) append("Locked · ")
             append(conversation.getTitle())
         }
         binding.date.text = conversation.date.takeIf { it > 0 }?.let(dateFormatter::getConversationTimestamp)

@@ -1,13 +1,27 @@
-# Texto 1.3 validation — 26 September 2026
+# Texto validation — 27 September 2026
 
-## Automated checks
+## 1.4 automated and emulator checks
+
+- Final debug build passed (final resource rebuild: 1m 54s). All 19 JVM tests passed (zero failures/errors).
+- Final APK signature verification and 4-byte alignment passed. Application ID `app.texto.sms.debug`, version `1.4.0-debug`, version code 2270. Installation over the previous development build succeeded without clearing data.
+- Android 14 instrumentation passed 40 contrast combinations using the real incoming/outgoing text views, including light/dark/AMOLED, black/white/blue/Jade/gray accents, recycled views, phone/web URL spans and confirmation spans. Text/link contrast was at least 4.5:1 and links remained underlined.
+- The same instrumentation verified Jade and Rose primary/platform accents, the scheduling date-picker accent and Settings cards without a fixed blue background tint.
+- Final Settings visual inspection confirmed neutral conversation-style cards, readable shortcut labels and the selected Jade accent, with the XML tint override removed.
+- An actual synthetic phone-number/web-link message was visually checked in light and dark conversation screens. Eight alternating flings through 27 synthetic SMS completed with no crash log entries.
+- The About screen displayed Texto repository/changelog URLs and Addymore attribution. Source inspection verified About/share links now target Addymore/Texto. The legacy global color picker disables wallpaper and automatic colors when applying a chosen color.
+- Scrolling optimizations remove attachment adapters from plain SMS rows, reuse MMS adapters/click streams, avoid unchanged avatar reloads, simplify line layout and remove redundant conversation-theme work. These are implementation improvements, not a measured OnePlus frame-rate claim.
+- Exact custom control/dialog colors use the pinned Material 1.11 resource loader on Android 11+. Android 6–10 retains the fallback control palette and needs separate visual validation.
+- Physical OnePlus frame pacing, real carrier traffic and a full mixed-media regression remain unverified. Prior private-space tests below describe 1.3 and were not all repeated for 1.4.
+
+
+## 1.3 automated checks
 
 - Final Android development APK built successfully in 3m 26s.
 - 19 JVM tests passed with zero failures/errors: RuleEngine 6, VaultSession 5, TrashRetention 4, TwoFingerPull 4.
 - Android apksigner verified v1/v2 signatures and one debug signer; zipalign 4-byte alignment passed. Standard META-INF v1-signature warnings remain; whole-APK v2 verification passes.
 - Application ID `app.texto.sms.debug`; version `1.3.0-debug` (2260); minimum API 23, target API 33, compile API 34. Original dependency/deprecation warnings remain.
 
-## Current Android 14 emulator checks
+## 1.3 Android 14 emulator checks
 
 A dedicated AOSP x86_64 emulator used synthetic messages and contacts. No carrier messages were sent.
 

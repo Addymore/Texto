@@ -4,13 +4,15 @@
 
 A customizable Kotlin SMS/MMS app for Android by **[Addymore](https://github.com/Addymore)**, built on [QUIK](https://github.com/quik-sms/quik) and QKSMS. Reachable navigation, consistent public and private conversations, and a theme that feels like yours.
 
-[Download 1.3](https://github.com/Addymore/Texto/releases/tag/v1.3.0) · [Changelog](CHANGELOG.md) · [Report a bug](https://github.com/Addymore/Texto/issues) · [Telegram](https://t.me/addymore)
+[Download 1.4.0](https://github.com/Addymore/Texto/releases/tag/v1.4.0) · [Changelog](CHANGELOG.md) · [Report a bug](https://github.com/Addymore/Texto/issues) · [Telegram](https://t.me/addymore)
 
 **Development preview:** the downloadable APK is debug-signed, not a Play Store release. Android 6+; physical OnePlus 13 / Android 16 and carrier validation are still required. See [validation](VALIDATION.md).
 
 ## A look of your own
 
 <table><tr><td><img src="docs/images/inbox.png" width="280" alt="Texto conversation cards with message totals and unread badges" /></td><td><img src="docs/images/themes.png" width="280" alt="Live theme preview and accent palettes" /></td><td><img src="docs/images/theme-options.png" width="280" alt="Card finish, spacing and preview controls" /></td></tr></table>
+
+<table><tr><td><img src="docs/images/settings.png" width="280" alt="Settings cards using the selected Jade accent" /></td><td><img src="docs/images/phone-links-dark.png" width="280" alt="Readable linked phone numbers inside a dark-mode conversation" /></td></tr></table>
 
 Screenshots use synthetic messages and sample contacts. Private screens are protected from capture.
 
@@ -24,7 +26,7 @@ Screenshots use synthetic messages and sample contacts. Private screens are prot
 
 ## Install
 
-1. Download `Texto-1.3.0-debug.apk` from the [release](https://github.com/Addymore/Texto/releases/tag/v1.3.0).
+1. Download `Texto-1.4.0-debug.apk` from the [release](https://github.com/Addymore/Texto/releases/tag/v1.4.0).
 2. Install it and select Texto as your default SMS app. Allow the permissions needed for messaging and contacts.
 3. Personalize it in **Themes** and configure your privacy PIN and number rules in **Settings → Privacy & protection**.
 

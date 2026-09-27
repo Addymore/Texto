@@ -87,9 +87,6 @@ class SettingsController : QkController<SettingsControllerBinding, SettingsView,
         appComponent.inject(this)
         retainViewMode = RetainViewMode.RETAIN_DETACH
 
-        colors.themeObservable()
-                .autoDisposable(scope())
-                .subscribe { activity?.recreate() }
     }
 
     override fun onViewCreated() {
@@ -99,7 +96,10 @@ class SettingsController : QkController<SettingsControllerBinding, SettingsView,
         binding.textoPrivacySettings.setOnClickListener {
             activity?.let { it.startActivity(android.content.Intent(it, dev.texto.privacy.ProtectionActivity::class.java)) }
         }
-        binding.preferences.postDelayed({ binding.preferences.animateLayoutChanges = true }, 100)
+        binding.preferences.layoutTransition = null
+        listOf(binding.textoPrivacySettings, binding.textoContactsSettings, binding.textoBinSettings).forEach {
+            dev.texto.privacy.TextoAppearance.styleSettingsCard(it)
+        }
 
         when (Build.VERSION.SDK_INT >= 29) {
             true -> nightModeDialog.adapter.setData(R.array.night_modes)

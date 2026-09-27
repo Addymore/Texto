@@ -288,8 +288,8 @@
     <string name="about_title">Σχετικά με την εφαρμογή</string>
     <string name="about_version_title">Έκδοση</string>
     <string name="about_developer_title">Προγραμματιστής</string>
-    <string name="about_source_title">Upstream source (QUIK)</string>
-    <string name="about_changelog_title">Upstream changelog</string>
+    <string name="about_source_title">Texto source</string>
+    <string name="about_changelog_title">Texto changelog</string>
     <string name="about_contact_title">Επικοινωνία</string>
     <string name="about_license_title">Άδεια χρήσης</string>
     <string name="about_copyright_title">Πνευματικά δικαιώματα</string>

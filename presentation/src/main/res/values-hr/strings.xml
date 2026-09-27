@@ -292,8 +292,8 @@
     <string name="about_title">O aplikaciji</string>
     <string name="about_version_title">Verzija</string>
     <string name="about_developer_title">Razvijatelj</string>
-    <string name="about_source_title">Upstream source (QUIK)</string>
-    <string name="about_changelog_title">Upstream changelog</string>
+    <string name="about_source_title">Texto source</string>
+    <string name="about_changelog_title">Texto changelog</string>
     <string name="about_contact_title">Kontakt</string>
     <string name="about_license_title">Licencija</string>
     <string name="about_copyright_title">Autorska prava</string>

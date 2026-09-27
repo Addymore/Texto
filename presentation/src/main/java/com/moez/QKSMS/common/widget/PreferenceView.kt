@@ -71,6 +71,14 @@ class PreferenceView @JvmOverloads constructor(
             }
         }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        if (!isInEditMode) {
+            dev.texto.privacy.TextoAppearance.styleSettingsCard(this)
+            layout.icon.imageTintList = android.content.res.ColorStateList.valueOf(dev.texto.privacy.TextoAppearance.accent(context))
+        }
+    }
+
     init {
         if (!isInEditMode) {
             appComponent.inject(this)

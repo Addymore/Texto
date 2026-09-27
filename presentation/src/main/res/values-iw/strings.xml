@@ -296,8 +296,8 @@
     <string name="about_title">על אודות</string>
     <string name="about_version_title">גרסה</string>
     <string name="about_developer_title">מפתחים</string>
-    <string name="about_source_title">Upstream source (QUIK)</string>
-    <string name="about_changelog_title">Upstream changelog</string>
+    <string name="about_source_title">Texto source</string>
+    <string name="about_changelog_title">Texto changelog</string>
     <string name="about_contact_title">איש קשר</string>
     <string name="about_license_title">רישיון</string>
     <string name="about_copyright_title">זכויות יוצרים</string>

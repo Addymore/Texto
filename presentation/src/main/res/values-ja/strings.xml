@@ -284,8 +284,8 @@
     <string name="about_title">このアプリについて</string>
     <string name="about_version_title">バージョン</string>
     <string name="about_developer_title">開発者</string>
-    <string name="about_source_title">Upstream source (QUIK)</string>
-    <string name="about_changelog_title">Upstream changelog</string>
+    <string name="about_source_title">Texto source</string>
+    <string name="about_changelog_title">Texto changelog</string>
     <string name="about_contact_title">お問い合わせ</string>
     <string name="about_license_title">ライセンス</string>
     <string name="about_copyright_title">著作権</string>

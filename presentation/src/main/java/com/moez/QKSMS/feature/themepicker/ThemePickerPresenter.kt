@@ -32,7 +32,8 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class ThemePickerPresenter @Inject constructor(
-    prefs: Preferences,
+    private val prefs: Preferences,
+    private val context: android.content.Context,
     @Named("recipientId") private val recipientId: Long,
     private val billingManager: BillingManager,
     private val colors: Colors,
@@ -42,18 +43,26 @@ class ThemePickerPresenter @Inject constructor(
 
     private val theme: Preference<Int> = prefs.theme(recipientId)
 
+    private fun saveColor(color: Int) {
+        if (recipientId == 0L) {
+            dev.texto.privacy.TextoAppearance.prefs(context).edit().putBoolean("dynamic_colors", false).apply()
+            prefs.autoColor.set(false)
+        }
+        theme.set(color)
+    }
+
     override fun bindIntents(view: ThemePickerView) {
         super.bindIntents(view)
 
         theme.asObservable()
                 .autoDisposable(view.scope())
-                .subscribe { color -> view.setCurrentTheme(color) }
+                .subscribe { color -> view.setCurrentTheme(if (recipientId == 0L) colors.theme().theme else color) }
 
         // Update the theme when a material theme is clicked
         view.themeSelected()
                 .autoDisposable(view.scope())
                 .subscribe { color ->
-                    theme.set(color)
+                    saveColor(color)
                     if (recipientId == 0L) {
                         widgetManager.updateTheme()
                     }
@@ -79,7 +88,7 @@ class ThemePickerPresenter @Inject constructor(
                     if (!upgraded) {
                         view.showQksmsPlusSnackbar()
                     } else {
-                        theme.set(color)
+                        saveColor(color)
                         if (recipientId == 0L) {
                             widgetManager.updateTheme()
                         }
@@ -97,7 +106,7 @@ class ThemePickerPresenter @Inject constructor(
         view.clearHsvThemeClicks()
                 .withLatestFrom(theme.asObservable()) { _, color -> color }
                 .autoDisposable(view.scope())
-                .subscribe { color -> view.setCurrentTheme(color) }
+                .subscribe { color -> view.setCurrentTheme(if (recipientId == 0L) colors.theme().theme else color) }
     }
 
 }

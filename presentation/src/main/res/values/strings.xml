@@ -403,8 +403,8 @@
     <string name="about_title">About</string>
     <string name="about_version_title">Version</string>
     <string name="about_developer_title">Developers</string>
-    <string name="about_source_title">Upstream source (QUIK)</string>
-    <string name="about_changelog_title">Upstream changelog</string>
+    <string name="about_source_title">Texto source</string>
+    <string name="about_changelog_title">Texto changelog</string>
     <string name="about_contact_title">Contact</string>
     <string name="about_license_title">License</string>
     <string name="about_copyright_title">Copyright</string>
@@ -462,8 +462,8 @@
     <string name="theme_apply">Apply</string>
 
     <string name="about_developer">Addymore</string>
-    <string name="about_source" translatable="false">https://github.com/quik-sms/quik</string>
-    <string name="about_changelog" translatable="false">https://github.com/quik-sms/quik/releases</string>
+    <string name="about_source" translatable="false">https://github.com/Addymore/Texto</string>
+    <string name="about_changelog" translatable="false">https://github.com/Addymore/Texto/blob/master/CHANGELOG.md</string>
     <string name="about_contact" translatable="false">Telegram · @addymore</string>
     <string name="about_license" translatable="false">GNU General Public License v3.0</string>
     <string name="about_copyright" translatable="false">Texto by Addymore · Based on QUIK / QKSMS, original copyrights retained</string>

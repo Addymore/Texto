@@ -29,6 +29,7 @@ class ProtectionActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.TextoTheme)
         if (policy.preferences.getBoolean("dynamic_colors", false)) com.google.android.material.color.DynamicColors.applyToActivityIfAvailable(this)
+        TextoTheme.apply(this)
         super.onCreate(savedInstanceState)
         window.addFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE)
         render()

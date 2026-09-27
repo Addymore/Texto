@@ -292,8 +292,8 @@
     <string name="about_title">Acerca</string>
     <string name="about_version_title">Versão</string>
     <string name="about_developer_title">Programadores</string>
-    <string name="about_source_title">Upstream source (QUIK)</string>
-    <string name="about_changelog_title">Upstream changelog</string>
+    <string name="about_source_title">Texto source</string>
+    <string name="about_changelog_title">Texto changelog</string>
     <string name="about_contact_title">Contactos</string>
     <string name="about_license_title">Licença</string>
     <string name="about_copyright_title">Copyright</string>

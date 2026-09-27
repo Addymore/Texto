@@ -284,8 +284,8 @@
     <string name="about_title">เกี่ยวกับ</string>
     <string name="about_version_title">เวอร์ชัน</string>
     <string name="about_developer_title">นักพัฒนา</string>
-    <string name="about_source_title">Upstream source (QUIK)</string>
-    <string name="about_changelog_title">Upstream changelog</string>
+    <string name="about_source_title">Texto source</string>
+    <string name="about_changelog_title">Texto changelog</string>
     <string name="about_contact_title">ติดต่อ</string>
     <string name="about_license_title">สิทธิ์การใช้งาน</string>
     <string name="about_copyright_title">ลิขสิทธิ์</string>

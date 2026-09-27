@@ -288,8 +288,8 @@
     <string name="about_title">जानकारी</string>
     <string name="about_version_title">संस्करण</string>
     <string name="about_developer_title">विकासक</string>
-    <string name="about_source_title">Upstream source (QUIK)</string>
-    <string name="about_changelog_title">Upstream changelog</string>
+    <string name="about_source_title">Texto source</string>
+    <string name="about_changelog_title">Texto changelog</string>
     <string name="about_contact_title">संपर्क</string>
     <string name="about_license_title">लाइसेंस</string>
     <string name="about_copyright_title">कॉपीराइट</string>

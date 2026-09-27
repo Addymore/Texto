@@ -329,8 +329,8 @@
     <string name="about_title">Относно</string>
     <string name="about_version_title">Издание</string>
     <string name="about_developer_title">Разработчици</string>
-    <string name="about_source_title">Upstream source (QUIK)</string>
-    <string name="about_changelog_title">Upstream changelog</string>
+    <string name="about_source_title">Texto source</string>
+    <string name="about_changelog_title">Texto changelog</string>
     <string name="about_contact_title">За връзка</string>
     <string name="about_license_title">Лиценз</string>
     <string name="about_copyright_title">Авторско право</string>

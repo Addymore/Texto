@@ -286,8 +286,8 @@
     <string name="about_title">درباره</string>
     <string name="about_version_title">نگارش</string>
     <string name="about_developer_title">برنامه‌نویس</string>
-    <string name="about_source_title">Upstream source (QUIK)</string>
-    <string name="about_changelog_title">Upstream changelog</string>
+    <string name="about_source_title">Texto source</string>
+    <string name="about_changelog_title">Texto changelog</string>
     <string name="about_contact_title">پیوند گرفتن</string>
     <string name="about_license_title">پروانه</string>
     <string name="about_copyright_title">هوده‌ی پچین</string>

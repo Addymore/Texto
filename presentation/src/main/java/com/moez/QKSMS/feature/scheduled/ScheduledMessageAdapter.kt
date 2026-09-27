@@ -90,6 +90,8 @@ class ScheduledMessageAdapter @Inject constructor(
         // update the selected/highlighted state
         holder.binding.root.isActivated = isSelected(message.id) || highlight == message.id
 
+        holder.binding.root.background = dev.texto.privacy.TextoAppearance.card(holder.itemView.context)
+
         val adapter = holder.binding.attachments.adapter as ScheduledMessageAttachmentAdapter
         adapter.data = message.attachments.map(Uri::parse)
         holder.binding.attachments.isVisible = message.attachments.isNotEmpty()

@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.4.0 — 27 September 2026
+
+- About now links to Texto source and changelog.
+- Settings and scheduled-message cards share conversation styling; controls and date/time pickers use the selected accent on Android 11+.
+- The legacy color picker turns off wallpaper/automatic colors when a global custom color is selected.
+- SMS scrolling skips attachment adapters, MMS rows reuse adapters, and unchanged avatars avoid repeated photo loads.
+- Fix unreadable phone numbers, email addresses and web links in conversation bubbles with dark, AMOLED or custom colors.
+- Choose message and link foreground colors together from the actual bubble background, including recycled rows and private conversations.
+- Correct selection highlights and handles to use resolved colors instead of a theme attribute ID.
+
+
 ## 1.3.0 — 2026-09-26
 
 ### Added

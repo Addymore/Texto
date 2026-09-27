@@ -284,8 +284,8 @@
     <string name="about_title">关于</string>
     <string name="about_version_title">版本</string>
     <string name="about_developer_title">开发者</string>
-    <string name="about_source_title">Upstream source (QUIK)</string>
-    <string name="about_changelog_title">Upstream changelog</string>
+    <string name="about_source_title">Texto source</string>
+    <string name="about_changelog_title">Texto changelog</string>
     <string name="about_contact_title">联系人</string>
     <string name="about_license_title">许可证</string>
     <string name="about_copyright_title">版权</string>

@@ -15,7 +15,7 @@ import java.util.Date
 
 class TrashActivity : AppCompatActivity() {
     private var dialog: androidx.appcompat.app.AlertDialog? = null
-    override fun onCreate(state: Bundle?) { setTheme(R.style.TextoTheme); super.onCreate(state); window.addFlags(WindowManager.LayoutParams.FLAG_SECURE) }
+    override fun onCreate(state: Bundle?) { setTheme(R.style.TextoTheme); TextoTheme.apply(this); super.onCreate(state); window.addFlags(WindowManager.LayoutParams.FLAG_SECURE) }
     override fun onResume() { super.onResume(); if (!PrivacyGate.unlocked) { finish(); return }; render() }
     override fun onPause() { dialog?.dismiss(); super.onPause() }
     private fun render() {

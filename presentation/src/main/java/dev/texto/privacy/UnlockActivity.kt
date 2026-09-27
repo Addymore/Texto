@@ -21,6 +21,7 @@ class UnlockActivity : AppCompatActivity() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.TextoTheme)
+        TextoTheme.apply(this)
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
         if (!PrivacyGate.session.pending) { finish(); return }

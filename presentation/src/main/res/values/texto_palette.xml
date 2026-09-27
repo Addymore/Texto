@@ -1,0 +1,27 @@
+<resources>
+    <color name="texto_control_accent">#375BCD</color>
+    <color name="texto_control_on_accent">#FFFFFF</color>
+    <color name="texto_control_container">#E6EBFA</color>
+    <color name="texto_control_on_container">#18264A</color>
+    <style name="TextoPickerDialog" parent="@android:style/Theme.Material.Light.Dialog.Alert">
+        <item name="android:colorAccent">@color/texto_control_accent</item>
+    </style>
+    <style name="TextoPalette">
+        <item name="android:datePickerDialogTheme">@style/TextoPickerDialog</item>
+        <item name="android:timePickerDialogTheme">@style/TextoPickerDialog</item>
+        <item name="colorPrimary">@color/texto_control_accent</item>
+        <item name="colorOnPrimary">@color/texto_control_on_accent</item>
+        <item name="colorPrimaryContainer">@color/texto_control_container</item>
+        <item name="colorOnPrimaryContainer">@color/texto_control_on_container</item>
+        <item name="colorSecondary">@color/texto_control_accent</item>
+        <item name="colorOnSecondary">@color/texto_control_on_accent</item>
+        <item name="colorSecondaryContainer">@color/texto_control_container</item>
+        <item name="colorOnSecondaryContainer">@color/texto_control_on_container</item>
+        <item name="colorTertiary">@color/texto_control_accent</item>
+        <item name="colorOnTertiary">@color/texto_control_on_accent</item>
+        <item name="colorAccent">@color/texto_control_accent</item>
+        <item name="android:colorAccent">@color/texto_control_accent</item>
+        <item name="colorControlActivated">@color/texto_control_accent</item>
+        <item name="android:colorControlActivated">@color/texto_control_accent</item>
+    </style>
+</resources>
