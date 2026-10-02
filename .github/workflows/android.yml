@@ -47,6 +47,19 @@ jobs:
           mkdir -p config
           curl --fail --location https://gitlab.com/fdroid/fdroiddata/-/raw/399e81a49d58c389fd008a8a9753ca236980b38d/config/categories.yml -o config/categories.yml
           curl --fail --location https://gitlab.com/fdroid/fdroiddata/-/raw/399e81a49d58c389fd008a8a9753ca236980b38d/config/antiFeatures.yml -o config/antiFeatures.yml
+          python - <<'PY'
+          from pathlib import Path
+          import urllib.request
+          import yaml
+          base = 'https://gitlab.com/fdroid/fdroiddata/-/raw/399e81a49d58c389fd008a8a9753ca236980b38d/config/'
+          for filename in ['categories.yml', 'antiFeatures.yml']:
+              entries = yaml.safe_load(Path('config', filename).read_text())
+              for entry in entries.values():
+                  icon = entry.get('icon')
+                  if icon:
+                      assert Path(icon).name == icon
+                      Path('config', icon).write_bytes(urllib.request.urlopen(base + icon, timeout=30).read())
+          PY
           fdroid readmeta
           fdroid rewritemeta app.texto.sms
           fdroid lint app.texto.sms
