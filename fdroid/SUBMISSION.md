@@ -17,6 +17,10 @@ The fork has a distinct application ID, name and icon. It adds shared public/pri
 - No Firebase/Google Services/Crashlytics plugins or runtime integrations are included.
 - The MIT-licensed Call Control DataShare library supports optional integrations with proprietary blocking apps. `NonFreeAdd` is declared; Texto's local rules work independently.
 
+## Validation
+
+The unsigned release and 19 JVM tests passed locally, and the Linux GitHub Android build passed. A signed local-only release copy opened its synthetic inbox on Android 14. F-Droid metadata lint and source scanning passed with fdroidserver 2.4.5: https://github.com/Addymore/Texto/actions/runs/36987182850/job/110774771350 .
+
 ## Review notes
 
 The GitHub development APK uses `app.texto.sms.debug`, so it is not a reproducible reference binary for this release package. Please build/sign the release variant with F-Droid's key.
