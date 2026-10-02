@@ -4,7 +4,7 @@
 
 A customizable Kotlin SMS/MMS app for Android by **[Addymore](https://github.com/Addymore)**, built on [QUIK](https://github.com/quik-sms/quik) and QKSMS. Reachable navigation, consistent public and private conversations, and a theme that feels like yours.
 
-[Download 1.4.0](https://github.com/Addymore/Texto/releases/tag/v1.4.0) · [Changelog](CHANGELOG.md) · [Report a bug](https://github.com/Addymore/Texto/issues) · [Telegram](https://t.me/addymore)
+[Download 1.5.0](https://github.com/Addymore/Texto/releases/tag/v1.5.0) · [Changelog](CHANGELOG.md) · [Report a bug](https://github.com/Addymore/Texto/issues) · [Telegram](https://t.me/addymore)
 
 **Development preview:** the downloadable APK is debug-signed, not a Play Store release. Android 6+; physical OnePlus 13 / Android 16 and carrier validation are still required. See [validation](VALIDATION.md).
 
@@ -18,15 +18,19 @@ Screenshots use synthetic messages and sample contacts. Private screens are prot
 
 - **One consistent layout.** Public and private lists share conversation cards, avatars, dates, message totals and unread badges. Private SMS/MMS opens in the same full conversation screen.
 - **Personal themes.** Eight palettes, custom hex accents, wallpaper colors, light/dark/system appearance, AMOLED, card shapes and finishes, spacing, preview lengths, avatar/count toggles and unread dots or number badges.
-- **Reachable navigation.** A collapsible large heading and floating Messages / Themes / Settings navigation. Contacts live in Settings.
+- **Reachable navigation.** A collapsible large heading and floating Messages / Themes navigation. Settings is in the three-dot menu; Contacts lives in Settings.
 - **Private conversations.** Persistent number rules, PIN/strong biometrics, silent notifications and exclusion from public search, widgets and shortcuts. Future messages from locked numbers stay private.
 - **Recoverable deletion.** A protected recycle bin retains SMS/MMS attachments, with restore and 30/60/90-day expiry.
 - **Control over unwanted messages.** Exact-number, prefix and phrase rules, trusted exceptions, a blocklist and recoverable quarantine.
 - **The QUIK foundation.** SMS/MMS, group messages, attachments, dual SIM, scheduling, delayed sending, backups, reactions, search, pinning, speech and notification quick reply remain in the fork. Full device regression is not yet complete.
 
+## SMS backup by email
+
+Open Backup & restore, choose a writable folder, and create a backup. Select **Email a backup**, pick the saved JSON file, and choose your email app. To restore, download the attachment and select it with **Restore**. You choose the recipient and send it yourself. These files contain readable SMS text; MMS attachments, PINs and privacy rules are not included.
+
 ## Install
 
-1. Download `Texto-1.4.0-debug.apk` from the [release](https://github.com/Addymore/Texto/releases/tag/v1.4.0).
+1. Download `Texto-1.5.0-debug.apk` from the [release](https://github.com/Addymore/Texto/releases/tag/v1.5.0).
 2. Install it and select Texto as your default SMS app. Allow the permissions needed for messaging and contacts.
 3. Personalize it in **Themes** and configure your privacy PIN and number rules in **Settings → Privacy & protection**.
 
@@ -67,6 +71,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). Report the Texto version, phone/Android 
 Texto developer: **Addymore** · [Telegram @addymore](https://t.me/addymore).
 
 ## Credits and license
+
+The 1.5 card treatment takes visual inspiration from [WA Enhancer 1.6.0](https://github.com/Dev4Mod/WaEnhancer/tree/1.6.0-b32a740d), implemented using Texto's existing theme system.
 
 Texto derives from QUIK commit `4b942fe71ceaa56f43266de115d14aa5b30d99db`. Thank you to QUIK contributors, Moez Bhatti and QKSMS, and Jake and Luke Klinker for android-smsmms. Original notices and history are retained; [UPSTREAM.md](UPSTREAM.md) preserves the upstream README.
 

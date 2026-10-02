@@ -97,4 +97,6 @@
         android:visible="false"
         app:showAsAction="ifRoom" />
 
+    <item android:id="@+id/texto_settings_menu" android:title="@string/title_settings"
+        android:icon="@drawable/ic_settings_black_24dp" app:showAsAction="never" />
 </menu>

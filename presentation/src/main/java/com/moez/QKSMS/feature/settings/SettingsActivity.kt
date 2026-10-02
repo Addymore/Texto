@@ -35,24 +35,7 @@ class SettingsActivity : QkThemedActivity() {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         binding = ContainerActivityBinding.inflate(layoutInflater)
-        val shell = android.widget.LinearLayout(this).apply { orientation = android.widget.LinearLayout.VERTICAL }
-        shell.addView(binding.root, android.widget.LinearLayout.LayoutParams(-1, 0, 1f))
-        val tabs = dev.texto.privacy.TextoTabBar(this).apply {
-            select(2)
-            onTabSelected = { tab ->
-                when (tab) {
-                    0 -> {
-                        startActivity(android.content.Intent(this@SettingsActivity, dev.octoshrimpy.quik.feature.main.MainActivity::class.java).addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP or android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP))
-                        finish()
-                    }
-                    1 -> startActivity(android.content.Intent(this@SettingsActivity, dev.texto.privacy.ThemesActivity::class.java).addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP))
-                }
-            }
-        }
-        shell.addView(tabs, android.widget.LinearLayout.LayoutParams(-1, (66 * resources.displayMetrics.density).toInt()).apply {
-            setMargins((18 * resources.displayMetrics.density).toInt(), 0, (18 * resources.displayMetrics.density).toInt(), (12 * resources.displayMetrics.density).toInt())
-        })
-        setContentView(shell)
+        setContentView(binding.root)
 
         router = Conductor.attachRouter(this, binding.container, savedInstanceState)
         if (!router.hasRootController()) {

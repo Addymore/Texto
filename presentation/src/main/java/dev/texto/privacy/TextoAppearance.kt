@@ -20,11 +20,11 @@ object TextoAppearance {
     }
     fun card(context: Context, selected: Boolean = false): android.graphics.drawable.Drawable {
         val p = prefs(context); val dark = context.resources.configuration.uiMode and 0x30 == 0x20
-        val radius = when(p.getString("card_shape", "soft")) { "minimal" -> 12; "round" -> 30; else -> 22 }
+        val radius = when(p.getString("card_shape", "soft")) { "minimal" -> 12; "round" -> 30; else -> 16 }
         val base = if(dark) 0xFF23262D.toInt() else 0xFFF3F5F9.toInt()
-        val finish = p.getString("card_finish","neutral")
-        val fill = if (selected) androidx.core.graphics.ColorUtils.blendARGB(base,accent(context),.24f) else if (finish == "tinted") androidx.core.graphics.ColorUtils.blendARGB(base,accent(context),if(dark) .16f else .08f) else base
-        val shape = GradientDrawable().apply { cornerRadius = radius * context.resources.displayMetrics.density; setColor(ColorStateList(arrayOf(intArrayOf(android.R.attr.state_activated), intArrayOf()), intArrayOf(androidx.core.graphics.ColorUtils.blendARGB(base,accent(context),.24f), fill))); if (finish == "outlined") setStroke((context.resources.displayMetrics.density).toInt().coerceAtLeast(1), androidx.core.graphics.ColorUtils.blendARGB(base,accent(context),.45f)) }
+        val finish = p.getString("card_finish","tonal")
+        val fill = if (selected) androidx.core.graphics.ColorUtils.blendARGB(base,accent(context),.24f) else if (finish == "tinted" || finish == "tonal") androidx.core.graphics.ColorUtils.blendARGB(base,accent(context),if(dark) .16f else .08f) else base
+        val shape = GradientDrawable().apply { cornerRadius = radius * context.resources.displayMetrics.density; setColor(ColorStateList(arrayOf(intArrayOf(android.R.attr.state_activated), intArrayOf()), intArrayOf(androidx.core.graphics.ColorUtils.blendARGB(base,accent(context),.24f), fill))); if (finish == "outlined" || finish == "tonal") setStroke((context.resources.displayMetrics.density).toInt().coerceAtLeast(1), androidx.core.graphics.ColorUtils.blendARGB(base,accent(context),if (finish == "tonal") .18f else .45f)) }
         return RippleDrawable(ColorStateList.valueOf(accent(context) and 0x00FFFFFF or 0x22000000),shape,null)
     }
     fun onAccent(context: Context): Int = if (androidx.core.graphics.ColorUtils.calculateLuminance(accent(context)) > .179) Color.BLACK else Color.WHITE

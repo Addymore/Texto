@@ -53,6 +53,11 @@ import javax.inject.Inject
  * an activity does not depend on the theme
  */
 abstract class QkThemedActivity : QkActivity() {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: android.content.Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == dev.texto.privacy.PrivacyGate.UTILITY_UNLOCK &&
+            (resultCode != RESULT_OK || !dev.texto.privacy.PrivacyGate.unlocked)) finish()
+    }
     private var textoDynamicColors = false
     private var textoAppearanceKey = ""
 

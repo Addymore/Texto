@@ -1,0 +1,5 @@
+Refreshed tonal cards, icon badges and Settings sections inspired by WA Enhancer 1.6.0.
+Settings moves to the three-dot menu; bottom navigation keeps Messages and Themes.
+Fix fingerprint/PIN access to Backup, Message management and Scheduled screens.
+Share saved SMS backups through email and restore downloaded attachments. MMS attachments are not included.
+Avoid duplicate SMS on repeat restores and report backup write failures.

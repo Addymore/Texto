@@ -107,6 +107,7 @@ class BackupController : QkController<BackupControllerBinding, BackupView, Backu
 
     private lateinit var openDirectory: ActivityResultLauncher<Uri?>
     private lateinit var openDocument: ActivityResultLauncher<QkActivityResultContracts.OpenDocumentParams>
+    private lateinit var emailDocument: ActivityResultLauncher<Array<String>>
 
     init {
         appComponent.inject(this)
@@ -116,6 +117,22 @@ class BackupController : QkController<BackupControllerBinding, BackupView, Backu
         BackupControllerBinding.inflate(inflater, container, false)
 
     override fun onContextAvailable(context: Context) {
+        emailDocument = themedActivity!!.registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+            if (uri != null) {
+                val send = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
+                    type = "application/json"
+                    putExtra(android.content.Intent.EXTRA_STREAM, uri)
+                    putExtra(android.content.Intent.EXTRA_SUBJECT, "Texto message backup")
+                    putExtra(android.content.Intent.EXTRA_TEXT, "Save this attachment, then select it in Texto > Backup & restore > Restore.")
+                    clipData = android.content.ClipData.newRawUri("Texto backup", uri)
+                    addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+                try { activity?.startActivity(android.content.Intent.createChooser(send, "Email or save backup")) }
+                catch (_: android.content.ActivityNotFoundException) {
+                    android.widget.Toast.makeText(context, "Install an email or file-sharing app first.", android.widget.Toast.LENGTH_LONG).show()
+                }
+            }
+        }
         // Init activity result contracts
         openDirectory = themedActivity!!
             .registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
@@ -137,6 +154,17 @@ class BackupController : QkController<BackupControllerBinding, BackupView, Backu
 
     override fun onViewCreated() {
         super.onViewCreated()
+        binding.linearLayout.addView(PreferenceView(binding.root.context).apply {
+            title = "Email a backup"
+            summary = "Create a backup below, then choose its JSON file to attach in your email app."
+            setOnClickListener {
+                AlertDialog.Builder(context).setTitle("Share message backup?")
+                    .setMessage("Backups contain readable SMS text, including private conversations. Only share with a recipient you trust. MMS attachments and Texto privacy settings are not included. To restore from email, download the attachment and use Restore.")
+                    .setNegativeButton("Cancel", null)
+                    .setPositiveButton("Choose backup") { _, _ -> emailDocument.launch(arrayOf("application/json", "application/octet-stream")) }
+                    .show()
+            }
+        })
 
         themedActivity?.colors?.theme()?.let { theme ->
             binding.progressBar.indeterminateTintList = ColorStateList.valueOf(theme.theme)

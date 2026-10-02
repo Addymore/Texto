@@ -75,6 +75,10 @@ class PreferenceView @JvmOverloads constructor(
         super.onAttachedToWindow()
         if (!isInEditMode) {
             dev.texto.privacy.TextoAppearance.styleSettingsCard(this)
+            layout.icon.background = android.graphics.drawable.GradientDrawable().apply {
+                cornerRadius = 12 * resources.displayMetrics.density
+                setColor(androidx.core.graphics.ColorUtils.setAlphaComponent(dev.texto.privacy.TextoAppearance.accent(context), 28))
+            }
             layout.icon.imageTintList = android.content.res.ColorStateList.valueOf(dev.texto.privacy.TextoAppearance.accent(context))
         }
     }

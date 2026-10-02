@@ -41,7 +41,7 @@ class ThemesActivity : QkThemedActivity() {
                 backgroundTintList=ColorStateList.valueOf(androidx.core.graphics.ColorUtils.blendARGB(if(resources.configuration.uiMode and 0x30 == 0x20) 0xFF23262D.toInt() else 0xFFF3F5F9.toInt(),accent,.07f))
                 setTextColor(if(resources.configuration.uiMode and 0x30 == 0x20) 0xFFF3F5F9.toInt() else 0xFF20232B.toInt())
                 setOnClickListener { action() }
-            },LinearLayout.LayoutParams(-1,-2).apply { bottomMargin=dp(4) })
+            }.also { TextoAppearance.styleSettingsCard(it) },LinearLayout.LayoutParams(-1,-2).apply { bottomMargin=dp(8) })
         }
         fun choice(title: String,key: String,names: Array<String>,values: Array<String>,default: String) {
             val selected=values.indexOf(appearance.getString(key,default)).coerceAtLeast(0)
@@ -102,7 +102,7 @@ class ThemesActivity : QkThemedActivity() {
         content.addView(MaterialSwitch(this).apply { text="Pure black in dark mode"; minHeight=dp(56); isChecked=prefs.black.get(); setOnCheckedChangeListener { _,checked -> prefs.black.set(checked) } })
         label("Conversation lists",22f)
         choice("Card shape","card_shape",arrayOf("Soft","Round","Minimal"),arrayOf("soft","round","minimal"),"soft")
-        choice("Card finish","card_finish",arrayOf("Neutral","Accent tint","Outlined"),arrayOf("neutral","tinted","outlined"),"neutral")
+        choice("Card finish","card_finish",arrayOf("Tonal cards","Neutral","Accent tint","Outlined"),arrayOf("tonal","neutral","tinted","outlined"),"tonal")
         choice("Spacing","density",arrayOf("Compact","Comfortable","Airy"),arrayOf("compact","comfortable","airy"),"comfortable")
         choice("Message preview","preview_lines",arrayOf("Hidden","One line","Two lines","Three lines"),arrayOf("0","1","2","3"),"2")
         choice("Unread indicator","unread_style",arrayOf("Number badge","Dot"),arrayOf("count","dot"),"count")
@@ -134,7 +134,6 @@ class ThemesActivity : QkThemedActivity() {
         },LinearLayout.LayoutParams(-1,dp(56)))
         else shell.addView(TextoTabBar(this).apply { select(1); onTabSelected={ tab -> when(tab) {
             0 -> { startActivity(Intent(this@ThemesActivity,dev.octoshrimpy.quik.feature.main.MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)); finish() }
-            2 -> startActivity(Intent(this@ThemesActivity,dev.octoshrimpy.quik.feature.settings.SettingsActivity::class.java))
         } } },LinearLayout.LayoutParams(-1,dp(66)))
         setContentView(shell); scroller?.post { scroller?.scrollTo(0,position) }
     }

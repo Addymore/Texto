@@ -27,8 +27,8 @@ class UnlockActivity : AppCompatActivity() {
         if (!PrivacyGate.session.pending) { finish(); return }
         val policy = TextoPolicy(this)
         val box = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(48, 100, 48, 48) }
-        val title = TextView(this).apply { text = if (intent.getBooleanExtra("bin", false)) "Recycle bin" else "Private messages"; textSize = 32f }
-        val note = TextView(this).apply { text = "Your protected conversations stay private. Enter your PIN to continue."; textSize = 16f }
+        val title = TextView(this).apply { text = if (intent.getBooleanExtra("utility", false)) "Confirm access" else if (intent.getBooleanExtra("bin", false)) "Recycle bin" else "Private messages"; textSize = 32f }
+        val note = TextView(this).apply { text = "Use fingerprint or your PIN to continue."; textSize = 16f }
         val pin = TextInputEditText(this).apply { hint = "6–12 digit PIN"; inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD }
         val error = TextView(this)
         box.addView(title); box.addView(note); box.addView(pin); box.addView(error)
@@ -76,7 +76,8 @@ class UnlockActivity : AppCompatActivity() {
     private fun complete() {
         if (!lifecycle.currentState.isAtLeast(androidx.lifecycle.Lifecycle.State.RESUMED)) return
         if (!PrivacyGate.session.authenticate()) { finish(); return }
-        startActivity(android.content.Intent(this, if (intent.getBooleanExtra("bin", false)) TrashActivity::class.java else VaultActivity::class.java))
+        if (intent.getBooleanExtra("utility", false)) setResult(RESULT_OK)
+        else startActivity(android.content.Intent(this, if (intent.getBooleanExtra("bin", false)) TrashActivity::class.java else VaultActivity::class.java))
         finish()
     }
     @Deprecated("Legacy back compatibility") override fun onBackPressed() { PrivacyGate.session.lock(); finish() }

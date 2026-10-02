@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.5.0 — 2 October 2026
+
+- Refresh shared cards with a WA Enhancer 1.6.0-inspired tonal finish, fine outlines, compact icon badges and tinted Settings section headers. Existing accent choices remain available.
+- Keep Messages and Themes on the bottom bar; move Settings access to the three-dot menu. Settings opens the full theme editor.
+- Fix Backup, Message management and Scheduled screens closing with “This conversation is private.” When locked numbers exist, these screens now request fingerprint/PIN and resume after successful authentication. Cancellation keeps their content hidden.
+- Add an email/share action for saved SMS backup files and instructions for restoring downloaded email attachments.
+- Exclude MMS from the inherited SMS-only backup format instead of incorrectly converting it to SMS on restore. MMS attachment backup is not supported.
+- Skip identical SMS records on repeated restores and report failed backup writes instead of showing completion.
+
 ## F-Droid packaging — 1.4.0 source revision
 
 - Build unsigned release APKs without a private keystore; remove unused Google Services and Crashlytics build plugins.

@@ -122,7 +122,7 @@ class BackupRepositoryImpl @Inject constructor(
         // Map all the messages into our object we'll use for the Json mapping
         val backupMessages = Realm.getDefaultInstance().use { realm ->
             // Get the messages from realm
-            val messages = realm.where(Message::class.java).equalTo("trashedAt",0L).sort("date").findAll().createSnapshot()
+            val messages = realm.where(Message::class.java).equalTo("trashedAt",0L).equalTo("type", Message.TYPE_SMS).sort("date").findAll().createSnapshot()
             messageCount = messages.size
 
             // Map the messages to the new format
@@ -152,6 +152,11 @@ class BackupRepositoryImpl @Inject constructor(
             }
         } catch (e: Exception) {
             Timber.w(e)
+            backupProgress.onNext(BackupRepository.Progress.Idle())
+            android.os.Handler(android.os.Looper.getMainLooper()).post {
+                android.widget.Toast.makeText(context, "Backup could not be saved. Choose a writable folder and try again.", android.widget.Toast.LENGTH_LONG).show()
+            }
+            return
         }
 
         // Mark the task finished, and set it as Idle a second later
@@ -218,6 +223,11 @@ class BackupRepositoryImpl @Inject constructor(
             restoreProgress.onNext(BackupRepository.Progress.Running(messageCount, index))
 
             try {
+                val duplicate = context.contentResolver.query(Telephony.Sms.CONTENT_URI,
+                    arrayOf(Telephony.Sms._ID), "address = ? AND date = ? AND body = ? AND type = ?",
+                    arrayOf(message.address, message.date.toString(), message.body, message.type.toString()), null)
+                    ?.use { it.moveToFirst() } == true
+                if (duplicate) return@forEachIndexed
                 val values = contentValuesOf(
                         Telephony.Sms.TYPE to message.type,
                         Telephony.Sms.ADDRESS to message.address,

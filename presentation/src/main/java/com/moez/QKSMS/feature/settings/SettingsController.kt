@@ -255,9 +255,7 @@ class SettingsController : QkController<SettingsControllerBinding, SettingsView,
     }
 
     override fun showThemePicker() {
-        router.pushController(RouterTransaction.with(ThemePickerController())
-                .pushChangeHandler(QkChangeHandler())
-                .popChangeHandler(QkChangeHandler()))
+        activity?.let { it.startActivity(android.content.Intent(it, dev.texto.privacy.ThemesActivity::class.java)) }
     }
 
     override fun showAbout() {

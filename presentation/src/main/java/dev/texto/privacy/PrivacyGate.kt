@@ -13,6 +13,8 @@ import dev.octoshrimpy.quik.model.MmsPart
 import io.realm.Realm
 
 object PrivacyGate : Application.ActivityLifecycleCallbacks {
+    const val UTILITY_UNLOCK = 4812
+    private fun isUtility(a: Activity) = a.javaClass.simpleName in setOf("BackupActivity", "MessageUtilsActivity", "ScheduledActivity")
     val session = VaultSession()
     val unlocked get() = session.unlocked
     private var started = 0
@@ -55,7 +57,7 @@ object PrivacyGate : Application.ActivityLifecycleCallbacks {
         if (partId != 0L && Realm.getDefaultInstance().use { realm ->
                 realm.where(MmsPart::class.java).equalTo("id", partId).findFirst()?.messages?.any { isLocked(a, it.threadId) || it.trashedAt > 0 } == true
             }) return true
-        return policy.hasLocks() && a.javaClass.simpleName in setOf("BackupActivity", "MessageUtilsActivity", "ScheduledActivity")
+        return policy.hasLocks() && isUtility(a)
     }
     private fun deny(a: Activity) {
         a.window.decorView.visibility = View.INVISIBLE
@@ -70,10 +72,15 @@ object PrivacyGate : Application.ActivityLifecycleCallbacks {
     }
     override fun onActivityStarted(a: Activity) { started++ }
     override fun onActivityResumed(a: Activity) {
+        if (a.isFinishing) return
         if (a is MainActivity) session.lock()
         if (protected(a)) {
             a.window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
-            if (!unlocked) deny(a) else a.window.decorView.visibility = View.VISIBLE
+            if (!unlocked && isUtility(a)) {
+                a.window.decorView.visibility = View.INVISIBLE
+                session.request()
+                a.startActivityForResult(Intent(a, UnlockActivity::class.java).putExtra("utility", true), UTILITY_UNLOCK)
+            } else if (!unlocked) deny(a) else a.window.decorView.visibility = View.VISIBLE
         }
     }
     override fun onActivityPaused(a: Activity) { if (protected(a)) a.window.decorView.visibility = View.INVISIBLE }

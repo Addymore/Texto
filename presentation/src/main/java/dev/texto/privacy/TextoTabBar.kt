@@ -22,8 +22,8 @@ class TextoTabBar @JvmOverloads constructor(context: Context, attrs: AttributeSe
             cornerRadius = dp(34).toFloat(); setColor(if (dark) Color.rgb(36,38,43) else Color.rgb(245,246,250))
             setStroke(dp(1), if (dark) 0xFF454750.toInt() else 0xFFE2E5EF.toInt())
         }
-        val labels = listOf("Messages", "Themes", "Settings")
-        val icons = listOf(R.drawable.ic_message_black_24dp, R.drawable.ic_invert_colors_black_24dp, R.drawable.ic_settings_black_24dp)
+        val labels = listOf("Messages", "Themes")
+        val icons = listOf(R.drawable.ic_message_black_24dp, R.drawable.ic_invert_colors_black_24dp)
         labels.forEachIndexed { i, label ->
             val button = MaterialButton(context, null, com.google.android.material.R.attr.materialButtonStyle).apply {
                 text = label; textSize = 11f; isAllCaps = false; minWidth = 0; minimumWidth = 0
@@ -44,7 +44,7 @@ class TextoTabBar @JvmOverloads constructor(context: Context, attrs: AttributeSe
             val accent = TextoAppearance.accent(context)
             val foreground = if (selected) (if (dark) androidx.core.graphics.ColorUtils.blendARGB(accent, Color.WHITE, 0.45f) else if(androidx.core.graphics.ColorUtils.calculateContrast(accent,Color.WHITE) < 4.5) androidx.core.graphics.ColorUtils.blendARGB(accent,Color.BLACK,.6f) else accent) else (if (dark) 0xFFC8CBD4.toInt() else 0xFF686E7A.toInt())
             button.setTextColor(foreground); button.iconTint = ColorStateList.valueOf(foreground)
-            button.backgroundTintList = ColorStateList.valueOf(if (selected) (if (dark) 0xFF343E5B.toInt() else Color.WHITE) else Color.TRANSPARENT)
+            button.backgroundTintList = ColorStateList.valueOf(if (selected) (if (dark) androidx.core.graphics.ColorUtils.blendARGB(0xFF23262D.toInt(), accent, .2f) else Color.WHITE) else Color.TRANSPARENT)
             button.elevation = if (selected) dp(1).toFloat() else 0f
         }
     }

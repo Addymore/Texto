@@ -1,4 +1,15 @@
-# Texto validation — 27 September 2026
+# Texto validation — 2 October 2026
+
+## 1.5 automated and emulator checks
+
+- Debug and unsigned release builds passed in 7m 36s; all 19 JVM tests passed. Existing 81 ExtraTranslation lint errors remain under the inherited non-aborting configuration.
+- Debug APK signature and zip alignment passed. The APK installed over the previous development build on the synthetic Android 14 emulator.
+- A dedicated test exercised the real utility/PIN activity round trip for Backup, Message management and Scheduled. Each screen stayed hidden and secure before authentication, resumed after a valid PIN, and cancellation closed the screen without exposing messages. The test uses synthetic PIN/number rules and restores the prior test preferences.
+- The existing contrast instrumentation passed all 40 incoming/outgoing, light/dark/AMOLED and custom-accent cases, plus Settings tint and scheduled-picker checks.
+- Visual checks verified Messages/Themes-only bottom navigation, Settings reached through the three-dot menu, tonal Settings cards and icon badges using the selected Jade accent, and the full Themes editor opened from Settings.
+- The email feature shares an explicitly selected saved JSON backup through Android's chooser. No real email was sent. Real email-provider delivery and a full backup/restore round trip remain unverified; this format supports SMS text, not MMS attachments or Texto privacy settings.
+- Physical OnePlus/carrier behavior and performance measurements remain unverified. The F-Droid submission still targets the previously validated 1.4.0 source revision.
+
 
 ## 1.4 automated and emulator checks
 

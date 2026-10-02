@@ -1,6 +1,6 @@
 package dev.texto.privacy
 
-/** An ephemeral session, only opened after an explicit pull-down and authentication. */
+/** An ephemeral session, only opened after an explicit protected action and authentication. */
 class VaultSession {
     var pending = false
         private set

@@ -148,7 +148,6 @@ class MainActivity : QkThemedActivity(), MainView {
             when (tab) {
                 0 -> binding.drawer.inbox.performClick()
                 1 -> startActivity(Intent(this, dev.texto.privacy.ThemesActivity::class.java))
-                2 -> binding.drawer.settings.performClick()
             }
         }
         binding.drawer.archived.visibility = View.GONE
@@ -500,8 +499,12 @@ class MainActivity : QkThemedActivity(), MainView {
             super.onCreateOptionsMenu(it)
         } ?: false
 
-    override fun onOptionsItemSelected(item: MenuItem) =
-        optionsItemIntent.onNext(item.itemId).let { true }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.texto_settings_menu) {
+            startActivity(Intent(this, dev.octoshrimpy.quik.feature.settings.SettingsActivity::class.java))
+        } else optionsItemIntent.onNext(item.itemId)
+        return true
+    }
 
     override fun onBackPressed() = backPressedSubject.onNext(NavItem.BACK)
 
