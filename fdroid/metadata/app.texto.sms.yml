@@ -19,7 +19,7 @@ Repo: https://github.com/Addymore/Texto.git
 Builds:
   - versionName: 1.4.0
     versionCode: 2270
-    commit: v1.4.0-fdroid1
+    commit: c083ede601eb28c91fdd9bb7df15c3274267e247
     subdir: presentation
     gradle:
       - yes

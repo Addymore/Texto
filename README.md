@@ -58,7 +58,7 @@ The Windows helper uses a short Unix-socket path for JDK 17. APK output is in `p
 
 ## F-Droid
 
-The F-Droid submission is being prepared; the app is not listed there yet. See [packaging and installation notes](fdroid/README.md). The proposed package `app.texto.sms` installs separately from the development preview.
+Texto has been submitted for [F-Droid review](https://gitlab.com/fdroid/fdroiddata/-/merge_requests/50918); the app is not listed there yet. See [packaging and installation notes](fdroid/README.md). The proposed package `app.texto.sms` installs separately from the development preview.
 
 ## Contribute and support
 

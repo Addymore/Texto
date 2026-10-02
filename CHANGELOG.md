@@ -7,7 +7,7 @@
 - Replace inherited QUIK store metadata and generated repository indexes.
 - Validate release builds and F-Droid metadata in CI.
 
-This prepares submission; it does not mean F-Droid has accepted or published the app.
+Submitted for [F-Droid review](https://gitlab.com/fdroid/fdroiddata/-/merge_requests/50918) on 2 October 2026. Acceptance, official build/signing and publication remain pending.
 
 
 ## 1.4.0 — 27 September 2026

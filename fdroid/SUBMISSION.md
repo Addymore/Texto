@@ -1,5 +1,9 @@
 # New app: Texto (app.texto.sms)
 
+Submitted on 2 October 2026: https://gitlab.com/fdroid/fdroiddata/-/merge_requests/50918
+
+Official CI awaits a maintainer-triggered run because GitLab requires identity verification for fork CI. Inclusion is pending.
+
 Texto is an SMS/MMS messenger maintained by Addymore, forked from QUIK/QKSMS. The maintainer requested inclusion in F-Droid. Source: https://github.com/Addymore/Texto .
 
 The fork has a distinct application ID, name and icon. It adds shared public/private conversation layouts, persistent number-specific PIN/biometric protection, a protected recycle bin with 30/60/90-day retention, local spam rules, reachable navigation, message/unread counters and theme controls.

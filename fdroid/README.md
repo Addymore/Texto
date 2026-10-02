@@ -1,6 +1,6 @@
 # Texto on F-Droid
 
-Publication is being prepared. Texto is not yet listed in the official F-Droid repository. Inclusion requires F-Droid's independent review, build and signing process.
+Submitted on 2 October 2026: [F-Droid merge request !50918](https://gitlab.com/fdroid/fdroiddata/-/merge_requests/50918). Texto is not yet listed in the official F-Droid repository. Inclusion requires F-Droid's independent review, build and signing process.
 
 ## Build
 
@@ -37,4 +37,4 @@ RCS is not implemented. Carrier behavior and physical OnePlus frame pacing need 
 
 ## Submission
 
-Recipe validation runs in GitHub Actions with fdroidserver 2.4.5. The official process is documented at https://f-droid.org/docs/Submitting_to_F-Droid_Quick_Start_Guide/ . GitLab account verification is needed to submit the recipe or packaging request. A prepared request is in `SUBMISSION.md`; publication must not be claimed until an official listing exists.
+Recipe validation runs in GitHub Actions with fdroidserver 2.4.5. The official process is documented at https://f-droid.org/docs/Submitting_to_F-Droid_Quick_Start_Guide/ . The review request is open. GitLab blocked fork CI before any jobs started because the submitting account is not identity-verified; the request asks F-Droid maintainers to trigger CI, following their contribution guidance. GitHub metadata lint/source scanning passed, but official F-Droid CI and review remain pending. Submission background is in `SUBMISSION.md`; publication must not be claimed until an official listing exists.
