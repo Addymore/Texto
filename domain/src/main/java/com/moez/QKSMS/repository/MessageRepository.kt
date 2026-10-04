@@ -103,7 +103,7 @@ interface MessageRepository {
 
     fun deleteOldMessages(maxAgeDays: Int)
 
-    fun deduplicateMessages(): Flowable<DeduplicationResult>
+    fun deduplicateMessages(protectedOnly: Boolean = false): Flowable<DeduplicationResult>
 
     fun markAsSendingNow(messageId: Long)
 }

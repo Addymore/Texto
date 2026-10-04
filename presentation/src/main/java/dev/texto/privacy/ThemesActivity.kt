@@ -22,10 +22,25 @@ import javax.inject.Inject
 
 class ThemesActivity : QkThemedActivity() {
     @Inject lateinit var nightModeManager: NightModeManager
+    private var imageKey="background_image"
+    override fun onSaveInstanceState(outState: Bundle) { outState.putString("image_key",imageKey); super.onSaveInstanceState(outState) }
+    private val imagePicker=registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.OpenDocument()) { uri ->
+        if(uri != null) {
+            try {
+                contentResolver.takePersistableUriPermission(uri,Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                TextoAppearance.prefs(this).edit().putString(imageKey,uri.toString()).apply(); render()
+            } catch(e: SecurityException) { Toast.makeText(this,"Could not keep access to this image. Choose another image.",Toast.LENGTH_LONG).show() }
+        }
+    }
+    private fun pickImage(key: String) { imageKey=key; imagePicker.launch(arrayOf("image/*")) }
+    private fun customText(title: String,key: String,default: String,max: Int) {
+        val field=TextInputEditText(this).apply { setSingleLine(); filters=arrayOf(android.text.InputFilter.LengthFilter(max)); setText(TextoAppearance.prefs(this@ThemesActivity).getString(key,default)); setPadding(dp(24),dp(16),dp(24),dp(16)) }
+        dialog=MaterialAlertDialogBuilder(this).setTitle(title).setView(field).setNegativeButton("Cancel",null).setPositiveButton("Save") { _,_ -> TextoAppearance.prefs(this).edit().putString(key,field.text.toString().trim()).apply(); render() }.show()
+    }
     private var scroller: ScrollView? = null
     private var dialog: androidx.appcompat.app.AlertDialog? = null
     private fun dp(n: Int) = (n*resources.displayMetrics.density).toInt()
-    override fun onCreate(state: Bundle?) { AndroidInjection.inject(this); super.onCreate(state); render() }
+    override fun onCreate(state: Bundle?) { AndroidInjection.inject(this); super.onCreate(state); imageKey=state?.getString("image_key") ?: "background_image"; render() }
     override fun onPause() { dialog?.dismiss(); super.onPause() }
     private fun render() {
         val position = scroller?.scrollY ?: 0
@@ -102,12 +117,21 @@ class ThemesActivity : QkThemedActivity() {
         content.addView(MaterialSwitch(this).apply { text="Pure black in dark mode"; minHeight=dp(56); isChecked=prefs.black.get(); setOnCheckedChangeListener { _,checked -> prefs.black.set(checked) } })
         label("Conversation lists",22f)
         choice("Card shape","card_shape",arrayOf("Soft","Round","Minimal"),arrayOf("soft","round","minimal"),"soft")
-        choice("Card finish","card_finish",arrayOf("Tonal cards","Neutral","Accent tint","Outlined"),arrayOf("tonal","neutral","tinted","outlined"),"tonal")
+        choice("Card finish","card_finish",arrayOf("Tonal cards","Neutral","Accent tint","Outlined","No cards"),arrayOf("tonal","neutral","tinted","outlined","none"),"tonal")
+        choice("Card size","card_size",arrayOf("Small","Medium","Large"),arrayOf("small","medium","large"),"medium")
         choice("Spacing","density",arrayOf("Compact","Comfortable","Airy"),arrayOf("compact","comfortable","airy"),"comfortable")
         choice("Message preview","preview_lines",arrayOf("Hidden","One line","Two lines","Three lines"),arrayOf("0","1","2","3"),"2")
         choice("Unread indicator","unread_style",arrayOf("Number badge","Dot"),arrayOf("count","dot"),"count")
         toggle("Show contact avatars","list_avatars",true)
         toggle("Show message totals","message_counts",true)
+        label("Your inbox",22f)
+        row("Header title",appearance.getString("inbox_title","Texto").orEmpty()) { customText("Header title","inbox_title","Texto",32) }
+        row("Motto",appearance.getString("inbox_motto","Messages, comfortably within reach").orEmpty()) { customText("Motto","inbox_motto","Messages, comfortably within reach",100) }
+        row("Background image",if(appearance.contains("background_image")) "Selected" else "None") { pickImage("background_image") }
+        row("Header artwork",if(appearance.contains("header_image")) "Selected" else "None") { pickImage("header_image") }
+        row("Remove background image","") { appearance.edit().remove("background_image").apply(); render() }
+        row("Remove header artwork","") { appearance.edit().remove("header_image").apply(); render() }
+        label("Images remain on your device. A readability overlay keeps messages legible. Long press your header title for Archive.",13f)
         label("Messages & motion",22f)
         choice("Message bubbles","bubbles",arrayOf("Fluid rounded","Classic grouped"),arrayOf("fluid","classic"),"fluid")
         val sizes=arrayOf("Small","Normal","Large","Larger","Largest")
@@ -122,7 +146,7 @@ class ThemesActivity : QkThemedActivity() {
             dialog=MaterialAlertDialogBuilder(this).setTitle("Reset appearance?").setMessage("Restore default colors, cards and motion settings. Messages and privacy settings are kept.")
                 .setNegativeButton("Cancel",null).setPositiveButton("Reset") { _,_ ->
                     val edit=appearance.edit()
-                    listOf("card_shape","card_finish","density","preview_lines","unread_style","list_avatars","message_counts","bubbles","high_refresh","reduce_motion","dynamic_colors").forEach { edit.remove(it) }; edit.apply()
+                    listOf("card_shape","card_finish","density","preview_lines","unread_style","list_avatars","message_counts","bubbles","high_refresh","reduce_motion","dynamic_colors","card_size","inbox_title","inbox_motto","background_image","header_image").forEach { edit.remove(it) }; edit.apply()
                     prefs.theme().set(0xFF375BCD.toInt()); prefs.autoColor.set(false); prefs.black.set(false); prefs.textSize.set(1)
                     nightModeManager.updateNightMode(0); render()
                 }.show()

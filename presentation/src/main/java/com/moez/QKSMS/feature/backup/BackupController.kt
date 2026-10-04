@@ -51,6 +51,7 @@ import javax.inject.Inject
 
 class BackupController : QkController<BackupControllerBinding, BackupView, BackupState, BackupPresenter>(), BackupView {
 
+    override fun protectedTools() = dev.texto.privacy.PrivacyGate.protectedTools(activity)
     @Inject override lateinit var presenter: BackupPresenter
 
     private val selectFolderCancelSubject: Subject<Unit> = PublishSubject.create()
@@ -148,12 +149,16 @@ class BackupController : QkController<BackupControllerBinding, BackupView, Backu
     override fun onAttach(view: View) {
         super.onAttach(view)
         presenter.bindIntents(this)
-        setTitle(R.string.backup_title)
+        setTitle(if(activity?.intent?.getBooleanExtra("protected_tools",false)==true) "Protected SMS backup" else "SMS backup & restore")
         showBackButton(true)
     }
 
     override fun onViewCreated() {
         super.onViewCreated()
+        binding.linearLayout.addView(android.widget.TextView(binding.root.context).apply {
+            text=if(activity?.intent?.getBooleanExtra("protected_tools",false)==true) "Backups here include only protected and archived numbers. Exported files are readable text. Restore imports only matching numbers from the selected file and keeps current number rules." else "Backups here exclude protected and archived numbers. Restore imports only matching numbers from the selected file and keeps current number rules."
+            setPadding(32,16,32,16)
+        },0)
         binding.linearLayout.addView(PreferenceView(binding.root.context).apply {
             title = "Email a backup"
             summary = "Create a backup below, then choose its JSON file to attach in your email app."

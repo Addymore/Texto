@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.6.0 — 4 October 2026
+
+- Hold message text for three seconds to select text inside the bubble; a shorter long press selects the message for actions. Scrolling cancels the hold; normal link taps are preserved.
+- Restyle the navigation drawer with tonal cards and icons using the selected accent; add a Privacy entry.
+- Open ordinary Scheduled, Message management and Backup without PIN/fingerprint prompts. Exclude locked, archived and explicitly protected numbers from ordinary scheduled lists, backups, restores and cleanup.
+- Add authenticated protected-number tools in Privacy, with automatic fingerprint prompt and PIN fallback. Scope backups/restores and manual deduplication to protected numbers. Background automatic cleanup only affects ordinary messages.
+- Add small/medium/large conversation cards and a No cards list option, alongside existing spacing and preview controls.
+- Use gradient initial avatars and geometric portraits when a contact has no photo; keep real contact photos.
+- Customize the inbox title and motto; choose separate background and header artwork with a readability overlay. Images stay on-device and can be removed or reset.
+- Publish separate signed release and debug APKs. The release package app.texto.sms installs separately from app.texto.sms.debug and does not inherit its privacy settings.
+
 ## 1.5.0 — 2 October 2026
 
 - Refresh shared cards with a WA Enhancer 1.6.0-inspired tonal finish, fine outlines, compact icon badges and tinted Settings section headers. Existing accent choices remain available.

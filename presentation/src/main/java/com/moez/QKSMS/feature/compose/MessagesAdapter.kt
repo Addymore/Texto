@@ -160,6 +160,7 @@ class MessagesAdapter @Inject constructor(
             status = binding.status
         }
 
+        dev.texto.privacy.MessageSelectionGesture.attach(body,view) { hasSelection() }
         body.hyphenationFrequency = Layout.HYPHENATION_FREQUENCY_NONE
         body.breakStrategy = Layout.BREAK_STRATEGY_SIMPLE
 
@@ -286,6 +287,7 @@ class MessagesAdapter @Inject constructor(
 
         }
 
+        dev.texto.privacy.MessageSelectionGesture.bind(body,message.id)
         val subject = message.getCleansedSubject()
 
         var isMsgTextTruncated = false

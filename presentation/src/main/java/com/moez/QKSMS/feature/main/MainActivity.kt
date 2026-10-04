@@ -151,6 +151,19 @@ class MainActivity : QkThemedActivity(), MainView {
             }
         }
         binding.drawer.archived.visibility = View.GONE
+        val drawerRows = listOf(binding.drawer.inbox, binding.drawer.backup, binding.drawer.scheduled, binding.drawer.blocking, binding.drawer.messageUtils, binding.drawer.settings, binding.drawer.about, binding.drawer.invite)
+        drawerRows.forEach { row ->
+            dev.texto.privacy.TextoAppearance.styleSettingsCard(row)
+            row.layoutParams = row.layoutParams.apply { height = (64*resources.displayMetrics.density).toInt() }
+            for(i in 0 until row.childCount) (row.getChildAt(i) as? android.widget.ImageView)?.imageTintList = ColorStateList.valueOf(dev.texto.privacy.TextoAppearance.accent(this))
+        }
+        val privacyRow = com.google.android.material.button.MaterialButton(this).apply {
+            text="Privacy"; isAllCaps=false
+            setOnClickListener { binding.drawerLayout.closeDrawers(); startActivity(Intent(this@MainActivity,dev.texto.privacy.ProtectionActivity::class.java)) }
+        }
+        (binding.drawer.settings.parent as android.widget.LinearLayout).addView(privacyRow, (binding.drawer.settings.parent as android.view.ViewGroup).indexOfChild(binding.drawer.settings)+1, android.widget.LinearLayout.LayoutParams(-1,-2))
+        dev.texto.privacy.TextoAppearance.styleSettingsCard(privacyRow)
+        dev.texto.privacy.InboxArtwork.apply(this, binding.textoReachable, binding.textoHeader, binding.textoTitle, binding.textoSubtitle)
         binding.textoTitle.setOnLongClickListener { binding.drawer.archived.performClick(); true }
         binding.textoReachable.onPrivatePull = { dev.texto.privacy.PrivacyGate.pullDown(this) }
         viewModel.bindView(this)

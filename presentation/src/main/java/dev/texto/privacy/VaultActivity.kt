@@ -33,6 +33,8 @@ class VaultActivity : QkThemedActivity() {
         if (!PrivacyGate.unlocked) { finish(); return }
         setContentView(R.layout.texto_vault)
         findViewById<ReachableMessagesLayout>(R.id.textoReachable).apply { privatePullEnabled=false; restingSubtitle="Only visible while unlocked" }
+        InboxArtwork.background(findViewById(R.id.textoReachable),"background_image")
+        InboxArtwork.background(findViewById(R.id.textoHeader),"header_image")
         list = findViewById(R.id.recyclerView)
         list.layoutManager = LinearLayoutManager(this)
         list.adapter = conversationsAdapter
@@ -58,7 +60,7 @@ class VaultActivity : QkThemedActivity() {
         findViewById<MaterialButton>(R.id.privateMore).setOnClickListener {
             val destinations = arrayOf(ProtectionActivity::class.java,TrashActivity::class.java,dev.octoshrimpy.quik.feature.backup.BackupActivity::class.java,dev.octoshrimpy.quik.feature.scheduled.ScheduledActivity::class.java)
             dialog = MaterialAlertDialogBuilder(this).setTitle("Private options").setItems(arrayOf("Privacy & protection","Recycle bin","Backup & restore","Scheduled messages")) { _, i ->
-                if(PrivacyGate.unlocked) startActivity(Intent(this,destinations[i]))
+                if(PrivacyGate.unlocked) startActivity(Intent(this,destinations[i]).putExtra("protected_tools",true))
             }.show()
         }
         findViewById<MaterialButton>(R.id.privateLock).setOnClickListener { PrivacyGate.session.lock(); finish() }

@@ -31,10 +31,11 @@ object TextoAppearance {
     fun styleConversation(binding: dev.octoshrimpy.quik.databinding.ConversationListItemBinding, count: Long, unread: Long, selected: Boolean = false) {
         val context = binding.root.context; val p = prefs(context); val d = context.resources.displayMetrics.density
         val spacing = when(p.getString("density","comfortable")) { "compact" -> 12; "airy" -> 20; else -> 16 }
-        val padding = (spacing*d).toInt()
+        val scale = when(p.getString("card_size","medium")) { "small" -> .8f; "large" -> 1.25f; else -> 1f }
+        val padding = (spacing*d*scale).toInt()
         binding.root.setPadding(padding,padding,padding,padding)
-        binding.root.minimumHeight = ((spacing*4+30)*d).toInt()
-        binding.root.background = card(context,selected)
+        binding.root.minimumHeight = ((spacing*4+30)*d*scale).toInt()
+        binding.root.background = if(p.getString("card_finish","tonal") == "none") RippleDrawable(ColorStateList.valueOf(accent(context) and 0x00FFFFFF or 0x22000000),android.graphics.drawable.ColorDrawable(if(selected) accent(context) and 0x00FFFFFF or 0x33000000 else Color.TRANSPARENT),null) else card(context,selected)
         binding.avatars.visibility = if(p.getBoolean("list_avatars",true)) View.VISIBLE else View.GONE
         val lines = p.getString("preview_lines","2")?.toIntOrNull()?.coerceIn(0,3) ?: 2
         binding.snippet.visibility = if(lines == 0) View.GONE else View.VISIBLE

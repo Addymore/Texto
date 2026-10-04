@@ -36,6 +36,6 @@ class ScheduledActivityModule {
     @Provides
     @Named("conversationId")
     fun getConversationId(activity: ScheduledActivity):
-            Long? = activity.intent.extras?.getLong("conversationId")
+            Long? = activity.intent.takeIf { it.hasExtra("conversationId") }?.getLongExtra("conversationId",0L)
 
 }

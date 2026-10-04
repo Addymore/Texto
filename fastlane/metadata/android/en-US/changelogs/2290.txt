@@ -1,0 +1,1 @@
+Themed drawer cards; ordinary tools open without PIN, protected-number tools in Privacy; modern fallback avatars; small/medium/large or no conversation cards; custom title, motto, background and header artwork. Separate release/debug APKs. SMS-only backups; RCS unavailable. Hold message text for 3 seconds to select words; shorter holds select the message.

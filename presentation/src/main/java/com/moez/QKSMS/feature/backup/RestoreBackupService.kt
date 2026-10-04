@@ -46,9 +46,10 @@ class RestoreBackupService : Service() {
         private const val ACTION_STOP = "ACTION_STOP"
         private const val EXTRA_FILE_URI = "EXTRA_FILE_URI"
 
-        fun start(context: Context, backupFile: Uri) {
+        fun start(context: Context, backupFile: Uri, protectedOnly: Boolean = false) {
             val intent = Intent(context, RestoreBackupService::class.java)
                 .setAction("${context.packageName}.$ACTION_START")
+                .putExtra("protected_tools",protectedOnly)
                 .putExtra("${context.packageName}.$EXTRA_FILE_URI", backupFile.toString())
 
             ContextCompat.startForegroundService(context, intent)
@@ -102,7 +103,7 @@ class RestoreBackupService : Service() {
         // Start the restore
         Observable.just(intent)
             .map { Uri.parse(it.getStringExtra("${baseContext.packageName}.$EXTRA_FILE_URI")) }
-            .map(backupRepo::performRestore)
+            .map { backupRepo.performRestore(it,intent.getBooleanExtra("protected_tools",false)) }
             .subscribeOn(Schedulers.io())
             .subscribe({}, Timber::w)
     }

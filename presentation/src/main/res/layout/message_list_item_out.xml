@@ -166,7 +166,7 @@
                         android:backgroundTint="?attr/bubbleColor"
                         android:gravity="start|center_vertical"
                         android:minHeight="36dp"
-                        android:textIsSelectable="true" />
+                        android:textIsSelectable="false" />
 
                     <LinearLayout
                         android:id="@+id/reactions"

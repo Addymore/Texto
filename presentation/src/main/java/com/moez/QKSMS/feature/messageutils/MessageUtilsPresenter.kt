@@ -47,7 +47,7 @@ class MessageUtilsPresenter @Inject constructor(
             .observeOn(Schedulers.io())
             .autoDisposable(view.scope())
             .subscribe {
-                deduplicateMessages.buildObservable(Unit)
+                messageRepo.deduplicateMessages(view.protectedTools())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe { result ->
                         when (result) {

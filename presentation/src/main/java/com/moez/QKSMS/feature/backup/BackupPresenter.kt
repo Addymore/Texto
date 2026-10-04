@@ -92,7 +92,11 @@ class BackupPresenter @Inject constructor(
                             newState { copy(showLocationRationale = true) }
                         }
                         !upgraded -> navigator.showQksmsPlusActivity("backup_fab")
-                        upgraded -> performBackup.execute(Unit)
+                        upgraded -> {
+                            val protectedOnly = view.protectedTools()
+                            disposables += io.reactivex.Completable.fromAction { backupRepo.performBackup(protectedOnly) }
+                                .subscribeOn(Schedulers.io()).subscribe({}, timber.log.Timber::w)
+                        }
                     }
                 }
 
@@ -114,7 +118,7 @@ class BackupPresenter @Inject constructor(
                 .doOnNext { newState { copy(selectedBackupDetails = null) } }
                 .withLatestFrom(view.documentSelected()) { _, backup -> backup }
                 .autoDisposable(view.scope())
-                .subscribe { backup -> RestoreBackupService.start(context, backup) }
+                .subscribe { backup -> RestoreBackupService.start(context, backup, view.protectedTools()) }
 
         view.confirmRestoreBackupCancelClicks()
                 .doOnNext { newState { copy(selectedBackupDetails = null) } }

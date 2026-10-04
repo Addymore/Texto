@@ -4,11 +4,15 @@
 
 A customizable Kotlin SMS/MMS app for Android by **[Addymore](https://github.com/Addymore)**, built on [QUIK](https://github.com/quik-sms/quik) and QKSMS. Reachable navigation, consistent public and private conversations, and a theme that feels like yours.
 
-[Download 1.5.0](https://github.com/Addymore/Texto/releases/tag/v1.5.0) · [Changelog](CHANGELOG.md) · [Report a bug](https://github.com/Addymore/Texto/issues) · [Telegram](https://t.me/addymore)
+[Download 1.6.0](https://github.com/Addymore/Texto/releases/tag/v1.6.0) · [Changelog](CHANGELOG.md) · [Report a bug](https://github.com/Addymore/Texto/issues) · [Telegram](https://t.me/addymore)
 
-**APK signing:** the GitHub release APK is debug-signed, not a Play Store release. Android 6+; physical OnePlus 13 / Android 16 and carrier validation are still required. See [validation](VALIDATION.md).
+**Two APKs:** choose the signed release APK for a new installation, or the debug APK to update a previous Texto development installation. Neither is a Google Play publication. Android 6+; physical OnePlus 13 / Android 16 and carrier validation are still required. See [validation](VALIDATION.md).
+
+See the [complete feature list](docs/FEATURES.md) and [1.6.0 changelog](CHANGELOG.md).
 
 ## A look of your own
+
+<table><tr><td><img src="docs/images/inbox-1.6.png" width="280" alt="Texto 1.6 custom inbox title, motto and artwork" /></td><td><img src="docs/images/drawer-1.6.png" width="280" alt="Texto 1.6 themed drawer cards and Privacy entry" /></td></tr></table>
 
 <table><tr><td><img src="docs/images/inbox.png" width="280" alt="Texto conversation cards with message totals and unread badges" /></td><td><img src="docs/images/themes.png" width="280" alt="Live theme preview and accent palettes" /></td><td><img src="docs/images/theme-options.png" width="280" alt="Card finish, spacing and preview controls" /></td></tr></table>
 
@@ -16,7 +20,12 @@ A customizable Kotlin SMS/MMS app for Android by **[Addymore](https://github.com
 
 Screenshots use synthetic messages and sample contacts. Private screens are protected from capture.
 
+- **Deliberate text selection.** A shorter long press selects the message; hold its text for three seconds to select words inside the bubble. Scrolling cancels the hold.
 - **One consistent layout.** Public and private lists share conversation cards, avatars, dates, message totals and unread badges. Private SMS/MMS opens in the same full conversation screen.
+- **Your header and artwork.** Custom inbox title and motto, separate background and header images, local image storage access and a readability overlay.
+- **Flexible cards.** Small, medium or large cards; tonal, neutral, tinted, outlined or no-card conversation lists.
+- **Scoped message tools.** Ordinary tools open without authentication. Privacy holds PIN/fingerprint-protected tools for locked, archived and selected numbers; public cleanup and exports exclude those numbers.
+- **Photo-less avatars.** Gradient initials and modern geometric portraits, with real contact photos when available.
 - **Personal themes.** Eight palettes, custom hex accents, wallpaper colors, light/dark/system appearance, AMOLED, card shapes and finishes, spacing, preview lengths, avatar/count toggles and unread dots or number badges.
 - **Reachable navigation.** A collapsible large heading and floating Messages / Themes navigation. Settings is in the three-dot menu; Contacts lives in Settings.
 - **Private conversations.** Persistent number rules, PIN/strong biometrics, silent notifications and exclusion from public search, widgets and shortcuts. Future messages from locked numbers stay private.
@@ -26,13 +35,15 @@ Screenshots use synthetic messages and sample contacts. Private screens are prot
 
 ## SMS backup by email
 
-Open Backup & restore, choose a writable folder, and create a backup. Select **Email a backup**, pick the saved JSON file, and choose your email app. To restore, download the attachment and select it with **Restore**. You choose the recipient and send it yourself. These files contain readable SMS text; MMS attachments, PINs and privacy rules are not included.
+Open Backup & restore, choose a writable folder, and create a backup. Select **Email a backup**, pick the saved JSON file, and choose your email app. To restore, download the attachment and select it with **Restore**. You choose the recipient and send it yourself. Ordinary backups and restores exclude protected/archived numbers; use Privacy for that scope. These files contain readable SMS text; MMS attachments, PINs and privacy rules are not included.
 
 ## Install
 
-1. Download `Texto-1.5.0-debug.apk` from the [release](https://github.com/Addymore/Texto/releases/tag/v1.5.0).
+1. Download `Texto-1.6.0-release.apk` for a new install, or `Texto-1.6.0-debug.apk` to upgrade your development installation from the [release](https://github.com/Addymore/Texto/releases/tag/v1.6.0).
 2. Install it and select Texto as your default SMS app. Allow the permissions needed for messaging and contacts.
 3. Personalize it in **Themes** and configure your privacy PIN and number rules in **Settings → Privacy & protection**.
+
+The signed release uses `app.texto.sms` and its own signing certificate. It installs separately from debug builds; configure the default-SMS role, PIN, privacy rules and themes again. The F-Droid build uses the same production package name but will have F-Droid's signature, so it cannot directly upgrade this GitHub-signed APK.
 
 The development app ID is `app.texto.sms.debug`, so it can coexist with QUIK. An upgrade from an earlier Texto development build must use the same signing certificate. Keep a verified backup before replacing your primary SMS workflow.
 

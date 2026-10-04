@@ -39,6 +39,11 @@ import javax.inject.Inject
 
 class ScheduledActivity : QkThemedActivity(), ScheduledView {
 
+    private var latestState: ScheduledState? = null
+    private var observed: io.realm.RealmResults<dev.octoshrimpy.quik.model.ScheduledMessage>? = null
+    private val changeListener = io.realm.RealmChangeListener<io.realm.RealmResults<dev.octoshrimpy.quik.model.ScheduledMessage>> { latestState?.let(::render) }
+    override fun onResume() { super.onResume(); latestState?.let(::render) }
+    override fun onDestroy() { observed?.takeIf { it.isValid }?.removeChangeListener(changeListener); super.onDestroy() }
     private lateinit var binding: ScheduledActivityBinding
 
     @Inject lateinit var scheduledMessageAdapter: ScheduledMessageAdapter
@@ -82,7 +87,20 @@ class ScheduledActivity : QkThemedActivity(), ScheduledView {
     }
 
     override fun render(state: ScheduledState) {
-        scheduledMessageAdapter.updateData(state.scheduledMessages)
+        latestState=state
+        val source = state.scheduledMessages
+        if(observed !== source) {
+            observed?.takeIf { it.isValid }?.removeChangeListener(changeListener)
+            observed=source
+            source?.addChangeListener(changeListener)
+        }
+        if (source != null && source.isValid && source.isLoaded) {
+            val realm = io.realm.Realm.getDefaultInstance()
+            val scope = dev.texto.privacy.ToolScope(this, realm, dev.texto.privacy.PrivacyGate.protectedTools(this))
+            val ids = source.filter { scope.accepts(it.conversationId, it.recipients) }.map { it.id }.toTypedArray()
+            scheduledMessageAdapter.updateData(source.where().`in`("id", if (ids.isEmpty()) arrayOf(-1L) else ids).findAll())
+            realm.close()
+        } else scheduledMessageAdapter.updateData(null)
 
         setTitle(when {
             (state.selectedMessages > 0) ->

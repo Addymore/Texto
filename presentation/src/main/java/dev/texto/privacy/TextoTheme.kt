@@ -19,7 +19,7 @@ object TextoTheme {
         context.theme.applyStyle(R.style.TextoPalette, true)
     }
     fun appearanceKey(context: Context): String {
-        val keys = setOf("card_shape", "card_finish", "density", "dynamic_colors", "list_avatars", "preview_lines", "message_counts", "unread_style", "bubbles")
+        val keys = setOf("card_shape", "card_finish", "density", "dynamic_colors", "list_avatars", "preview_lines", "message_counts", "unread_style", "bubbles", "card_size", "inbox_title", "inbox_motto", "background_image", "header_image")
         return TextoAppearance.accent(context).toString() + TextoAppearance.prefs(context).all.filterKeys { it in keys }.toSortedMap().toString()
     }
 }

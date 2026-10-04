@@ -42,13 +42,13 @@ interface BackupRepository {
 
     fun persistBackupDirectory(directory: Uri)
 
-    fun performBackup()
+    fun performBackup(protectedOnly: Boolean = false)
 
     fun getBackupProgress(): Observable<Progress>
 
     fun parseBackup(uri: Uri): BackupFile
 
-    fun performRestore(uri: Uri)
+    fun performRestore(uri: Uri, protectedOnly: Boolean = false)
 
     fun getRestoreProgress(): Observable<Progress>
 

@@ -1,4 +1,21 @@
-# Texto validation — 2 October 2026
+# Texto validation — 4 October 2026
+
+## 1.6 automated and emulator checks
+
+- Debug, optimized unsigned release and instrumentation builds passed in 10m 3s. All 19 unchanged common JVM tests remain passing (Gradle up-to-date results). The inherited non-aborting lint configuration is unchanged.
+- Both downloadable APKs passed Android signature verification and 4-byte alignment. The debug certificate matches 1.5.0 and the debug APK upgraded the existing synthetic emulator installation without clearing app data.
+- The production APK is signed with the new Texto release certificate, package `app.texto.sms`, version 1.6.0 (2290). A clean installation launched successfully on the Android 14 emulator, including after granting the SMS role; no crash was recorded. The separate debug package is `app.texto.sms.debug`, version 1.6.0-debug (2290).
+- Gesture instrumentation passed: a 700 ms hold selects the message; text remains unselectable at 1.5 seconds and native word selection opens after the three-second threshold. Scrolling and binding another message cancel/reset text selection. This test exercises the shared gesture helper with a real TextView; physical touch and OEM selection menus remain device checks.
+- Privacy scope tests passed for ordinary, locked, archived and additional protected numbers, including mixed-recipient groups. Real activity tests confirmed ordinary Backup, Message management and Scheduled open without authentication, while protected variants stay invisible and secure until PIN verification. Cancellation closes the protected utility.
+- Custom title/motto and loaded background/header artwork assertions passed. Card-size scaling and transparent No cards assertions passed. The drawer and customized inbox screenshots were visually inspected using synthetic conversations.
+- Contrast instrumentation passed all 40 incoming/outgoing, light/dark/AMOLED and custom-accent cases, including phone/web links and recycled views, plus Settings card tint and scheduled-picker checks.
+- Initial test attempts were blocked by the emulator's device keyguard. After removing that synthetic device lock and rebooting, the full regression passed. Texto's separate app PIN remained enabled for the protection tests.
+- Physical OnePlus performance, real carrier SMS/MMS, actual fingerprint sensing, real email delivery and a complete backup/restore round trip were not tested. Backups remain SMS-text-only and do not contain MMS attachments or app-private settings.
+- F-Droid MR 50918 currently proposes the 1.5.0 source recipe and awaits upstream review; this 1.6.0 GitHub release does not indicate F-Droid or Google Play publication.
+
+Release certificate SHA-256: `ca8e5a7493fd4b607335d51f1643666e81bd8a4df7a6cd34dc924175b21100a4`.
+
+See [APK signing and upgrade notes](docs/RELEASE-SIGNING.md) before switching between release, debug and F-Droid packages.
 
 ## 1.5 automated and emulator checks
 

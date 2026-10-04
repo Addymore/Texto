@@ -41,6 +41,7 @@ class AvatarView @JvmOverloads constructor(
     @Inject lateinit var navigator: Navigator
 
     private var renderedKey: List<Any?>? = null
+    private var address: String = ""
     private var lookupKey: String? = null
     private var fullName: String? = null
     private var photoUri: String? = null
@@ -64,6 +65,7 @@ class AvatarView @JvmOverloads constructor(
      * Use the contact information to display the avatar.
      */
     fun setRecipient(recipient: Recipient?) {
+        address = recipient?.address.orEmpty()
         lookupKey = recipient?.contact?.lookupKey
         fullName = recipient?.contact?.name
         photoUri = recipient?.contact?.photoUri
@@ -81,13 +83,19 @@ class AvatarView @JvmOverloads constructor(
     }
 
     private fun updateView() {
-        val key = listOf(lookupKey, fullName, photoUri, lastUpdated, theme.theme)
+        val key = listOf(address, lookupKey, fullName, photoUri, lastUpdated, theme.theme, dev.texto.privacy.TextoAppearance.accent(context))
         if (renderedKey == key) return
         renderedKey = key
         // Apply theme
-        setBackgroundTint(theme.theme)
-        layout.initial.setTextColor(theme.textPrimary)
-        layout.icon.setTint(theme.textPrimary)
+        val accent = dev.texto.privacy.TextoAppearance.accent(context)
+        val fill = androidx.core.graphics.ColorUtils.blendARGB(accent, android.graphics.Color.WHITE, .12f)
+        backgroundTintList = null
+        background = android.graphics.drawable.GradientDrawable(android.graphics.drawable.GradientDrawable.Orientation.TL_BR, intArrayOf(fill, accent)).apply { shape=android.graphics.drawable.GradientDrawable.OVAL }
+        val ink=dev.texto.privacy.TextoTheme.onColor(accent)
+        layout.initial.setTextColor(ink)
+        layout.initial.typeface=android.graphics.Typeface.create("sans-serif-medium",android.graphics.Typeface.NORMAL)
+        layout.icon.setImageDrawable(dev.texto.privacy.ModernAvatar(address,ink))
+        layout.icon.setTint(ink)
 
         val initials = fullName
                 ?.substringBefore(',')

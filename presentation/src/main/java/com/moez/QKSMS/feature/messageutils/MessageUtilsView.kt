@@ -5,6 +5,8 @@ import io.reactivex.Observable
 import io.reactivex.Single
 
 interface MessageUtilsView: QkViewContract<MessageUtilsState> {
+    fun protectedTools(): Boolean = false
+
     val autoDeduplicateClickIntent: Observable<*>
     val deduplicateClickIntent: Observable<Unit>
     val autoDeleteClickIntent: Observable<Unit>

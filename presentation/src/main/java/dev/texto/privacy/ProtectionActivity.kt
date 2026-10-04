@@ -24,6 +24,19 @@ import io.realm.Realm
 class ProtectionActivity : AppCompatActivity() {
     private val policy by lazy { TextoPolicy(this) }
     private lateinit var content: LinearLayout
+    private val toolTypes = listOf(ProtectionActivity::class.java,dev.octoshrimpy.quik.feature.backup.BackupActivity::class.java,dev.octoshrimpy.quik.feature.scheduled.ScheduledActivity::class.java,dev.octoshrimpy.quik.feature.messageutils.MessageUtilsActivity::class.java)
+    private var pendingTool: Class<*>? = null
+    override fun onSaveInstanceState(outState: Bundle) { outState.putInt("pending_tool",toolTypes.indexOf(pendingTool)); super.onSaveInstanceState(outState) }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode,resultCode,data)
+        if(requestCode == PrivacyGate.UTILITY_UNLOCK && resultCode == RESULT_OK && PrivacyGate.unlocked) pendingTool?.let { startActivity(Intent(this,it).putExtra("protected_tools",true)) }
+        pendingTool=null
+    }
+    private fun openTool(type: Class<*>) {
+        if(!policy.hasPin()) { changePin(); return }
+        if(PrivacyGate.unlocked) startActivity(Intent(this,type).putExtra("protected_tools",true))
+        else { pendingTool=type; PrivacyGate.session.request(); startActivityForResult(Intent(this,UnlockActivity::class.java).putExtra("utility",true),PrivacyGate.UTILITY_UNLOCK) }
+    }
     private var lockedRuleDialog: androidx.appcompat.app.AlertDialog? = null
     override fun onPause() { lockedRuleDialog?.dismiss(); lockedRuleDialog = null; super.onPause() }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +44,7 @@ class ProtectionActivity : AppCompatActivity() {
         if (policy.preferences.getBoolean("dynamic_colors", false)) com.google.android.material.color.DynamicColors.applyToActivityIfAvailable(this)
         TextoTheme.apply(this)
         super.onCreate(savedInstanceState)
+        pendingTool=toolTypes.getOrNull(savedInstanceState?.getInt("pending_tool",-1) ?: -1)
         window.addFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE)
         render()
     }
@@ -47,6 +61,12 @@ class ProtectionActivity : AppCompatActivity() {
                 if (key == "locked" && !policy.hasPin()) changePin() else edit(key, title)
             }
         }
+        label("Protected message tools",22f)
+        label("Locked and archived conversations, plus selected numbers, are excluded from ordinary backup and cleanup. These tools require authentication. Automatic cleanup applies only to ordinary messages.",14f)
+        button("Additional protected numbers") { if(PrivacyGate.unlocked) edit("protected_tools","Protected tool numbers") else openTool(ProtectionActivity::class.java) }
+        button("Protected scheduled messages") { openTool(dev.octoshrimpy.quik.feature.scheduled.ScheduledActivity::class.java) }
+        button("Protected message management") { openTool(dev.octoshrimpy.quik.feature.messageutils.MessageUtilsActivity::class.java) }
+        button("Protected SMS backup & restore") { openTool(dev.octoshrimpy.quik.feature.backup.BackupActivity::class.java) }
         label("Spam rules quarantine messages in Blocked. Trusted numbers bypass Texto spam rules, but never privacy rules. Prefix rules use normalized international prefixes; phrases are case-insensitive. Existing QUIK blocking settings also apply.", 14f)
         button("Review blocked messages & advanced filters") { startActivity(Intent(this, BlockingActivity::class.java)) }
         button("Appearance, colors & conversation themes") { startActivity(Intent(this, SettingsActivity::class.java)) }
@@ -60,21 +80,21 @@ class ProtectionActivity : AppCompatActivity() {
         button("Back to messages") { finish() }
     }
     private fun label(value: String, size: Float) { content.addView(TextView(this).apply { text = value; textSize = size; setPadding(0, 16, 0, 16) }) }
-    private fun button(value: String, action: () -> Unit) { content.addView(MaterialButton(this).apply { text = value; isAllCaps = false; setOnClickListener { action() } }) }
+    private fun button(value: String, action: () -> Unit) { content.addView(MaterialButton(this).apply { text = value; isAllCaps = false; setOnClickListener { action() }; TextoAppearance.styleSettingsCard(this) }, LinearLayout.LayoutParams(-1,-2).apply { bottomMargin=12 }) }
     private fun edit(key: String, title: String) {
-        if (key == "locked" && policy.hasLocks() && !PrivacyGate.unlocked) {
-            Toast.makeText(this, "Private settings are locked.", Toast.LENGTH_LONG).show()
+        if (key in listOf("locked", "archived", "protected_tools") && policy.hasPin() && !PrivacyGate.unlocked) {
+            openTool(ProtectionActivity::class.java)
             return
         }
         val field = TextInputEditText(this).apply { minLines = 4; maxLines = 10; inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE; setText((policy.entries(key) + listOfNotNull(intent.getStringExtra("address").takeIf { key != "words" && key != "prefixes" })).sorted().joinToString("\n")) }
         val dialog = MaterialAlertDialogBuilder(this).setTitle(title).setMessage("One entry per line. Remove an entry to stop applying that rule.")
             .setView(field).setNegativeButton("Cancel", null).setPositiveButton("Save") { _, _ ->
-                if (key == "locked" && policy.hasLocks() && !PrivacyGate.unlocked) return@setPositiveButton
+                if (key in listOf("locked","archived","protected_tools") && policy.hasPin() && !PrivacyGate.unlocked) return@setPositiveButton
                 policy.save(key, field.text.toString().lines())
                 applyRules()
                 render()
             }.show()
-        if (key == "locked") lockedRuleDialog = dialog
+        if (key in listOf("locked","archived","protected_tools")) lockedRuleDialog = dialog
     }
     private fun applyRules() {
         Realm.getDefaultInstance().use { realm ->

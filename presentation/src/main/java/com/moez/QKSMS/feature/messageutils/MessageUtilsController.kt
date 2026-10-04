@@ -30,6 +30,7 @@ class MessageUtilsController : QkController<MessageUtilsControllerBinding, Messa
     override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup): MessageUtilsControllerBinding =
         MessageUtilsControllerBinding.inflate(inflater, container, false)
 
+    override fun protectedTools() = dev.texto.privacy.PrivacyGate.protectedTools(activity)
     @Inject lateinit var context: Context
     @Inject override lateinit var presenter: MessageUtilsPresenter
     private val autoDeleteDialog: AutoDeleteDialog by lazy {
@@ -47,6 +48,34 @@ class MessageUtilsController : QkController<MessageUtilsControllerBinding, Messa
 
     override fun onViewCreated() {
         super.onViewCreated()
+        if(activity?.intent?.getBooleanExtra("protected_tools",false)==true) {
+            binding.parent.addView(com.google.android.material.button.MaterialButton(binding.root.context).apply {
+                text="Move old protected messages to bin"; isAllCaps=false
+                dev.texto.privacy.TextoAppearance.styleSettingsCard(this)
+                setOnClickListener {
+                    if(!protectedTools()) return@setOnClickListener
+                    com.google.android.material.dialog.MaterialAlertDialogBuilder(context).setTitle("Move protected messages to bin")
+                        .setItems(arrayOf("Older than 30 days","Older than 60 days","Older than 90 days")) { _, index ->
+                            if(!protectedTools()) return@setItems
+                            val days=listOf(30,60,90)[index]
+                            com.google.android.material.dialog.MaterialAlertDialogBuilder(context).setTitle("Move messages older than $days days?")
+                                .setMessage("Only protected and archived numbers are included. Messages can be restored from the recycle bin until its retention period expires.")
+                                .setNegativeButton("Cancel",null).setPositiveButton("Move to bin") { _,_ ->
+                                    if(protectedTools()) Thread {
+                                        val result=runCatching { io.realm.Realm.getDefaultInstance().use { realm ->
+                                            val scope=dev.texto.privacy.ToolScope(context,realm,true)
+                                            val ids=realm.where(dev.octoshrimpy.quik.model.Message::class.java).equalTo("trashedAt",0L)
+                                                .lessThan("date",System.currentTimeMillis()-java.util.concurrent.TimeUnit.DAYS.toMillis(days.toLong()))
+                                                .findAll().filter(scope::accepts).map { it.id }
+                                            dev.texto.privacy.TrashStore(context).move(ids)
+                                        } }
+                                        activity?.runOnUiThread { android.widget.Toast.makeText(context,if(result.isSuccess) "Moved to recycle bin" else "Could not move messages",android.widget.Toast.LENGTH_LONG).show() }
+                                    }.start()
+                                }.show()
+                        }.show()
+                }
+            },android.widget.LinearLayout.LayoutParams(-1,-2))
+        }
         binding.root.postDelayed({
             binding.parent.animateLayoutChanges = true
         }, 100)
@@ -54,7 +83,9 @@ class MessageUtilsController : QkController<MessageUtilsControllerBinding, Messa
 
     override fun onAttach(view: View) {
         super.onAttach(view)
-        setTitle(R.string.message_management_title)
+        setTitle(if(activity?.intent?.getBooleanExtra("protected_tools",false)==true) "Protected message management" else "Message management")
+        binding.autoDelete.isVisible = activity?.intent?.getBooleanExtra("protected_tools",false)!=true
+        binding.autoDeduplicate.isVisible = activity?.intent?.getBooleanExtra("protected_tools",false)!=true
         showBackButton(true)
         presenter.bindIntents(this)
     }

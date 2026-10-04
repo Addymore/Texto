@@ -82,6 +82,8 @@ abstract class QkRealmAdapter<T : RealmModel, VH : QkViewHolder> : RealmRecycler
         return true
     }
 
+    protected fun hasSelection(): Boolean = selection.isNotEmpty()
+
     protected fun isSelected(id: Long): Boolean {
         return selection.contains(id)
     }

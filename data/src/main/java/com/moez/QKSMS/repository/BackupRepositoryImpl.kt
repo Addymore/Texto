@@ -113,7 +113,7 @@ class BackupRepositoryImpl @Inject constructor(
         Timber.v("Updated backup directory: $directory")
     }
 
-    override fun performBackup() {
+    override fun performBackup(protectedOnly: Boolean) {
         // If a backup or restore is already running, don't do anything
         if (isBackupOrRestoreRunning()) return
 
@@ -122,7 +122,8 @@ class BackupRepositoryImpl @Inject constructor(
         // Map all the messages into our object we'll use for the Json mapping
         val backupMessages = Realm.getDefaultInstance().use { realm ->
             // Get the messages from realm
-            val messages = realm.where(Message::class.java).equalTo("trashedAt",0L).equalTo("type", Message.TYPE_SMS).sort("date").findAll().createSnapshot()
+            val scope = dev.texto.privacy.ToolScope(context, realm, protectedOnly)
+            val messages = realm.where(Message::class.java).equalTo("trashedAt",0L).equalTo("type", Message.TYPE_SMS).sort("date").findAll().createSnapshot().filter(scope::accepts)
             messageCount = messages.size
 
             // Map the messages to the new format
@@ -196,7 +197,7 @@ class BackupRepositoryImpl @Inject constructor(
         return BackupFile(file.lastModified(), metadata.messageCount)
     }
 
-    override fun performRestore(uri: Uri) {
+    override fun performRestore(uri: Uri, protectedOnly: Boolean) {
         // If a backupFile or restore is already running, don't do anything
         if (isBackupOrRestoreRunning()) return
 
@@ -209,10 +210,14 @@ class BackupRepositoryImpl @Inject constructor(
                 ?.buffer()
                 ?.use(adapter::fromJson)
 
-        val messageCount = backup?.messages?.size ?: 0
+        val selected = Realm.getDefaultInstance().use { realm ->
+            val scope = dev.texto.privacy.ToolScope(context,realm,protectedOnly)
+            backup?.messages.orEmpty().filter { scope.accepts(0L,listOf(it.address)) }
+        }
+        val messageCount = selected.size
         var errorCount = 0
 
-        backup?.messages?.forEachIndexed { index, message ->
+        selected.forEachIndexed { index, message ->
             if (stopFlag) {
                 stopFlag = false
                 restoreProgress.onNext(BackupRepository.Progress.Idle())

@@ -993,6 +993,7 @@ open class MessageRepositoryImpl @Inject constructor(
                     now() - TimeUnit.DAYS.toMillis(maxAgeDays.toLong())
                 )
                 .findAll()
+                .filter(dev.texto.privacy.ToolScope(context, realm)::accepts)
                 .groupingBy { message -> message.threadId }
                 .eachCount()
         }
@@ -1000,14 +1001,15 @@ open class MessageRepositoryImpl @Inject constructor(
     override fun deleteOldMessages(maxAgeDays: Int) {
         val ids = Realm.getDefaultInstance().use { realm ->
             realm.where(Message::class.java).equalTo("trashedAt", 0L).equalTo("trashedAt", 0L)
-                .lessThan("date", now() - TimeUnit.DAYS.toMillis(maxAgeDays.toLong())).findAll().map { it.id }
+                .lessThan("date", now() - TimeUnit.DAYS.toMillis(maxAgeDays.toLong())).findAll()
+                .filter(dev.texto.privacy.ToolScope(context, realm)::accepts).map { it.id }
         }
         deleteMessages(ids)
     }
 
-    override fun deduplicateMessages(): Flowable<MessageRepository.DeduplicationResult> =
+    override fun deduplicateMessages(protectedOnly: Boolean): Flowable<MessageRepository.DeduplicationResult> =
         Flowable.fromCallable {
-            val duplicateIds = findDuplicateMessages()
+            val duplicateIds = findDuplicateMessages(protectedOnly)
             if (duplicateIds.isEmpty()) {
                 MessageRepository.DeduplicationResult.NoDuplicates
             } else {
@@ -1021,14 +1023,15 @@ open class MessageRepositoryImpl @Inject constructor(
             deduplicationProgress.onNext(MessageRepository.DeduplicationProgress.Idle)
         }
 
-    private fun findDuplicateMessages(): List<Long> {
+    private fun findDuplicateMessages(protectedOnly: Boolean): List<Long> {
         val seenSignatures = HashSet<String>()
         val duplicateIds = ArrayList<Long>()
 
         Realm.getDefaultInstance().use { realm ->
+            val scope = dev.texto.privacy.ToolScope(context, realm, protectedOnly)
             val allMessages = realm.where(Message::class.java).equalTo("trashedAt", 0L)
                 .sort("id", Sort.ASCENDING)
-                .findAll()
+                .findAll().filter(scope::accepts)
 
             val max = allMessages.size
             var progress = 0

@@ -15,6 +15,7 @@ import io.realm.Realm
 object PrivacyGate : Application.ActivityLifecycleCallbacks {
     const val UTILITY_UNLOCK = 4812
     private fun isUtility(a: Activity) = a.javaClass.simpleName in setOf("BackupActivity", "MessageUtilsActivity", "ScheduledActivity")
+    fun protectedTools(a: Activity?) = a?.intent?.getBooleanExtra("protected_tools", false) == true && unlocked
     val session = VaultSession()
     val unlocked get() = session.unlocked
     private var started = 0
@@ -57,7 +58,7 @@ object PrivacyGate : Application.ActivityLifecycleCallbacks {
         if (partId != 0L && Realm.getDefaultInstance().use { realm ->
                 realm.where(MmsPart::class.java).equalTo("id", partId).findFirst()?.messages?.any { isLocked(a, it.threadId) || it.trashedAt > 0 } == true
             }) return true
-        return policy.hasLocks() && isUtility(a)
+        return isUtility(a) && a.intent.getBooleanExtra("protected_tools", false)
     }
     private fun deny(a: Activity) {
         a.window.decorView.visibility = View.INVISIBLE
