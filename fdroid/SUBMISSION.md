@@ -12,8 +12,8 @@ The fork has a distinct application ID, name and icon. It adds shared public/pri
 
 - Application ID: `app.texto.sms`
 - License: GPL-3.0-only (upstream notices retained)
-- Version: 1.5.0 (2280)
-- Source tag: `v1.5.0-fdroid1`
+- Version: 1.6.0 (2290)
+- Source tag: `v1.6.0-fdroid1`
 - Recipe: https://github.com/Addymore/Texto/blob/master/fdroid/metadata/app.texto.sms.yml
 - Fastlane metadata: https://github.com/Addymore/Texto/tree/master/fastlane/metadata/android/en-US
 - Build: OpenJDK 17, SDK/build-tools 34; `:presentation:assembleRelease`
@@ -23,12 +23,14 @@ The fork has a distinct application ID, name and icon. It adds shared public/pri
 
 ## Validation
 
-Version 1.5.0 debug and unsigned release builds and 19 JVM tests passed. PIN/cancel checks for the three protected message tools and 40 visual contrast cases passed. GitHub Android CI passed for source commit b690ffbaae87accaf447b6250ff70e3f69c90ec0. Metadata lint and source scanning passed for the 1.5.0 recipe with fdroidserver 2.4.5 on 4 October 2026: https://github.com/Addymore/Texto/actions/runs/37227788290/job/111510929069. The inherited lint configuration reports 81 non-aborting ExtraTranslation errors; this is not a clean lint result. Physical-device, carrier, real email and full backup/restore round-trip validation remain outstanding.
+Version 1.6.0 debug and optimized release builds passed locally; all 19 unchanged common JVM tests remain passing. Android 14 instrumentation passed three-second text selection, artwork and card controls, ordinary/protected utility access, PIN/cancel checks and 40 contrast cases. The production-signed APK passed clean-install launch checks. Full Linux Android CI is tracked separately from the metadata job. Metadata lint and source scanning passed for the 1.6.0 recipe with fdroidserver 2.4.5 on 4 October 2026: https://github.com/Addymore/Texto/actions/runs/37233479899/job/111527872393. The inherited lint configuration reports 81 non-aborting ExtraTranslation errors; this is not a clean lint result. Physical-device, carrier, real email and full backup/restore round-trip validation remain outstanding.
 
 ## Review notes
 
-The GitHub development APK uses `app.texto.sms.debug`, so it is not a reproducible reference binary for this release package. Please build/sign the release variant with F-Droid's key.
+GitHub now provides a production-signed `app.texto.sms` APK as well as the separate `app.texto.sms.debug` APK. Reproducibility against the production APK has not been verified. This recipe requests an unsigned build with F-Droid signing, not upstream binary verification. F-Droid and GitHub production signatures differ, so those APKs cannot update one another directly.
 
 The privacy feature is app-level protection, not encryption of the shared Android SMS/MMS provider. RCS is not implemented. Existing device-test limitations are documented in VALIDATION.md. Screenshots contain only synthetic fixtures.
 
 No matching Texto/app.texto.sms submission was found in the packaging-request or merge-request searches before preparation. Final inclusion and anti-feature assessment remain with F-Droid reviewers.
+
+Updated the existing MR to 1.6.0 (2290) on 4 October 2026; submission commit `da08f871b434b43c14a475e32daa299e7051ced8` pins the exact GitHub release source. Official inclusion remains pending.

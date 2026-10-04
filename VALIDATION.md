@@ -11,7 +11,7 @@
 - Contrast instrumentation passed all 40 incoming/outgoing, light/dark/AMOLED and custom-accent cases, including phone/web links and recycled views, plus Settings card tint and scheduled-picker checks.
 - Initial test attempts were blocked by the emulator's device keyguard. After removing that synthetic device lock and rebooting, the full regression passed. Texto's separate app PIN remained enabled for the protection tests.
 - Physical OnePlus performance, real carrier SMS/MMS, actual fingerprint sensing, real email delivery and a complete backup/restore round trip were not tested. Backups remain SMS-text-only and do not contain MMS attachments or app-private settings.
-- F-Droid MR 50918 currently proposes the 1.5.0 source recipe and awaits upstream review; this 1.6.0 GitHub release does not indicate F-Droid or Google Play publication.
+- F-Droid MR 50918 was updated to the 1.6.0 (2290) source recipe on 4 October 2026. Metadata lint and source scanning passed: https://github.com/Addymore/Texto/actions/runs/37233479899/job/111527872393 . Official F-Droid CI/review and Google Play publication remain pending.
 
 Release certificate SHA-256: `ca8e5a7493fd4b607335d51f1643666e81bd8a4df7a6cd34dc924175b21100a4`.
 
