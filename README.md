@@ -6,7 +6,7 @@ A customizable Kotlin SMS/MMS app for Android by **[Addymore](https://github.com
 
 [Download 1.5.0](https://github.com/Addymore/Texto/releases/tag/v1.5.0) · [Changelog](CHANGELOG.md) · [Report a bug](https://github.com/Addymore/Texto/issues) · [Telegram](https://t.me/addymore)
 
-**Development preview:** the downloadable APK is debug-signed, not a Play Store release. Android 6+; physical OnePlus 13 / Android 16 and carrier validation are still required. See [validation](VALIDATION.md).
+**APK signing:** the GitHub release APK is debug-signed, not a Play Store release. Android 6+; physical OnePlus 13 / Android 16 and carrier validation are still required. See [validation](VALIDATION.md).
 
 ## A look of your own
 

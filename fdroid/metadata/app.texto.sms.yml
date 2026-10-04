@@ -17,14 +17,14 @@ RepoType: git
 Repo: https://github.com/Addymore/Texto.git
 
 Builds:
-  - versionName: 1.4.0
-    versionCode: 2270
-    commit: c083ede601eb28c91fdd9bb7df15c3274267e247
+  - versionName: 1.5.0
+    versionCode: 2280
+    commit: b690ffbaae87accaf447b6250ff70e3f69c90ec0
     subdir: presentation
     gradle:
       - yes
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags ^v[0-9]+\.[0-9]+\.[0-9]+-fdroid[0-9]+$
-CurrentVersion: 1.4.0
-CurrentVersionCode: 2270
+CurrentVersion: 1.5.0
+CurrentVersionCode: 2280

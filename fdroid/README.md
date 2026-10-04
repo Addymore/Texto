@@ -4,7 +4,7 @@ Submitted on 2 October 2026: [F-Droid merge request !50918](https://gitlab.com/f
 
 ## Build
 
-The proposed package is `app.texto.sms`, version 1.4.0 (2270), source tag `v1.4.0-fdroid1`. The tag contains packaging changes after the GitHub development preview, without changing the application version.
+The proposed package is `app.texto.sms`, version 1.5.0 (2280), source tag `v1.5.0-fdroid1`. The tag pins the same application source as the GitHub 1.5.0 release (b690ffbaae87accaf447b6250ff70e3f69c90ec0).
 
 Use OpenJDK 17, Android SDK platform 34 and build tools 34.0.0:
 
@@ -12,14 +12,14 @@ Use OpenJDK 17, Android SDK platform 34 and build tools 34.0.0:
 ./gradlew :presentation:assembleRelease :common:testDebugUnitTest --no-daemon
 ```
 
-Output: `presentation/build/outputs/apk/release/Texto-v1.4.0-release-unsigned.apk`.
+Output: `presentation/build/outputs/apk/release/Texto-v1.5.0-release-unsigned.apk`.
 Release builds are unsigned by default. No private key, account, API key or proprietary service plugin is required. The optional `-PtextoSignRelease` enables locally configured signing for maintainers only; F-Droid must not use it.
 
 The recipe in `metadata/app.texto.sms.yml` uses the normal release variant. The inherited custom `fdroid` build type is not used for the official submission. Dedicated `vX.Y.Z-fdroidN` tags select reviewed source revisions for F-Droid updates. Increase versionCode for each future app update.
 
 ## Validation
 
-The local unsigned release build passed in 6m 26s and all 19 JVM tests passed. The inherited lint configuration reports 81 ExtraTranslation errors for unused translated strings and does not stop the build; these are not a clean lint result. A local-only signed copy of the optimized release installed and opened its synthetic inbox on Android 14. F-Droid metadata lint and source scanning passed in Linux CI on 2 October 2026 with fdroidserver 2.4.5 against tag `v1.4.0-fdroid1` ([validation job](https://github.com/Addymore/Texto/actions/runs/36987182850/job/110774771350)). Signing the local test copy does not change the unsigned build artifact.
+Version 1.5.0 debug and unsigned release builds and 19 JVM tests passed. PIN/cancel checks for the three protected message tools and 40 visual contrast cases passed. GitHub Android CI passed for source commit b690ffbaae87accaf447b6250ff70e3f69c90ec0. Metadata lint and source scanning for this updated recipe are pending CI. The inherited lint configuration reports 81 non-aborting ExtraTranslation errors; this is not a clean lint result. Physical-device, carrier, real email and full backup/restore round-trip validation remain outstanding.
 
 ## Listing and scope
 
@@ -37,4 +37,4 @@ RCS is not implemented. Carrier behavior and physical OnePlus frame pacing need 
 
 ## Submission
 
-Recipe validation runs in GitHub Actions with fdroidserver 2.4.5. The official process is documented at https://f-droid.org/docs/Submitting_to_F-Droid_Quick_Start_Guide/ . The review request is open. GitLab blocked fork CI before any jobs started because the submitting account is not identity-verified; the request asks F-Droid maintainers to trigger CI, following their contribution guidance. GitHub metadata lint/source scanning passed, but official F-Droid CI and review remain pending. Submission background is in `SUBMISSION.md`; publication must not be claimed until an official listing exists.
+Recipe validation runs in GitHub Actions with fdroidserver 2.4.5. The official process is documented at https://f-droid.org/docs/Submitting_to_F-Droid_Quick_Start_Guide/ . The review request is open. GitLab blocked fork CI before any jobs started because the submitting account is not identity-verified; the request asks F-Droid maintainers to trigger CI, following their contribution guidance. The updated recipe must pass GitHub metadata lint/source scanning; official F-Droid CI and review remain pending. Submission background is in `SUBMISSION.md`; publication must not be claimed until an official listing exists.

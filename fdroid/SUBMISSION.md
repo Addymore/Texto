@@ -12,8 +12,8 @@ The fork has a distinct application ID, name and icon. It adds shared public/pri
 
 - Application ID: `app.texto.sms`
 - License: GPL-3.0-only (upstream notices retained)
-- Version: 1.4.0 (2270)
-- Source tag: `v1.4.0-fdroid1`
+- Version: 1.5.0 (2280)
+- Source tag: `v1.5.0-fdroid1`
 - Recipe: https://github.com/Addymore/Texto/blob/master/fdroid/metadata/app.texto.sms.yml
 - Fastlane metadata: https://github.com/Addymore/Texto/tree/master/fastlane/metadata/android/en-US
 - Build: OpenJDK 17, SDK/build-tools 34; `:presentation:assembleRelease`
@@ -23,7 +23,7 @@ The fork has a distinct application ID, name and icon. It adds shared public/pri
 
 ## Validation
 
-The unsigned release and 19 JVM tests passed locally, and the Linux GitHub Android build passed. A signed local-only release copy opened its synthetic inbox on Android 14. F-Droid metadata lint and source scanning passed with fdroidserver 2.4.5: https://github.com/Addymore/Texto/actions/runs/36987182850/job/110774771350 .
+Version 1.5.0 debug and unsigned release builds and 19 JVM tests passed. PIN/cancel checks for the three protected message tools and 40 visual contrast cases passed. GitHub Android CI passed for source commit b690ffbaae87accaf447b6250ff70e3f69c90ec0. Metadata lint and source scanning for this updated recipe are pending CI. The inherited lint configuration reports 81 non-aborting ExtraTranslation errors; this is not a clean lint result. Physical-device, carrier, real email and full backup/restore round-trip validation remain outstanding.
 
 ## Review notes
 
