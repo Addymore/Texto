@@ -24,14 +24,14 @@ class ContactProfileActivity : AppCompatActivity() {
         if (conversation == null) { finish(); return }
         val panel = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(48, 56, 48, 32) }
         fun label(value: String, size: Float) { panel.addView(TextView(this).apply { text = value; textSize = size; setPadding(0, 16, 0, 16) }) }
-        fun button(value: String, action: () -> Unit) { panel.addView(MaterialButton(this).apply { text = value; isAllCaps = false; setOnClickListener { action() } }) }
+        fun button(value: String, action: () -> Unit) { panel.addView(MaterialButton(this).apply { text = value; isAllCaps = false; setOnClickListener { action() }; TextoAppearance.styleSettingsCard(this) }) }
         label(conversation.getTitle().take(1).uppercase(), 64f)
         label(conversation.getTitle(), 30f)
         label(if (conversation.recipients.size > 1) "Group profile" else "Contact profile", 16f)
         conversation.recipients.forEach { recipient ->
             label(recipient.getDisplayName(), 22f)
             label(recipient.address, 16f)
-            button("Call ${recipient.getDisplayName()}") { startActivity(Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", recipient.address, null))) }
+            button("Call ${recipient.getDisplayName()}") { PhoneDialing.open(this, recipient.address) }
             button("Save or edit contact") {
                 startActivity(Intent(Intent.ACTION_INSERT_OR_EDIT).setType("vnd.android.cursor.item/contact")
                     .putExtra("phone", recipient.address))

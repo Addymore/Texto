@@ -4,13 +4,15 @@
 
 A customizable Kotlin SMS/MMS app for Android by **[Addymore](https://github.com/Addymore)**, built on [QUIK](https://github.com/quik-sms/quik) and QKSMS. Reachable navigation, consistent public and private conversations, and a theme that feels like yours.
 
-[Download 1.6.0](https://github.com/Addymore/Texto/releases/tag/v1.6.0) · [Changelog](CHANGELOG.md) · [Report a bug](https://github.com/Addymore/Texto/issues) · [Telegram](https://t.me/addymore)
+[Download 1.6.1](https://github.com/Addymore/Texto/releases/tag/v1.6.1) · [Changelog](CHANGELOG.md) · [Report a bug](https://github.com/Addymore/Texto/issues) · [Telegram](https://t.me/addymore)
 
 **Two APKs:** choose the signed release APK for a new installation, or the debug APK to update a previous Texto development installation. Neither is a Google Play publication. Android 6+; physical OnePlus 13 / Android 16 and carrier validation are still required. See [validation](VALIDATION.md).
 
-See the [complete feature list](docs/FEATURES.md) and [1.6.0 changelog](CHANGELOG.md).
+See the [complete feature list](docs/FEATURES.md) and [1.6.1 changelog](CHANGELOG.md).
 
 ## A look of your own
+
+<table><tr><td><img src="docs/images/settings-flat-1.6.1.png" width="280" alt="Texto 1.6.1 No cards in Settings with a visible Privacy icon" /></td><td><img src="docs/images/selection-1.6.1.png" width="280" alt="Three-second word selection with native Copy and selection handles" /></td><td><img src="docs/images/changelog-1.6.1.png" width="280" alt="Rounded release notes using the selected Jade accent" /></td></tr></table>
 
 <table><tr><td><img src="docs/images/inbox-1.6.png" width="280" alt="Texto 1.6 custom inbox title, motto and artwork" /></td><td><img src="docs/images/drawer-1.6.png" width="280" alt="Texto 1.6 themed drawer cards and Privacy entry" /></td></tr></table>
 
@@ -39,7 +41,7 @@ Open Backup & restore, choose a writable folder, and create a backup. Select **E
 
 ## Install
 
-1. Download `Texto-1.6.0-release.apk` for a new install, or `Texto-1.6.0-debug.apk` to upgrade your development installation from the [release](https://github.com/Addymore/Texto/releases/tag/v1.6.0).
+1. Download `Texto-1.6.1-release.apk` for a new install, or `Texto-1.6.1-debug.apk` to upgrade your development installation from the [release](https://github.com/Addymore/Texto/releases/tag/v1.6.1).
 2. Install it and select Texto as your default SMS app. Allow the permissions needed for messaging and contacts.
 3. Personalize it in **Themes** and configure your privacy PIN and number rules in **Settings → Privacy & protection**.
 
@@ -88,3 +90,5 @@ The 1.5 card treatment takes visual inspiration from [WA Enhancer 1.6.0](https:/
 Texto derives from QUIK commit `4b942fe71ceaa56f43266de115d14aa5b30d99db`. Thank you to QUIK contributors, Moez Bhatti and QKSMS, and Jake and Luke Klinker for android-smsmms. Original notices and history are retained; [UPSTREAM.md](UPSTREAM.md) preserves the upstream README.
 
 [GNU GPL v3 or later](LICENSE), consistent with inherited source notices. Corresponding source accompanies the APK. The design draws inspiration from Samsung Messages, iOS navigation and ColorOS; Texto is independent and is not affiliated with those vendors.
+
+The 1.6.1 gradient, frosted and AMOLED finishes draw visual inspiration from custom Android ROMs such as [Project Infinity X](https://github.com/ProjectInfinity-X), rendered locally with Texto’s own accent colors.

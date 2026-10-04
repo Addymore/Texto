@@ -16,11 +16,12 @@ object MessageBodyStyle {
         val surface = attributes.getColor(1, Color.WHITE)
         val bubble = if (outgoing) attributes.getColor(0, surface) else accent
         attributes.recycle()
-        val background = ColorUtils.compositeColors(if (emojiOnly) Color.TRANSPARENT else bubble, surface)
+        val transparent = emojiOnly || TextoAppearance.noCards(body.context)
+        val background = ColorUtils.compositeColors(if (transparent) Color.TRANSPARENT else bubble, surface)
         val foreground = if (ColorUtils.calculateContrast(Color.WHITE, background) >=
             ColorUtils.calculateContrast(Color.BLACK, background)) Color.WHITE else Color.BLACK
 
-        body.backgroundTintList = ColorStateList.valueOf(if (emojiOnly) Color.TRANSPARENT else bubble)
+        body.backgroundTintList = ColorStateList.valueOf(if (transparent) Color.TRANSPARENT else bubble)
         body.setTextColor(foreground)
         // Explicitly set links too: XML ColorStateLists do not call QkTextView's Int overload.
         body.setLinkTextColor(foreground)

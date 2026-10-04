@@ -107,7 +107,7 @@ class ContactDirectoryActivity : AppCompatActivity() {
     private inner class PeopleAdapter : RecyclerView.Adapter<PersonHolder>() {
         override fun getItemCount() = visibleEntries.size
         override fun onCreateViewHolder(parent: ViewGroup, type: Int): PersonHolder {
-            val row = LinearLayout(this@ContactDirectoryActivity).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL; setPadding(dp(14), dp(14), dp(14), dp(14)); background = GradientDrawable().apply { cornerRadius = dp(22).toFloat(); setColor(if (dark) 0xFF25272E.toInt() else 0xFFF4F5F9.toInt()) } }
+            val row = LinearLayout(this@ContactDirectoryActivity).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL; setPadding(dp(14), dp(14), dp(14), dp(14)); background = TextoAppearance.card(context) }
             row.layoutParams = RecyclerView.LayoutParams(-1, -2).apply { bottomMargin = dp(8) }
             val avatar = FrameLayout(this@ContactDirectoryActivity)
             val initial = TextView(this@ContactDirectoryActivity).apply { textSize = 21f; gravity = Gravity.CENTER; setTextColor(TextoTheme.onColor(TextoAppearance.accent(this@ContactDirectoryActivity))); background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(TextoAppearance.accent(this@ContactDirectoryActivity)) } }

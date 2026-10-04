@@ -96,6 +96,12 @@ class SettingsController : QkController<SettingsControllerBinding, SettingsView,
         binding.textoPrivacySettings.setOnClickListener {
             activity?.let { it.startActivity(android.content.Intent(it, dev.texto.privacy.ProtectionActivity::class.java)) }
         }
+        val dialing = com.google.android.material.button.MaterialButton(binding.root.context).apply {
+            text = "Dialing country code"; isAllCaps = false
+            setOnClickListener { dev.texto.privacy.PhoneDialing.settings(context) }
+        }
+        binding.preferences.addView(dialing, 1)
+        dev.texto.privacy.TextoAppearance.styleSettingsCard(dialing)
         binding.preferences.layoutTransition = null
         listOf(binding.textoPrivacySettings, binding.textoContactsSettings, binding.textoBinSettings).forEach {
             dev.texto.privacy.TextoAppearance.styleSettingsCard(it)

@@ -28,30 +28,33 @@ import dev.octoshrimpy.quik.manager.ChangelogManager
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 
-class ChangelogDialog(activity: MainActivity) {
-
+class ChangelogDialog(private val activity: MainActivity) {
     val moreClicks: Subject<Unit> = PublishSubject.create()
 
-    private val dialog: AlertDialog
-    private val adapter = ChangelogAdapter(activity)
-
-    init {
-        val layout = ChangelogDialogBinding.inflate(LayoutInflater.from(activity))
-
-        dialog = AlertDialog.Builder(activity)
-                .setCancelable(true)
-                .setView(layout.root)
-                .create()
-
-        layout.version.text = activity.getString(R.string.changelog_version, BuildConfig.VERSION_NAME)
-        layout.changelog.adapter = adapter
-        layout.more.setOnClickListener { dialog.dismiss(); moreClicks.onNext(Unit) }
-        layout.dismiss.setOnClickListener { dialog.dismiss() }
-    }
-
     fun show(changelog: ChangelogManager.CumulativeChangelog) {
-        adapter.setChangelog(changelog)
-        dialog.show()
+        val d = activity.resources.displayMetrics.density
+        val content = android.widget.LinearLayout(activity).apply {
+            orientation = android.widget.LinearLayout.VERTICAL
+            setPadding((24*d).toInt(), (8*d).toInt(), (24*d).toInt(), (16*d).toInt())
+        }
+        val foreground = if (activity.resources.configuration.uiMode and 0x30 == 0x20) android.graphics.Color.WHITE else 0xFF20232B.toInt()
+        listOf("Added" to changelog.added, "Improved" to changelog.improved, "Fixed" to changelog.fixed, "Removed" to changelog.removed).forEach { (title, entries) ->
+            if (entries.isNotEmpty()) {
+                content.addView(android.widget.TextView(activity).apply {
+                    text=title; textSize=18f; setTypeface(null, android.graphics.Typeface.BOLD)
+                    setTextColor(foreground); setPadding(0,(16*d).toInt(),0,(8*d).toInt())
+                })
+                entries.forEach { entry -> content.addView(android.widget.TextView(activity).apply {
+                    text="•  $entry"; textSize=15f; setTextColor(foreground)
+                    setLineSpacing(3*d,1f); setPadding(0,0,0,(10*d).toInt())
+                }) }
+            }
+        }
+        dev.texto.privacy.TextoDialogs.builder(activity)
+            .setTitle("What’s new in Texto ${BuildConfig.VERSION_NAME.removeSuffix("-debug")}")
+            .setView(android.widget.ScrollView(activity).apply { addView(content) })
+            .setPositiveButton("Got it", null)
+            .setNeutralButton("All releases") { _, _ -> moreClicks.onNext(Unit) }
+            .show()
     }
-
 }

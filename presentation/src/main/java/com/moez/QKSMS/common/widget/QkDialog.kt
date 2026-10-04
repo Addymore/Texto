@@ -97,6 +97,8 @@ class QkDialog(private val context: Activity) : AlertDialog(context) {
             setOnCancelListener { value?.invoke() }
         }
 
+    override fun onStart() { super.onStart(); dev.texto.privacy.TextoDialogs.style(this) }
+
     init {
         setView(view.root)
     }

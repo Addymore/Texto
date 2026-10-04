@@ -1,5 +1,24 @@
 [
   {
+    "versionCode": 2300,
+    "versionName": "1.6.1",
+    "added": [
+      "Aurora gradient, frosted glass and AMOLED outline card finishes.",
+      "Optional dialing country code in Settings; numbers are kept as written by default."
+    ],
+    "improved": [
+      "No cards applies to settings, navigation, contacts and message bubbles.",
+      "Rounded dialogs follow the selected accent.",
+      "Texto release notes appear after updates in every device language."
+    ],
+    "fixed": [
+      "Privacy icon restored in the navigation drawer and Settings.",
+      "Phone numbers open the dialer directly without a web-link warning.",
+      "Hold message text for three seconds to select and copy individual words."
+    ],
+    "removed": []
+  },
+  {
     "versionCode": 2239,
     "versionName": "4.3.7",
     "fixed": [

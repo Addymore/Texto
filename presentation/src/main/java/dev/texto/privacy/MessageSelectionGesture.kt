@@ -7,6 +7,7 @@ import android.text.method.MovementMethod
 import android.text.style.ClickableSpan
 import android.view.*
 import android.widget.TextView
+import androidx.core.view.doOnLayout
 import dev.octoshrimpy.quik.R
 import kotlin.math.abs
 
@@ -15,6 +16,7 @@ class MessageSelectionGesture(private val body: TextView, private val row: View,
     private var id=Long.MIN_VALUE
     private var x=0f; private var y=0f; private var down=0L
     private var held=false; private var canceled=false; private var native=false
+    private var preparing=false; private var releasedWhilePreparing=false
     private var movement: MovementMethod?=null
     private val slop=ViewConfiguration.get(body.context).scaledTouchSlop
     private val selectText=Runnable { if(held && !canceled && body.isShown && body.hasWindowFocus() && !selectionActive()) beginTextSelection() }
@@ -36,18 +38,44 @@ class MessageSelectionGesture(private val body: TextView, private val row: View,
     fun bind(messageId: Long) { if(id != messageId) { reset(); id=messageId } }
     private fun reset() {
         held=false; canceled=true; body.removeCallbacks(selectText)
+        preparing=false; releasedWhilePreparing=false
+        body.parent?.requestDisallowInterceptTouchEvent(false)
         if(native) { native=false; body.setTextIsSelectable(false); body.movementMethod=movement; body.clearFocus() }
     }
     private fun beginTextSelection() {
         held=false; native=true; movement=body.movementMethod
-        body.setTextIsSelectable(true); body.requestFocus()
-        val event=MotionEvent.obtain(down,SystemClock.uptimeMillis(),MotionEvent.ACTION_DOWN,x,y,0)
-        body.onTouchEvent(event); event.recycle()
-        body.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-        if(Build.VERSION.SDK_INT >= 24) body.performLongClick(x,y) else body.performLongClick()
+        preparing=true; releasedWhilePreparing=false
+        body.autoLinkMask = 0
+        body.setTextIsSelectable(true)
+        body.movementMethod = android.text.method.ArrowKeyMovementMethod.getInstance()
+        body.parent?.requestDisallowInterceptTouchEvent(true)
+        body.requestFocus()
+        // TightTextView must finish its selectable layout before Editor can create
+        // selection handles. An immediate long-click can silently do nothing.
+        body.doOnLayout {
+            body.post {
+                if (!native) return@post
+                if (!body.isAttachedToWindow || !body.hasWindowFocus()) { reset(); return@post }
+                val event=MotionEvent.obtain(down,SystemClock.uptimeMillis(),MotionEvent.ACTION_DOWN,x,y,0)
+                body.onTouchEvent(event); event.recycle()
+                body.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                if(Build.VERSION.SDK_INT >= 24) body.performLongClick(x,y) else body.performLongClick()
+                body.cancelLongPress()
+                preparing=false
+                if (releasedWhilePreparing) {
+                    val up=MotionEvent.obtain(down,SystemClock.uptimeMillis(),MotionEvent.ACTION_UP,x,y,0)
+                    body.onTouchEvent(up); up.recycle()
+                }
+            }
+        }
     }
     override fun onTouch(v: View, e: MotionEvent): Boolean {
-        if(native) return false
+        if(native) {
+            if (!preparing) return false
+            if (e.actionMasked == MotionEvent.ACTION_UP) releasedWhilePreparing=true
+            if (e.actionMasked == MotionEvent.ACTION_CANCEL) reset()
+            return true
+        }
         when(e.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 x=e.x; y=e.y; down=e.eventTime; held=true; canceled=false

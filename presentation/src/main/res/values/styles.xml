@@ -66,6 +66,7 @@
     </style>
 
     <style name="PreferenceCategory">
+        <item name="android:tag">texto_section</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginBottom">8dp</item>

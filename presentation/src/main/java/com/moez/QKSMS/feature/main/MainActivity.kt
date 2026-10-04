@@ -157,8 +157,11 @@ class MainActivity : QkThemedActivity(), MainView {
             row.layoutParams = row.layoutParams.apply { height = (64*resources.displayMetrics.density).toInt() }
             for(i in 0 until row.childCount) (row.getChildAt(i) as? android.widget.ImageView)?.imageTintList = ColorStateList.valueOf(dev.texto.privacy.TextoAppearance.accent(this))
         }
+        dev.texto.privacy.TextoAppearance.styleSettingsCard(binding.drawer.rateLayout)
         val privacyRow = com.google.android.material.button.MaterialButton(this).apply {
             text="Privacy"; isAllCaps=false
+            setIconResource(R.drawable.ic_texto_privacy); iconSize=(24*resources.displayMetrics.density).toInt(); iconPadding=(24*resources.displayMetrics.density).toInt()
+            iconTint=ColorStateList.valueOf(dev.texto.privacy.TextoAppearance.accent(this@MainActivity))
             setOnClickListener { binding.drawerLayout.closeDrawers(); startActivity(Intent(this@MainActivity,dev.texto.privacy.ProtectionActivity::class.java)) }
         }
         (binding.drawer.settings.parent as android.widget.LinearLayout).addView(privacyRow, (binding.drawer.settings.parent as android.view.ViewGroup).indexOfChild(binding.drawer.settings)+1, android.widget.LinearLayout.LayoutParams(-1,-2))
@@ -464,7 +467,7 @@ class MainActivity : QkThemedActivity(), MainView {
     }
 
     override fun showDeleteDialog(conversations: List<Long>) {
-        AlertDialog.Builder(this)
+        dev.texto.privacy.TextoDialogs.builder(this)
             .setTitle(R.string.dialog_delete_title)
             .setMessage(
                 resources.getQuantityString(

@@ -133,7 +133,7 @@ class ScheduledActivity : QkThemedActivity(), ScheduledView {
 
     override fun showDeleteDialog(messages: List<Long>) {
         val count = messages.size
-        AlertDialog.Builder(this)
+        dev.texto.privacy.TextoDialogs.builder(this)
             .setTitle(R.string.dialog_delete_title)
             .setMessage(resources.getQuantityString(R.plurals.dialog_delete_chat, count, count))
             .setPositiveButton(R.string.button_delete) { _, _ -> deleteScheduledMessages.onNext(messages) }
@@ -143,7 +143,7 @@ class ScheduledActivity : QkThemedActivity(), ScheduledView {
 
     override fun showSendNowDialog(messages: List<Long>) {
         val count = messages.size
-        AlertDialog.Builder(this)
+        dev.texto.privacy.TextoDialogs.builder(this)
             .setTitle(R.string.main_menu_send_now)
             .setMessage(resources.getQuantityString(R.plurals.dialog_send_now, count, count))
             .setPositiveButton(R.string.main_menu_send_now) { _, _ -> sendScheduledMessages.onNext(messages) }
@@ -152,7 +152,7 @@ class ScheduledActivity : QkThemedActivity(), ScheduledView {
     }
 
     override fun showEditMessageDialog(message: Long) {
-        AlertDialog.Builder(this)
+        dev.texto.privacy.TextoDialogs.builder(this)
             .setTitle(R.string.dialog_edit_scheduled_message_title)
             .setMessage(R.string.dialog_edit_scheduled_message)
             .setPositiveButton(R.string.dialog_edit_scheduled_message_positive_button) { _, _ ->

@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.6.1 — 5 October 2026
+
+- Apply No cards to settings, drawer rows, contacts, navigation, message bubbles and file/contact attachments. Keep modal dialogs opaque and controls identifiable.
+- Add Aurora gradient, frosted glass and AMOLED outline finishes using the selected accent; no real-time blur or animation overhead.
+- Restore the Privacy shield icon in the drawer and Settings.
+- Use rounded Material dialogs for message details, link warnings, backup, blocking, scheduled messages and other utilities.
+- Replace the inherited empty update window with actual Texto release notes, visible in every device language.
+- Separate manual link spans from native text movement so a deliberate three-second hold can select individual words; shorter holds retain message selection.
+- Open phone links directly in the dialer using the number displayed in the message. Add an optional country-code setting; no code is added by default.
+- Let Android choose the refresh rate by default; the highest-rate override is now opt-in. The reported OnePlus freeze/reboot remains unconfirmed and is not claimed fixed.
+
 ## 1.6.0 — 4 October 2026
 
 - Hold message text for three seconds to select text inside the bubble; a shorter long press selects the message for actions. Scrolling cancels the hold; normal link taps are preserved.

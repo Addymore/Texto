@@ -61,3 +61,12 @@ The bin covers received/sent SMS and MMS routed through normal message/conversat
 - Open About and verify Texto source/changelog destinations; upstream credits remain in the repository.
 - Fling a long conversation containing SMS, photos, files, audio and contact cards. Verify attachments open the right message after repeated scrolling, playback controls still work, and measure frame pacing on OnePlus 13.
 - Exact custom platform-dialog accents use Android 11+ resource loaders; older Android needs separate visual regression.
+
+## Texto 1.6.1 acceptance checks
+
+1. Upgrade the same debug package from 1.5/1.6 without clearing data. Confirm message counts, privacy rules and selected accent remain. The update dialog must contain actual Texto notes, including on a non-English device.
+2. Choose No cards and inspect Inbox, Archive, private conversations, Settings, contact rows, drawer, file/contact attachments and the bottom bar. Dialogs and action controls remain readable. Switch through all finishes and back; check light, dark and AMOLED themes.
+3. Hold a word in an incoming and outgoing message for three seconds without moving. Release, adjust both selection handles, copy only a few words and paste into the draft. A shorter hold selects the message for actions; scrolling cancels the text hold.
+4. Tap a local phone number in a message. The dialer must open with the displayed number and no web warning. Configure a country code in Settings and repeat; international numbers and emergency/service codes must remain unchanged. Web-link confirmation must still follow its own preference.
+5. Check Privacy icons and rounded themed message-details, scheduled, backup, blocking, country-code and changelog dialogs.
+6. For any freeze/reboot, record the exact time, Android build and installed Texto version, then capture Android crash/ANR/reboot diagnostics promptly. An unrelated retained crash does not establish the cause. The 1.6.1 changes do not claim a confirmed reboot fix.

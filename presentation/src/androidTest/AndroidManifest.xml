@@ -1,1 +1,5 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <instrumentation android:name="dev.texto.testing.AppearanceRegressionInstrumentation" android:targetPackage="app.texto.sms.debug" />
+    <instrumentation android:name="dev.texto.testing.UtilityAccessInstrumentation" android:targetPackage="app.texto.sms.debug" />
+    <instrumentation android:name="dev.texto.testing.MessageContrastInstrumentation" android:targetPackage="app.texto.sms.debug" />
+</manifest>

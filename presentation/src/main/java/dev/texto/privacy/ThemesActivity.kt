@@ -115,9 +115,9 @@ class ThemesActivity : QkThemedActivity() {
             }.setNegativeButton("Cancel",null).show()
         }
         content.addView(MaterialSwitch(this).apply { text="Pure black in dark mode"; minHeight=dp(56); isChecked=prefs.black.get(); setOnCheckedChangeListener { _,checked -> prefs.black.set(checked) } })
-        label("Conversation lists",22f)
+        label("Cards & surfaces",22f)
         choice("Card shape","card_shape",arrayOf("Soft","Round","Minimal"),arrayOf("soft","round","minimal"),"soft")
-        choice("Card finish","card_finish",arrayOf("Tonal cards","Neutral","Accent tint","Outlined","No cards"),arrayOf("tonal","neutral","tinted","outlined","none"),"tonal")
+        choice("Card finish","card_finish",arrayOf("Tonal cards","Neutral","Accent tint","Outlined","Aurora gradient","Frosted glass","AMOLED outline","No cards — everywhere"),arrayOf("tonal","neutral","tinted","outlined","gradient","glass","amoled","none"),"tonal")
         choice("Card size","card_size",arrayOf("Small","Medium","Large"),arrayOf("small","medium","large"),"medium")
         choice("Spacing","density",arrayOf("Compact","Comfortable","Airy"),arrayOf("compact","comfortable","airy"),"comfortable")
         choice("Message preview","preview_lines",arrayOf("Hidden","One line","Two lines","Three lines"),arrayOf("0","1","2","3"),"2")
@@ -138,7 +138,7 @@ class ThemesActivity : QkThemedActivity() {
         row("Text size",sizes[prefs.textSize.get().coerceIn(0,4)]) {
             dialog=MaterialAlertDialogBuilder(this).setTitle("Text size").setSingleChoiceItems(sizes,prefs.textSize.get()) { d,i -> d.dismiss(); prefs.textSize.set(i) }.setNegativeButton("Cancel",null).show()
         }
-        toggle("Prefer highest display refresh rate","high_refresh",true)
+        toggle("Prefer highest display refresh rate","high_refresh",false)
         toggle("Reduce motion","reduce_motion",false)
         label("Changes apply to public and private conversations. Your phone controls the available refresh rate.",13f)
         row("Fonts, scheduled dark mode & more","") { startActivity(Intent(this,dev.octoshrimpy.quik.feature.settings.SettingsActivity::class.java)) }

@@ -49,7 +49,7 @@ class ChangelogManagerImpl @Inject constructor(
                         .orEmpty()
                         .sortedBy { changelog -> changelog.versionCode }
                         .filter { changelog ->
-                            changelog.versionCode in prefs.changelogVersion.get().inc()..context.versionCode
+                            changelog.versionCode in (if (prefs.changelogVersion.get() == 0) context.versionCode else prefs.changelogVersion.get().inc())..context.versionCode
                         }
 
                 ChangelogManager.CumulativeChangelog(

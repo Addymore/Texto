@@ -46,7 +46,7 @@ class QkDialog @Inject constructor(private val context: Context, val adapter: Me
         recyclerView.adapter = adapter
         recyclerView.setPadding(top = 8.dpToPx(context), bottom = 8.dpToPx(context))
 
-        val dialog = AlertDialog.Builder(activity)
+        val dialog = dev.texto.privacy.TextoDialogs.builder(activity)
                 .setTitle(title)
                 .setView(recyclerView)
                 .create()

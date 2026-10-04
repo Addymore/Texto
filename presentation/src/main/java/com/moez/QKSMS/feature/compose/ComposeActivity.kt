@@ -589,7 +589,7 @@ class ComposeActivity : QkThemedActivity(), ComposeView {
     }
 
     override fun showDetails(details: String) {
-        AlertDialog.Builder(this)
+        dev.texto.privacy.TextoDialogs.builder(this)
             .setTitle(R.string.compose_details_title)
             .setMessage(details)
             .setCancelable(true)
@@ -597,7 +597,8 @@ class ComposeActivity : QkThemedActivity(), ComposeView {
     }
 
     override fun showMessageLinkAskDialog(uri: Uri) {
-        AlertDialog.Builder(this)
+        if (uri.scheme.equals("tel", true)) { dev.texto.privacy.PhoneDialing.open(this, uri.schemeSpecificPart); return }
+        dev.texto.privacy.TextoDialogs.builder(this)
             .setTitle(R.string.messageLinkHandling_dialog_title)
             .setMessage(getString(R.string.messageLinkHandling_dialog_body, uri.toString()))
             .setPositiveButton(
@@ -742,7 +743,7 @@ class ComposeActivity : QkThemedActivity(), ComposeView {
 
     override fun showDeleteDialog(messages: List<Long>) {
         val count = messages.size
-        AlertDialog.Builder(this)
+        dev.texto.privacy.TextoDialogs.builder(this)
             .setTitle(R.string.dialog_delete_title)
             .setMessage(resources.getQuantityString(R.plurals.dialog_delete_chat, count, count))
             .setPositiveButton(R.string.button_delete) { _, _ -> confirmDeleteIntent.onNext(messages) }
@@ -751,7 +752,7 @@ class ComposeActivity : QkThemedActivity(), ComposeView {
     }
 
     override fun showClearCurrentMessageDialog() {
-        AlertDialog.Builder(this)
+        dev.texto.privacy.TextoDialogs.builder(this)
             .setTitle(R.string.dialog_clear_compose_title)
             .setMessage(R.string.dialog_clear_compose)
             .setPositiveButton(R.string.button_clear) { _, _ ->
@@ -762,7 +763,7 @@ class ComposeActivity : QkThemedActivity(), ComposeView {
     }
 
     override fun showReactionsDialog(reactions: List<String>) {
-        AlertDialog.Builder(this)
+        dev.texto.privacy.TextoDialogs.builder(this)
             .setTitle(R.string.compose_reactions_title)
             .setMessage(reactions.joinToString("\n"))
             .show()

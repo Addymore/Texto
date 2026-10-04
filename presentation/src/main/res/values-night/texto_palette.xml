@@ -1,5 +1,6 @@
 <resources>
     <style name="TextoPickerDialog" parent="@android:style/Theme.Material.Dialog.Alert">
         <item name="android:colorAccent">@color/texto_control_accent</item>
+        <item name="android:windowBackground">@drawable/texto_section_card</item>
     </style>
 </resources>

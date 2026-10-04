@@ -6,6 +6,7 @@
 - Dual-SIM selection, delayed sending, scheduled messages, drafts, search, pinning, conversation renaming, reactions, speech and notification quick reply inherited from QUIK.
 - Sent, delivered (when the carrier reports delivery) and received indicators. No SMS read receipts or RCS claim.
 - Hold message text for three seconds to select text inside the bubble; a shorter long press selects the message for actions. Scrolling cancels the hold; normal link taps are preserved.
+- Phone links open the dialer directly, preserving the displayed number. An optional country-code setting replaces a local leading zero only when configured; international and short service numbers are preserved.
 - Conversation message totals and unread badges or dots.
 - Contact names/photos, gradient initials and geometric fallback avatars, contact profiles and contact access from Settings.
 
@@ -14,11 +15,12 @@
 - Reachable collapsible header; Messages/Themes bottom navigation; Settings in the overflow menu.
 - Accent-aware drawer and settings cards, eight palettes, custom hex accents and supported Android wallpaper colors.
 - System/light/dark/scheduled appearance, AMOLED and text-size controls.
-- Small/medium/large conversation card size; soft/round/minimal shape; tonal/neutral/tinted/outlined or no cards.
+- Small/medium/large conversation card size; soft/round/minimal shape; tonal/neutral/tinted/outlined, Aurora gradient, frosted glass and AMOLED outline finishes. No cards removes decorative card surfaces across lists, Settings, navigation, bubbles and file/contact attachments.
 - Compact/comfortable/airy spacing, zero-to-three preview lines, optional avatars/totals and unread dots/counts.
 - Shared public/private conversation layouts and message bubble themes.
 - Custom inbox title and motto; separate background image and header artwork with a readability overlay; removal/reset controls.
-- Display refresh-rate preference and reduced motion. Actual frame pacing depends on the device.
+- Rounded accent-aware dialogs and actual Texto update notes in every locale.
+- System-controlled refresh rate by default, optional high-refresh preference and reduced motion. Actual frame pacing depends on the device.
 
 ## Privacy and message management
 

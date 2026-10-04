@@ -5,8 +5,25 @@
     <color name="texto_control_on_container">#18264A</color>
     <style name="TextoPickerDialog" parent="@android:style/Theme.Material.Light.Dialog.Alert">
         <item name="android:colorAccent">@color/texto_control_accent</item>
+        <item name="android:windowBackground">@drawable/texto_section_card</item>
+    </style>
+    <style name="TextoDialogShape" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">28dp</item>
+    </style>
+    <style name="TextoMaterialDialog" parent="MaterialAlertDialog.Material3">
+        <item name="backgroundTint">@color/texto_control_container</item>
+        <item name="shapeAppearanceOverlay">@style/TextoDialogShape</item>
+    </style>
+    <style name="TextoAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="alertDialogStyle">@style/TextoMaterialDialog</item>
+        <item name="shapeAppearanceOverlay">@style/TextoDialogShape</item>
+        <item name="colorPrimary">@color/texto_control_accent</item>
+        <item name="colorSecondary">@color/texto_control_accent</item>
+        <item name="colorAccent">@color/texto_control_accent</item>
     </style>
     <style name="TextoPalette">
+        <item name="materialAlertDialogTheme">@style/TextoAlertDialog</item>
         <item name="android:datePickerDialogTheme">@style/TextoPickerDialog</item>
         <item name="android:timePickerDialogTheme">@style/TextoPickerDialog</item>
         <item name="colorPrimary">@color/texto_control_accent</item>

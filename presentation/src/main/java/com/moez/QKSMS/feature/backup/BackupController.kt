@@ -69,7 +69,7 @@ class BackupController : QkController<BackupControllerBinding, BackupView, Backu
     private val documentSelectedSubject: Subject<Uri> = PublishSubject.create()
 
     private val stopRestoreDialog by lazy {
-        AlertDialog.Builder(activity!!)
+        dev.texto.privacy.TextoDialogs.builder(activity!!)
                 .setTitle(R.string.backup_restore_stop_title)
                 .setMessage(R.string.backup_restore_stop_message)
                 .setPositiveButton(R.string.button_stop, stopRestoreConfirmSubject)
@@ -79,7 +79,7 @@ class BackupController : QkController<BackupControllerBinding, BackupView, Backu
     }
 
     private val selectLocationRationaleDialog by lazy {
-        AlertDialog.Builder(activity!!)
+        dev.texto.privacy.TextoDialogs.builder(activity!!)
                 .setTitle(R.string.backup_select_location_rationale_title)
                 .setMessage(R.string.backup_select_location_rationale_message)
                 .setPositiveButton(R.string.button_continue, selectFolderConfirmSubject)
@@ -89,7 +89,7 @@ class BackupController : QkController<BackupControllerBinding, BackupView, Backu
     }
 
     private val selectedBackupErrorDialog by lazy {
-        AlertDialog.Builder(activity!!)
+        dev.texto.privacy.TextoDialogs.builder(activity!!)
                 .setTitle(R.string.backup_selected_backup_error_title)
                 .setMessage(R.string.backup_selected_backup_error_message)
                 .setPositiveButton(R.string.button_continue, restoreErrorConfirmSubject)
@@ -98,7 +98,7 @@ class BackupController : QkController<BackupControllerBinding, BackupView, Backu
     }
 
     private val selectedBackupDetailsDialog by lazy {
-        AlertDialog.Builder(activity!!)
+        dev.texto.privacy.TextoDialogs.builder(activity!!)
                 .setTitle(R.string.backup_selected_backup_details_title)
                 .setPositiveButton(R.string.backup_restore_title, confirmRestoreConfirmSubject)
                 .setNegativeButton(R.string.button_cancel, confirmRestoreCancelSubject)
@@ -163,7 +163,7 @@ class BackupController : QkController<BackupControllerBinding, BackupView, Backu
             title = "Email a backup"
             summary = "Create a backup below, then choose its JSON file to attach in your email app."
             setOnClickListener {
-                AlertDialog.Builder(context).setTitle("Share message backup?")
+                dev.texto.privacy.TextoDialogs.builder(context).setTitle("Share message backup?")
                     .setMessage("Backups contain readable SMS text, including private conversations. Only share with a recipient you trust. MMS attachments and Texto privacy settings are not included. To restore from email, download the attachment and use Restore.")
                     .setNegativeButton("Cancel", null)
                     .setPositiveButton("Choose backup") { _, _ -> emailDocument.launch(arrayOf("application/json", "application/octet-stream")) }

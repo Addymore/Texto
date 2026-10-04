@@ -82,13 +82,14 @@ class FileBinder @Inject constructor(colors: Colors, private val context: Contex
             binding.filename.text = part.getBestFilename()
         }
 
-        if (!message.isMe()) {
+        val noCards = dev.texto.privacy.TextoAppearance.noCards(holder.itemView.context)
+        if (!message.isMe() && !noCards) {
             binding.fileBackground.setBackgroundTint(theme.theme)
             binding.icon.setTint(theme.textPrimary)
             binding.filename.setTextColor(theme.textPrimary)
             binding.size.setTextColor(theme.textTertiary)
         } else {
-            binding.fileBackground.setBackgroundTint(holder.itemView.context.resolveThemeColor(R.attr.bubbleColor))
+            binding.fileBackground.setBackgroundTint(if (noCards) android.graphics.Color.TRANSPARENT else holder.itemView.context.resolveThemeColor(R.attr.bubbleColor))
             binding.icon.setTint(holder.itemView.context.resolveThemeColor(android.R.attr.textColorSecondary))
             binding.filename.setTextColor(holder.itemView.context.resolveThemeColor(android.R.attr.textColorPrimary))
             binding.size.setTextColor(holder.itemView.context.resolveThemeColor(android.R.attr.textColorTertiary))

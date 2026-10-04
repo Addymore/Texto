@@ -1,4 +1,19 @@
-# Texto validation — 4 October 2026
+# Texto validation — 5 October 2026
+
+## 1.6.1 automated and emulator checks
+
+- Final optimized release build passed in 8m 35s. All 19 common JVM tests remain passing (Gradle up-to-date results). Both downloadable APKs passed signature and 4-byte alignment verification and retain their existing release/debug certificates. Version code is 2300; packages remain `app.texto.sms` and `app.texto.sms.debug`.
+- The final signed release APK installed over the existing production-package emulator installation and launched successfully. After granting the default-SMS role, the synthetic inbox loaded with no crash recorded in the emulator crash buffer.
+- Final debug and instrumentation builds passed. A new regression uses the real MessagesAdapter, TightTextView and RecyclerView: text is not selected at 1.6 seconds, an individual word is selected after three seconds, selection survives finger release, and native Copy copies only that word. A separate synthetic conversation was also checked with an actual 3.3-second injected touch; native selection handles and the Copy toolbar were visible.
+- Direct phone-link activation produced ACTION_DIAL with the displayed number. Default empty country code, optional country code, international numbers and special-number handling passed the regression checks.
+- No cards passed transparent settings and message-bubble checks. All new card finishes were exercised. Flat settings/drawer, the Privacy shield icon, native selection and rounded Jade-accent release notes were visually checked. Repository screenshots contain only synthetic messages.
+- The privacy and utility regression passed again: ordinary Backup, Message management and Scheduled open without PIN; protected tools remain hidden until verification; cancellation closes protected tools. Number rules, mixed groups, archived/locked threads, title/motto, artwork and card-size checks passed.
+- All 40 message contrast cases passed again, including incoming/outgoing, light/dark/AMOLED, custom accents, phone/web and confirmation links, recycled views, Settings cards and scheduled date-picker checks.
+- The actual 1.5.0 debug APK was upgraded to the 1.6.1 candidate on the Android 14 emulator without clearing app data. All 43 synthetic SMS rows, privacy preferences and the emulator boot ID were unchanged. Texto release notes appeared. Missing changelog preferences were also tested separately to verify first-run notes.
+- Read-only OnePlus diagnostics did not establish the cause of the reported freeze/reboot. The retained system restart identified during investigation did not match the time reported by the user. This release makes no claim that the physical-phone reboot cause is fixed. Android controls refresh rate by default; the explicit highest-rate option remains available.
+- Physical OnePlus frame pacing, carrier SMS/MMS, actual fingerprint sensing, real email delivery and a complete backup/restore round trip remain unverified. Existing translation lint issues remain; a clean full lint result is not claimed. F-Droid's submission still targets 1.6.0 and review is pending; Google Play publication is pending.
+
+See [APK signing and upgrade notes](docs/RELEASE-SIGNING.md) before switching between release, debug and F-Droid packages.
 
 ## 1.6 automated and emulator checks
 

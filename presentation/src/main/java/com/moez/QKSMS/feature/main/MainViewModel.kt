@@ -246,19 +246,13 @@ class MainViewModel @Inject constructor(
                     }
                 }
 
-        // Show changelog
+        // Bundled Texto release notes remain available regardless of device language.
         if (changelogManager.didUpdate()) {
-            if (Locale.getDefault().language.startsWith("en")) {
-                GlobalScope.launch(Dispatchers.Main) {
-                    val changelog = changelogManager.getChangelog()
-                    changelogManager.markChangelogSeen()
-                    view.showChangelog(changelog)
-                }
-            } else {
+            GlobalScope.launch(Dispatchers.Main) {
+                val changelog = changelogManager.getChangelog()
+                view.showChangelog(changelog)
                 changelogManager.markChangelogSeen()
             }
-        } else {
-            changelogManager.markChangelogSeen()
         }
 
         view.changelogMoreIntent

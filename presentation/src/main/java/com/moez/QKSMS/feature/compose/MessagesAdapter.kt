@@ -350,38 +350,28 @@ class MessagesAdapter @Inject constructor(
 
         val spanString = SpannableStringBuilder(displayText)
 
-        when (prefs.messageLinkHandling.get()) {
-            Preferences.MESSAGE_LINK_HANDLING_BLOCK -> body.autoLinkMask = 0
-            Preferences.MESSAGE_LINK_HANDLING_ASK -> {
-                //  manually handle link clicks if user has set to ask before opening links
-                body.apply {
-                    isClickable = false
-                    linksClickable = false
-                    movementMethod = LinkMovementMethod.getInstance()
-
-                    Linkify.addLinks(spanString, autoLinkMask)
-                }
-
-                spanString.apply {
-                    for (span in getSpans(0, length, URLSpan::class.java)) {
-                        // set handler for when user touches a link into new span
-                        setSpan(
-                            object : ClickableSpan() {
-                                override fun onClick(widget: View) {
-                                    messageLinkClicks.onNext(span.url.toUri())
-                                }
-                            },
-                            getSpanStart(span),
-                            getSpanEnd(span),
-                            getSpanFlags(span)
-                        )
-
-                        // remove original span
-                        removeSpan(span)
+        // All spans are added explicitly: TextView autoLink replaces the movement method
+        // needed by native word selection when the view becomes selectable.
+        body.autoLinkMask = 0
+        body.linksClickable = true
+        body.movementMethod = LinkMovementMethod.getInstance()
+        val linkMode = prefs.messageLinkHandling.get()
+        val mask = Linkify.PHONE_NUMBERS or if (linkMode == Preferences.MESSAGE_LINK_HANDLING_BLOCK) 0 else (Linkify.EMAIL_ADDRESSES or Linkify.WEB_URLS)
+        Linkify.addLinks(spanString, mask)
+        for (span in spanString.getSpans(0, spanString.length, URLSpan::class.java)) {
+            val start = spanString.getSpanStart(span)
+            val end = spanString.getSpanEnd(span)
+            val phone = span.url.startsWith("tel:", ignoreCase = true)
+            if (phone || linkMode == Preferences.MESSAGE_LINK_HANDLING_ASK) {
+                val visibleNumber = spanString.subSequence(start, end).toString()
+                spanString.setSpan(object : ClickableSpan() {
+                    override fun onClick(widget: View) {
+                        if (phone) dev.texto.privacy.PhoneDialing.open(widget.context, visibleNumber)
+                        else messageLinkClicks.onNext(span.url.toUri())
                     }
-                }
+                }, start, end, spanString.getSpanFlags(span))
+                spanString.removeSpan(span)
             }
-            else -> body.movementMethod = LinkMovementMethod.getInstance()
         }
 
         body.apply {

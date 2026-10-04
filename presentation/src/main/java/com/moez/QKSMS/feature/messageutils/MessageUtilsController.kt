@@ -125,7 +125,7 @@ class MessageUtilsController : QkController<MessageUtilsControllerBinding, Messa
     }
 
     override fun showDeduplicationConfirmationDialog(): Single<Boolean> = Single.create { emitter ->
-        AlertDialog.Builder(activity)
+        dev.texto.privacy.TextoDialogs.builder(activity)
             .setTitle(R.string.deduplicate_messages_title)
             .setMessage(R.string.deduplicate_message_confirmation_dialog_message)
             .setPositiveButton(R.string.button_continue) { _, _ -> emitter.onSuccess(true) }
@@ -145,7 +145,7 @@ class MessageUtilsController : QkController<MessageUtilsControllerBinding, Messa
 
     override suspend fun showAutoDeleteWarningDialog(messages: Int): Boolean = withContext(Dispatchers.Main) {
         suspendCancellableCoroutine { cont ->
-            androidx.appcompat.app.AlertDialog.Builder(activity!!)
+            dev.texto.privacy.TextoDialogs.builder(activity!!)
                 .setTitle(R.string.settings_auto_delete_warning)
                 .setMessage(context.resources.getString(R.string.settings_auto_delete_warning_message, messages))
                 .setOnCancelListener { cont.resume(false) }

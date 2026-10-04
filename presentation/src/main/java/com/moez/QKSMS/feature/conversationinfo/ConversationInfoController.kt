@@ -129,7 +129,7 @@ class ConversationInfoController(
     }
 
     override fun showDeleteDialog() {
-        AlertDialog.Builder(activity!!)
+        dev.texto.privacy.TextoDialogs.builder(activity!!)
                 .setTitle(R.string.dialog_delete_title)
                 .setMessage(resources?.getQuantityString(R.plurals.dialog_delete_message, 1))
                 .setPositiveButton(R.string.button_delete) { _, _ -> confirmDeleteSubject.onNext(Unit) }

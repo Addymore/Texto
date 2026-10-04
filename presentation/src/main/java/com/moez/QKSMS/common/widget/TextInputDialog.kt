@@ -29,6 +29,8 @@ class TextInputDialog(context: Activity, hint: String, listener: (String) -> Uni
 
     private val layout = TextInputDialogBinding.inflate(LayoutInflater.from(context))
 
+    override fun onStart() { super.onStart(); dev.texto.privacy.TextoDialogs.style(this) }
+
     init {
         layout.field.hint = hint
 

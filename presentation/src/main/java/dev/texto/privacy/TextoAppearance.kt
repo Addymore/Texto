@@ -18,13 +18,27 @@ object TextoAppearance {
             return context.getColor(android.R.color.system_accent1_600)
         return android.preference.PreferenceManager.getDefaultSharedPreferences(context).getInt("theme", 0xFF375BCD.toInt())
     }
+    fun noCards(context: Context) = prefs(context).getString("card_finish", "tonal") == "none"
     fun card(context: Context, selected: Boolean = false): android.graphics.drawable.Drawable {
         val p = prefs(context); val dark = context.resources.configuration.uiMode and 0x30 == 0x20
         val radius = when(p.getString("card_shape", "soft")) { "minimal" -> 12; "round" -> 30; else -> 16 }
         val base = if(dark) 0xFF23262D.toInt() else 0xFFF3F5F9.toInt()
         val finish = p.getString("card_finish","tonal")
+        if (finish == "none") {
+            val content = android.graphics.drawable.StateListDrawable().apply {
+                addState(intArrayOf(android.R.attr.state_activated), android.graphics.drawable.ColorDrawable(accent(context) and 0x00FFFFFF or 0x33000000))
+                addState(intArrayOf(), android.graphics.drawable.ColorDrawable(if (selected) accent(context) and 0x00FFFFFF or 0x33000000 else Color.TRANSPARENT))
+            }
+            return RippleDrawable(ColorStateList.valueOf(accent(context) and 0x00FFFFFF or 0x22000000), content, null)
+        }
         val fill = if (selected) androidx.core.graphics.ColorUtils.blendARGB(base,accent(context),.24f) else if (finish == "tinted" || finish == "tonal") androidx.core.graphics.ColorUtils.blendARGB(base,accent(context),if(dark) .16f else .08f) else base
         val shape = GradientDrawable().apply { cornerRadius = radius * context.resources.displayMetrics.density; setColor(ColorStateList(arrayOf(intArrayOf(android.R.attr.state_activated), intArrayOf()), intArrayOf(androidx.core.graphics.ColorUtils.blendARGB(base,accent(context),.24f), fill))); if (finish == "outlined" || finish == "tonal") setStroke((context.resources.displayMetrics.density).toInt().coerceAtLeast(1), androidx.core.graphics.ColorUtils.blendARGB(base,accent(context),if (finish == "tonal") .18f else .45f)) }
+        when (finish) {
+            "gradient" -> { shape.orientation = GradientDrawable.Orientation.TL_BR; shape.colors = intArrayOf(androidx.core.graphics.ColorUtils.blendARGB(base, accent(context), .28f), base) }
+            "glass" -> { shape.setColor(androidx.core.graphics.ColorUtils.blendARGB(base, if(dark) Color.WHITE else Color.WHITE, if(dark) .06f else .55f)); shape.setStroke((context.resources.displayMetrics.density).toInt().coerceAtLeast(1), androidx.core.graphics.ColorUtils.blendARGB(base, accent(context), .35f)) }
+            "amoled" -> { shape.setColor(if(dark) Color.BLACK else Color.WHITE); shape.setStroke((context.resources.displayMetrics.density).toInt().coerceAtLeast(1), androidx.core.graphics.ColorUtils.blendARGB(base, accent(context), .3f)) }
+        }
+        if (selected && finish in listOf("gradient", "glass", "amoled")) shape.setStroke((2*context.resources.displayMetrics.density).toInt(), accent(context))
         return RippleDrawable(ColorStateList.valueOf(accent(context) and 0x00FFFFFF or 0x22000000),shape,null)
     }
     fun onAccent(context: Context): Int = if (androidx.core.graphics.ColorUtils.calculateLuminance(accent(context)) > .179) Color.BLACK else Color.WHITE
@@ -56,7 +70,10 @@ object TextoAppearance {
         view.backgroundTintList = null
         view.background = card(view.context)
         // MaterialButton transfers its stored support tint when a custom drawable is assigned.
-        if (view is com.google.android.material.button.MaterialButton) view.supportBackgroundTintList = null
+        if (view is com.google.android.material.button.MaterialButton) {
+            view.supportBackgroundTintList = null
+            view.iconTint = ColorStateList.valueOf(accent(view.context))
+        }
         view.backgroundTintList = null
         view.minimumHeight = (64*d).toInt()
         (view.layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.let {
@@ -77,10 +94,10 @@ object TextoAppearance {
         list.overScrollMode = View.OVER_SCROLL_IF_CONTENT_SCROLLS
     }
     fun refreshRate(activity: Activity) {
-        if (!prefs(activity).getBoolean("high_refresh", true)) { activity.window.attributes = activity.window.attributes.apply { preferredDisplayModeId = 0 }; return }
+        if (!prefs(activity).getBoolean("high_refresh", false)) { activity.window.attributes = activity.window.attributes.apply { preferredDisplayModeId = 0 }; return }
         @Suppress("DEPRECATION") val display = activity.windowManager.defaultDisplay
         val current = display.mode
         val best = display.supportedModes.filter { it.physicalWidth == current.physicalWidth && it.physicalHeight == current.physicalHeight }.maxByOrNull { it.refreshRate } ?: return
-        activity.window.attributes = activity.window.attributes.apply { preferredDisplayModeId = best.modeId }
+        if (activity.window.attributes.preferredDisplayModeId != best.modeId) activity.window.attributes = activity.window.attributes.apply { preferredDisplayModeId = best.modeId }
     }
 }

@@ -1,0 +1,1 @@
+No cards throughout Settings and messaging. New gradient, frosted and AMOLED finishes. Privacy icon and rounded themed dialogs. Actual Texto update notes. Three-second individual-word selection. Phone links open the dialer directly; optional country code, disabled by default. Android controls refresh rate by default.
