@@ -23,7 +23,7 @@ The fork has a distinct application ID, name and icon. It adds shared public/pri
 
 ## Validation
 
-Version 1.5.0 debug and unsigned release builds and 19 JVM tests passed. PIN/cancel checks for the three protected message tools and 40 visual contrast cases passed. GitHub Android CI passed for source commit b690ffbaae87accaf447b6250ff70e3f69c90ec0. Metadata lint and source scanning for this updated recipe are pending CI. The inherited lint configuration reports 81 non-aborting ExtraTranslation errors; this is not a clean lint result. Physical-device, carrier, real email and full backup/restore round-trip validation remain outstanding.
+Version 1.5.0 debug and unsigned release builds and 19 JVM tests passed. PIN/cancel checks for the three protected message tools and 40 visual contrast cases passed. GitHub Android CI passed for source commit b690ffbaae87accaf447b6250ff70e3f69c90ec0. Metadata lint and source scanning passed for the 1.5.0 recipe with fdroidserver 2.4.5 on 4 October 2026: https://github.com/Addymore/Texto/actions/runs/37227788290/job/111510929069. The inherited lint configuration reports 81 non-aborting ExtraTranslation errors; this is not a clean lint result. Physical-device, carrier, real email and full backup/restore round-trip validation remain outstanding.
 
 ## Review notes
 
