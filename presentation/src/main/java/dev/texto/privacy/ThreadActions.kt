@@ -10,7 +10,7 @@ import io.realm.Realm
 
 object ThreadActions {
     fun show(activity: Activity, id: Long, select: () -> Unit) {
-        MaterialAlertDialogBuilder(activity).setTitle("Conversation actions")
+        dev.texto.privacy.TextoDialogs.builder(activity).setTitle("Conversation actions")
             .setItems(arrayOf("Archive", "Lock & archive this number", "Move to recycle bin", "Select multiple")) { _, which ->
                 if (which == 3) { select(); return@setItems }
                 val policy = TextoPolicy(activity)

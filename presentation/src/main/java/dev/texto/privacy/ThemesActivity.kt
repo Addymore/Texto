@@ -35,7 +35,7 @@ class ThemesActivity : QkThemedActivity() {
     private fun pickImage(key: String) { imageKey=key; imagePicker.launch(arrayOf("image/*")) }
     private fun customText(title: String,key: String,default: String,max: Int) {
         val field=TextInputEditText(this).apply { setSingleLine(); filters=arrayOf(android.text.InputFilter.LengthFilter(max)); setText(TextoAppearance.prefs(this@ThemesActivity).getString(key,default)); setPadding(dp(24),dp(16),dp(24),dp(16)) }
-        dialog=MaterialAlertDialogBuilder(this).setTitle(title).setView(field).setNegativeButton("Cancel",null).setPositiveButton("Save") { _,_ -> TextoAppearance.prefs(this).edit().putString(key,field.text.toString().trim()).apply(); render() }.show()
+        dialog=dev.texto.privacy.TextoDialogs.builder(this).setTitle(title).setView(field).setNegativeButton("Cancel",null).setPositiveButton("Save") { _,_ -> TextoAppearance.prefs(this).edit().putString(key,field.text.toString().trim()).apply(); render() }.show()
     }
     private var scroller: ScrollView? = null
     private var dialog: androidx.appcompat.app.AlertDialog? = null
@@ -61,7 +61,7 @@ class ThemesActivity : QkThemedActivity() {
         fun choice(title: String,key: String,names: Array<String>,values: Array<String>,default: String) {
             val selected=values.indexOf(appearance.getString(key,default)).coerceAtLeast(0)
             row(title,names[selected]) {
-                dialog=MaterialAlertDialogBuilder(this).setTitle(title).setSingleChoiceItems(names,selected) { d,i ->
+                dialog=dev.texto.privacy.TextoDialogs.builder(this).setTitle(title).setSingleChoiceItems(names,selected) { d,i ->
                     appearance.edit().putString(key,values[i]).apply(); d.dismiss(); render()
                 }.setNegativeButton("Cancel",null).show()
             }
@@ -73,7 +73,7 @@ class ThemesActivity : QkThemedActivity() {
             })
         }
         label("Make it yours",34f)
-        label("One look for your inbox and private conversations",15f)
+        label("One look for your inbox, messages and private conversations",15f)
         val sample=ConversationListItemBinding.inflate(layoutInflater,content,false)
         sample.title.text="Alex Morgan"; sample.title.setTypeface(null,Typeface.BOLD); sample.date.text="Now"
         sample.snippet.text="See you soon. I’ll bring the photos from our trip."
@@ -110,7 +110,7 @@ class ThemesActivity : QkThemedActivity() {
         if(android.os.Build.VERSION.SDK_INT >= 31) toggle("Use wallpaper colors","dynamic_colors",false)
         val modes=arrayOf("System","Light","Dark","Scheduled")
         row("Appearance",modes[prefs.nightMode.get().coerceIn(0,3)]) {
-            dialog=MaterialAlertDialogBuilder(this).setTitle("Appearance").setSingleChoiceItems(modes,prefs.nightMode.get()) { d,i ->
+            dialog=dev.texto.privacy.TextoDialogs.builder(this).setTitle("Appearance").setSingleChoiceItems(modes,prefs.nightMode.get()) { d,i ->
                 d.dismiss(); nightModeManager.updateNightMode(i); render()
             }.setNegativeButton("Cancel",null).show()
         }
@@ -118,6 +118,7 @@ class ThemesActivity : QkThemedActivity() {
         label("Cards & surfaces",22f)
         choice("Card shape","card_shape",arrayOf("Soft","Round","Minimal"),arrayOf("soft","round","minimal"),"soft")
         choice("Card finish","card_finish",arrayOf("Tonal cards","Neutral","Accent tint","Outlined","Aurora gradient","Frosted glass","AMOLED outline","No cards — everywhere"),arrayOf("tonal","neutral","tinted","outlined","gradient","glass","amoled","none"),"tonal")
+        label("Card finish, shape, size and spacing also apply to messages inside conversations.",13f)
         choice("Card size","card_size",arrayOf("Small","Medium","Large"),arrayOf("small","medium","large"),"medium")
         choice("Spacing","density",arrayOf("Compact","Comfortable","Airy"),arrayOf("compact","comfortable","airy"),"comfortable")
         choice("Message preview","preview_lines",arrayOf("Hidden","One line","Two lines","Three lines"),arrayOf("0","1","2","3"),"2")
@@ -136,14 +137,14 @@ class ThemesActivity : QkThemedActivity() {
         choice("Message bubbles","bubbles",arrayOf("Fluid rounded","Classic grouped"),arrayOf("fluid","classic"),"fluid")
         val sizes=arrayOf("Small","Normal","Large","Larger","Largest")
         row("Text size",sizes[prefs.textSize.get().coerceIn(0,4)]) {
-            dialog=MaterialAlertDialogBuilder(this).setTitle("Text size").setSingleChoiceItems(sizes,prefs.textSize.get()) { d,i -> d.dismiss(); prefs.textSize.set(i) }.setNegativeButton("Cancel",null).show()
+            dialog=dev.texto.privacy.TextoDialogs.builder(this).setTitle("Text size").setSingleChoiceItems(sizes,prefs.textSize.get()) { d,i -> d.dismiss(); prefs.textSize.set(i) }.setNegativeButton("Cancel",null).show()
         }
         toggle("Prefer highest display refresh rate","high_refresh",false)
         toggle("Reduce motion","reduce_motion",false)
         label("Changes apply to public and private conversations. Your phone controls the available refresh rate.",13f)
         row("Fonts, scheduled dark mode & more","") { startActivity(Intent(this,dev.octoshrimpy.quik.feature.settings.SettingsActivity::class.java)) }
         row("Reset appearance","") {
-            dialog=MaterialAlertDialogBuilder(this).setTitle("Reset appearance?").setMessage("Restore default colors, cards and motion settings. Messages and privacy settings are kept.")
+            dialog=dev.texto.privacy.TextoDialogs.builder(this).setTitle("Reset appearance?").setMessage("Restore default colors, cards and motion settings. Messages and privacy settings are kept.")
                 .setNegativeButton("Cancel",null).setPositiveButton("Reset") { _,_ ->
                     val edit=appearance.edit()
                     listOf("card_shape","card_finish","density","preview_lines","unread_style","list_avatars","message_counts","bubbles","high_refresh","reduce_motion","dynamic_colors","card_size","inbox_title","inbox_motto","background_image","header_image").forEach { edit.remove(it) }; edit.apply()
@@ -167,7 +168,7 @@ class ThemesActivity : QkThemedActivity() {
     }
     private fun customAccent() {
         val input=TextInputEditText(this).apply { hint="#RRGGBB"; setSingleLine(); setText(String.format("#%06X",TextoAppearance.accent(this@ThemesActivity) and 0xFFFFFF)); setPadding(dp(24),dp(16),dp(24),dp(16)) }
-        val prompt=MaterialAlertDialogBuilder(this).setTitle("Custom accent color").setView(input).setNegativeButton("Cancel",null).setPositiveButton("Apply",null).create()
+        val prompt=dev.texto.privacy.TextoDialogs.builder(this).setTitle("Custom accent color").setView(input).setNegativeButton("Cancel",null).setPositiveButton("Apply",null).create()
         dialog=prompt
         prompt.setOnShowListener { prompt.getButton(-1).setOnClickListener {
             val value=input.text.toString().trim().removePrefix("#")

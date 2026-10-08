@@ -73,18 +73,11 @@ class VCardBinder @Inject constructor(colors: Colors, private val context: Conte
                 }
         }
 
-        val noCards = dev.texto.privacy.TextoAppearance.noCards(holder.itemView.context)
-        if (!message.isMe() && !noCards) {
-            binding.vCardBackground.setBackgroundTint(theme.theme)
-            binding.vCardAvatar.setTint(theme.textPrimary)
-            binding.name.setTextColor(theme.textPrimary)
-            binding.label.setTextColor(theme.textTertiary)
-        } else {
-            binding.vCardBackground.setBackgroundTint(if (noCards) android.graphics.Color.TRANSPARENT else holder.itemView.context.resolveThemeColor(R.attr.bubbleColor))
-            binding.vCardAvatar.setTint(holder.itemView.context.resolveThemeColor(android.R.attr.textColorSecondary))
-            binding.name.setTextColor(holder.itemView.context.resolveThemeColor(android.R.attr.textColorPrimary))
-            binding.label.setTextColor(holder.itemView.context.resolveThemeColor(android.R.attr.textColorTertiary))
-        }
+        val foreground = dev.texto.privacy.MessageBodyStyle.surface(binding.vCardBackground, theme.theme)
+        binding.vCardAvatar.setTint(foreground)
+        binding.name.setTextColor(foreground)
+        binding.label.setTextColor(foreground)
+
     }
 
 }

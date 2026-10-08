@@ -1,4 +1,12 @@
-# Texto validation — 5 October 2026
+# Texto validation — 8 October 2026
+
+## 1.6.2 theme consistency checks
+
+- Final release and debug builds passed in 14m 28s; all 19 common JVM tests remain passing (Gradle up-to-date). Both APK signatures, existing certificates and 4-byte alignment verified. Version is 1.6.2, code 2310. The signed release upgraded the emulator installation and launched successfully with the SMS role; no crash was recorded in the emulator crash buffer.
+
+- Debug and instrumentation builds passed. All 320 message/link contrast cases passed across eight finishes, light/dark/AMOLED, incoming/outgoing, custom accents and recycled views. Settings card tint and scheduled-picker accent checks passed.
+- The real adapter three-second selection/Copy regression and privacy/utility suite passed again.
+- The debug APK retains the existing development certificate and passes alignment verification. The theme regression suites ran on the development build before the release version bump. Physical OnePlus rendering/performance and carrier traffic were not tested.
 
 ## 1.6.1 automated and emulator checks
 

@@ -54,11 +54,11 @@ class MessageUtilsController : QkController<MessageUtilsControllerBinding, Messa
                 dev.texto.privacy.TextoAppearance.styleSettingsCard(this)
                 setOnClickListener {
                     if(!protectedTools()) return@setOnClickListener
-                    com.google.android.material.dialog.MaterialAlertDialogBuilder(context).setTitle("Move protected messages to bin")
+                    dev.texto.privacy.TextoDialogs.builder(context).setTitle("Move protected messages to bin")
                         .setItems(arrayOf("Older than 30 days","Older than 60 days","Older than 90 days")) { _, index ->
                             if(!protectedTools()) return@setItems
                             val days=listOf(30,60,90)[index]
-                            com.google.android.material.dialog.MaterialAlertDialogBuilder(context).setTitle("Move messages older than $days days?")
+                            dev.texto.privacy.TextoDialogs.builder(context).setTitle("Move messages older than $days days?")
                                 .setMessage("Only protected and archived numbers are included. Messages can be restored from the recycle bin until its retention period expires.")
                                 .setNegativeButton("Cancel",null).setPositiveButton("Move to bin") { _,_ ->
                                     if(protectedTools()) Thread {

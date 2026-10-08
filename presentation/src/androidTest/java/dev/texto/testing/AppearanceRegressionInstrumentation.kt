@@ -120,7 +120,7 @@ class AppearanceRegressionInstrumentation : Instrumentation() {
                 check(android.graphics.Color.alpha(bitmap.getPixel(50,50))==0) { "No-cards settings still have a fill" }
                 bitmap.recycle()
                 MessageBodyStyle.apply(body,false,TextoAppearance.accent(screen),false)
-                check(body.backgroundTintList?.defaultColor==android.graphics.Color.TRANSPARENT)
+                check(body.backgroundTintList == null && TextoAppearance.noCards(screen))
                 for (finish in listOf("tonal","gradient","glass","amoled","outlined")) {
                     prefs.edit().putString("card_finish",finish).commit()
                     check(TextoAppearance.card(screen) is android.graphics.drawable.RippleDrawable)

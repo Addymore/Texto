@@ -25,8 +25,12 @@ class MessageContrastInstrumentation : Instrumentation() {
             waitForIdleSync()
             var failure: Throwable? = null
             var cases = 0
+            val appearance = dev.texto.privacy.TextoAppearance.prefs(targetContext)
+            val previousFinish = appearance.getString("card_finish", null)
             runOnMainSync {
                 try {
+                    for (finish in listOf("tonal","neutral","tinted","outlined","gradient","glass","amoled","none")) {
+                    appearance.edit().putString("card_finish",finish).commit()
                     for (night in listOf(false, true)) for (black in listOf(false, true)) {
                         val config = Configuration(targetContext.resources.configuration).apply {
                             uiMode = (uiMode and Configuration.UI_MODE_NIGHT_MASK.inv()) or
@@ -59,7 +63,11 @@ class MessageContrastInstrumentation : Instrumentation() {
                                 // Reuse this view across accents, as RecyclerView does.
                                 body.text = "Call +1-202-555-0123 or visit https://example.com"
                                 MessageBodyStyle.apply(body, outgoing, accent, false)
-                                val bg = body.backgroundTintList!!.defaultColor
+                                val attrs = context.obtainStyledAttributes(intArrayOf(android.R.attr.windowBackground))
+                                val window = attrs.getColor(0, Color.WHITE); attrs.recycle()
+                                val backgrounds = dev.texto.privacy.TextoAppearance.cardColors(context, accent).map { ColorUtils.compositeColors(it, window) }
+                                val bg = backgrounds.minByOrNull { ColorUtils.calculateContrast(body.currentTextColor,it) }!!
+                                check(body.backgroundTintList == null) { "Tint flattened the selected card finish" }
                                 check(ColorUtils.calculateContrast(body.currentTextColor, bg) >= 4.5)
                                 val spans = (body.text as Spannable).getSpans(0, body.text.length, URLSpan::class.java)
                                 check(spans.any { it.url.startsWith("tel:") }) { "Phone number was not linked" }
@@ -76,10 +84,13 @@ class MessageContrastInstrumentation : Instrumentation() {
                             }
                         }
                     }
-                } catch (error: Throwable) { failure = error }
+                    }
+                } catch (error: Throwable) { failure = error } finally {
+                    if(previousFinish == null) appearance.edit().remove("card_finish").commit() else appearance.edit().putString("card_finish",previousFinish).commit()
+                }
             }
             failure?.let { throw it }
-            result.putString("result", "PASS: $cases message contrast cases; phone/web and confirmation links, light/dark/AMOLED, incoming/outgoing, custom accents and recycled views; shared palette, Settings cards and scheduled date picker")
+            result.putString("result", "PASS: $cases message contrast cases across all eight finishes; phone/web and confirmation links, light/dark/AMOLED, incoming/outgoing, custom accents and recycled views; shared palette, Settings cards and scheduled date picker")
             finish(0, result)
         } catch (error: Throwable) { result.putString("error", error.stackTraceToString()); finish(1, result) }
     }

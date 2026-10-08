@@ -18,10 +18,7 @@ class TextoTabBar @JvmOverloads constructor(context: Context, attrs: AttributeSe
     init {
         orientation = HORIZONTAL; gravity = Gravity.CENTER; setPadding(dp(6), dp(5), dp(6), dp(5))
         elevation = dp(8).toFloat()
-        background = GradientDrawable().apply {
-            cornerRadius = dp(34).toFloat(); setColor(if (dark) Color.rgb(36,38,43) else Color.rgb(245,246,250))
-            setStroke(dp(1), if (dark) 0xFF454750.toInt() else 0xFFE2E5EF.toInt())
-        }
+        background = TextoAppearance.card(context)
         if (TextoAppearance.noCards(context)) { background = null; elevation = 0f }
         val labels = listOf("Messages", "Themes")
         val icons = listOf(R.drawable.ic_message_black_24dp, R.drawable.ic_invert_colors_black_24dp)

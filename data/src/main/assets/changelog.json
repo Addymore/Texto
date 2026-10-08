@@ -1,5 +1,20 @@
 [
   {
+    "versionCode": 2310,
+    "versionName": "1.6.2",
+    "added": [],
+    "improved": [
+      "Message bubbles follow your card finish, shape, size and spacing.",
+      "File and contact attachments use the selected theme.",
+      "Photo and video corners follow the selected shape.",
+      "Settings, navigation and privacy dialogs share your appearance settings."
+    ],
+    "fixed": [
+      "Card finishes now apply inside conversations, including gradients and No cards."
+    ],
+    "removed": []
+  },
+  {
     "versionCode": 2300,
     "versionName": "1.6.1",
     "added": [

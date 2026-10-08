@@ -27,11 +27,11 @@ class TrashActivity : AppCompatActivity() {
         root.addView(TextView(this).apply { text = "Recycle bin"; textSize = 32f })
         root.addView(TextView(this).apply { text = "Protected by your privacy PIN. Tap a message to restore it. SMS and MMS attachments are retained until expiry."; textSize = 15f; setPadding(0,16,0,16) })
         root.addView(MaterialButton(this).apply { text = "Auto-delete after $days days"; setOnClickListener {
-            dialog = MaterialAlertDialogBuilder(this@TrashActivity).setTitle("Keep deleted messages")
+            dialog = dev.texto.privacy.TextoDialogs.builder(this@TrashActivity).setTitle("Keep deleted messages")
                 .setSingleChoiceItems(arrayOf("30 days", "60 days", "90 days"), TrashRetention.choices.indexOf(days)) { choice, index ->
                     val selected = TrashRetention.choices[index]
                     choice.dismiss()
-                    dialog = MaterialAlertDialogBuilder(this@TrashActivity).setTitle("Keep for $selected days?")
+                    dialog = dev.texto.privacy.TextoDialogs.builder(this@TrashActivity).setTitle("Keep for $selected days?")
                         .setMessage("Age is measured from when each message was deleted. Items older than $selected days will be permanently removed at the next cleanup.")
                         .setNegativeButton("Cancel", null).setPositiveButton("Apply") { _, _ ->
                             if (PrivacyGate.unlocked) { prefs.edit().putInt("bin_days", selected).apply(); TrashStore.schedule(this@TrashActivity); render() }
@@ -47,7 +47,7 @@ class TrashActivity : AppCompatActivity() {
         })
         list.setOnItemClickListener { _, _, position, _ ->
             val message = entries[position]
-            dialog = MaterialAlertDialogBuilder(this).setTitle("Restore message?").setMessage(message.getSummary())
+            dialog = dev.texto.privacy.TextoDialogs.builder(this).setTitle("Restore message?").setMessage(message.getSummary())
                 .setNegativeButton("Cancel", null).setPositiveButton("Restore") { _, _ ->
                     if (!PrivacyGate.unlocked) return@setPositiveButton
                     Thread {

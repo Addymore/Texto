@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.6.2 — 8 October 2026
+
+- Message text bubbles now share the selected card finish and shape, including gradients, frosted and AMOLED styles; card size and spacing also apply inside conversations.
+- File/contact attachments use the same surfaces and readable foreground colors. Photo/video corners follow the selected shape and grouping; No cards removes their rounding.
+- Bottom navigation, settings card sizing and remaining theme/privacy/recycle-bin dialogs follow the shared appearance settings. Modal dialogs retain an opaque background with No cards for readability.
+- Expanded message/link contrast regression coverage to all eight card finishes.
+
 ## 1.6.1 — 5 October 2026
 
 - Apply No cards to settings, drawer rows, contacts, navigation, message bubbles and file/contact attachments. Keep modal dialogs opaque and controls identifiable.

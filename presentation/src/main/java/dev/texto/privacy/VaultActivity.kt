@@ -40,7 +40,7 @@ class VaultActivity : QkThemedActivity() {
         list.adapter = conversationsAdapter
         conversationsAdapter.emptyView = findViewById(R.id.privateEmpty)
         conversationsAdapter.onConversationLongClick = { id ->
-            dialog = MaterialAlertDialogBuilder(this).setTitle("Private conversation")
+            dialog = dev.texto.privacy.TextoDialogs.builder(this).setTitle("Private conversation")
                 .setItems(arrayOf("Open conversation", "Privacy & protection", "Move to recycle bin")) { _, which ->
                     if (PrivacyGate.unlocked) when(which) {
                         0 -> startActivity(Intent(this,dev.octoshrimpy.quik.feature.compose.ComposeActivity::class.java).putExtra("threadId",id))
@@ -59,7 +59,7 @@ class VaultActivity : QkThemedActivity() {
         findViewById<MaterialButton>(R.id.privateThemes).setOnClickListener { startActivity(Intent(this,ThemesActivity::class.java).putExtra("from_private",true)) }
         findViewById<MaterialButton>(R.id.privateMore).setOnClickListener {
             val destinations = arrayOf(ProtectionActivity::class.java,TrashActivity::class.java,dev.octoshrimpy.quik.feature.backup.BackupActivity::class.java,dev.octoshrimpy.quik.feature.scheduled.ScheduledActivity::class.java)
-            dialog = MaterialAlertDialogBuilder(this).setTitle("Private options").setItems(arrayOf("Privacy & protection","Recycle bin","Backup & restore","Scheduled messages")) { _, i ->
+            dialog = dev.texto.privacy.TextoDialogs.builder(this).setTitle("Private options").setItems(arrayOf("Privacy & protection","Recycle bin","Backup & restore","Scheduled messages")) { _, i ->
                 if(PrivacyGate.unlocked) startActivity(Intent(this,destinations[i]).putExtra("protected_tools",true))
             }.show()
         }

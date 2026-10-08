@@ -45,3 +45,7 @@
 ## Limits
 
 Private space is app-level access control, not encryption of Android's shared SMS/MMS provider. Other authorized SMS apps can access provider data. Switching package/signature does not migrate app-private settings. Carrier behavior, real email delivery, complete backup/restore round trips and physical OnePlus performance require device validation. Google Play and F-Droid publication are separate review processes; see VALIDATION.md and the release notes for the actual tested state.
+
+### Consistent message surfaces (1.6.2)
+
+Message bubbles share card finish, shape, size and spacing with the app. File/contact attachments share themed surfaces; photo/video thumbnails follow corner and grouping choices. Navigation and privacy dialogs use the shared renderer. No cards removes decorative surfaces; modal dialogs remain opaque for readability.

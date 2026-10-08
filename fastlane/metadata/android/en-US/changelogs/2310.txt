@@ -1,0 +1,1 @@
+Message bubbles now follow card finish, shape, size and spacing. Consistent themed attachments, settings, navigation and privacy dialogs. Improved No cards support and readable links across all eight finishes.

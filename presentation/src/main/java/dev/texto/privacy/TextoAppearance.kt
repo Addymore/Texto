@@ -19,27 +19,41 @@ object TextoAppearance {
         return android.preference.PreferenceManager.getDefaultSharedPreferences(context).getInt("theme", 0xFF375BCD.toInt())
     }
     fun noCards(context: Context) = prefs(context).getString("card_finish", "tonal") == "none"
-    fun card(context: Context, selected: Boolean = false): android.graphics.drawable.Drawable {
+    fun card(context: Context, selected: Boolean = false, accentColor: Int = accent(context), corners: FloatArray? = null): android.graphics.drawable.Drawable {
         val p = prefs(context); val dark = context.resources.configuration.uiMode and 0x30 == 0x20
         val radius = when(p.getString("card_shape", "soft")) { "minimal" -> 12; "round" -> 30; else -> 16 }
         val base = if(dark) 0xFF23262D.toInt() else 0xFFF3F5F9.toInt()
         val finish = p.getString("card_finish","tonal")
         if (finish == "none") {
             val content = android.graphics.drawable.StateListDrawable().apply {
-                addState(intArrayOf(android.R.attr.state_activated), android.graphics.drawable.ColorDrawable(accent(context) and 0x00FFFFFF or 0x33000000))
-                addState(intArrayOf(), android.graphics.drawable.ColorDrawable(if (selected) accent(context) and 0x00FFFFFF or 0x33000000 else Color.TRANSPARENT))
+                addState(intArrayOf(android.R.attr.state_activated), android.graphics.drawable.ColorDrawable(accentColor and 0x00FFFFFF or 0x33000000))
+                addState(intArrayOf(), android.graphics.drawable.ColorDrawable(if (selected) accentColor and 0x00FFFFFF or 0x33000000 else Color.TRANSPARENT))
             }
-            return RippleDrawable(ColorStateList.valueOf(accent(context) and 0x00FFFFFF or 0x22000000), content, null)
+            return RippleDrawable(ColorStateList.valueOf(accentColor and 0x00FFFFFF or 0x22000000), content, null)
         }
-        val fill = if (selected) androidx.core.graphics.ColorUtils.blendARGB(base,accent(context),.24f) else if (finish == "tinted" || finish == "tonal") androidx.core.graphics.ColorUtils.blendARGB(base,accent(context),if(dark) .16f else .08f) else base
-        val shape = GradientDrawable().apply { cornerRadius = radius * context.resources.displayMetrics.density; setColor(ColorStateList(arrayOf(intArrayOf(android.R.attr.state_activated), intArrayOf()), intArrayOf(androidx.core.graphics.ColorUtils.blendARGB(base,accent(context),.24f), fill))); if (finish == "outlined" || finish == "tonal") setStroke((context.resources.displayMetrics.density).toInt().coerceAtLeast(1), androidx.core.graphics.ColorUtils.blendARGB(base,accent(context),if (finish == "tonal") .18f else .45f)) }
-        when (finish) {
-            "gradient" -> { shape.orientation = GradientDrawable.Orientation.TL_BR; shape.colors = intArrayOf(androidx.core.graphics.ColorUtils.blendARGB(base, accent(context), .28f), base) }
-            "glass" -> { shape.setColor(androidx.core.graphics.ColorUtils.blendARGB(base, if(dark) Color.WHITE else Color.WHITE, if(dark) .06f else .55f)); shape.setStroke((context.resources.displayMetrics.density).toInt().coerceAtLeast(1), androidx.core.graphics.ColorUtils.blendARGB(base, accent(context), .35f)) }
-            "amoled" -> { shape.setColor(if(dark) Color.BLACK else Color.WHITE); shape.setStroke((context.resources.displayMetrics.density).toInt().coerceAtLeast(1), androidx.core.graphics.ColorUtils.blendARGB(base, accent(context), .3f)) }
+        val fills = cardColors(context, accentColor)
+        val shape = GradientDrawable().apply {
+            cornerRadius = radius * context.resources.displayMetrics.density
+            if (fills.size > 1) { orientation = GradientDrawable.Orientation.TL_BR; colors = fills }
+            else setColor(ColorStateList(arrayOf(intArrayOf(android.R.attr.state_activated), intArrayOf()), intArrayOf(androidx.core.graphics.ColorUtils.blendARGB(base,accentColor,.24f), if(selected) androidx.core.graphics.ColorUtils.blendARGB(base,accentColor,.24f) else fills[0])))
+            if (finish in listOf("outlined", "tonal", "glass", "amoled")) setStroke(context.resources.displayMetrics.density.toInt().coerceAtLeast(1), androidx.core.graphics.ColorUtils.blendARGB(base, accentColor, if(finish == "tonal") .18f else .4f))
         }
-        if (selected && finish in listOf("gradient", "glass", "amoled")) shape.setStroke((2*context.resources.displayMetrics.density).toInt(), accent(context))
-        return RippleDrawable(ColorStateList.valueOf(accent(context) and 0x00FFFFFF or 0x22000000),shape,null)
+        if (corners != null) shape.cornerRadii = corners
+        if (selected && finish in listOf("gradient", "glass", "amoled")) shape.setStroke((2*context.resources.displayMetrics.density).toInt(), accentColor)
+        return RippleDrawable(ColorStateList.valueOf(accentColor and 0x00FFFFFF or 0x22000000),shape,null)
+    }
+    fun cardColors(context: Context, accentColor: Int = accent(context)): IntArray {
+        val dark = context.resources.configuration.uiMode and 0x30 == 0x20
+        val base = if(dark) 0xFF23262D.toInt() else 0xFFF3F5F9.toInt()
+        fun blend(color: Int, amount: Float) = androidx.core.graphics.ColorUtils.blendARGB(base, color, amount)
+        return when(prefs(context).getString("card_finish", "tonal")) {
+            "none" -> intArrayOf(Color.TRANSPARENT)
+            "gradient" -> intArrayOf(blend(accentColor, .28f), base)
+            "glass" -> intArrayOf(blend(Color.WHITE, if(dark) .06f else .55f))
+            "amoled" -> intArrayOf(if(dark) Color.BLACK else Color.WHITE)
+            "tinted", "tonal" -> intArrayOf(blend(accentColor, if(dark) .16f else .08f))
+            else -> intArrayOf(base)
+        }
     }
     fun onAccent(context: Context): Int = if (androidx.core.graphics.ColorUtils.calculateLuminance(accent(context)) > .179) Color.BLACK else Color.WHITE
     fun styleConversation(binding: dev.octoshrimpy.quik.databinding.ConversationListItemBinding, count: Long, unread: Long, selected: Boolean = false) {
@@ -75,7 +89,10 @@ object TextoAppearance {
             view.iconTint = ColorStateList.valueOf(accent(view.context))
         }
         view.backgroundTintList = null
-        view.minimumHeight = (64*d).toInt()
+        val p = prefs(view.context)
+        val scale = when(p.getString("card_size", "medium")) { "small" -> .8f; "large" -> 1.25f; else -> 1f }
+        val spacing = when(p.getString("density", "comfortable")) { "compact" -> 8; "airy" -> 16; else -> 12 }
+        view.minimumHeight = (64*d*scale).toInt()
         (view.layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.let {
             it.setMargins((16*d).toInt(),(4*d).toInt(),(16*d).toInt(),(4*d).toInt())
             view.layoutParams = it
@@ -83,7 +100,7 @@ object TextoAppearance {
         if (view is android.widget.TextView) {
             view.setTextColor(if (view.resources.configuration.uiMode and 0x30 == 0x20) Color.WHITE else 0xFF20232B.toInt())
             view.gravity = android.view.Gravity.START or android.view.Gravity.CENTER_VERTICAL
-            view.setPadding((20*d).toInt(),(12*d).toInt(),(20*d).toInt(),(12*d).toInt())
+            view.setPadding((20*d*scale).toInt(),(spacing*d*scale).toInt(),(20*d*scale).toInt(),(spacing*d*scale).toInt())
         }
     }
     fun smooth(list: RecyclerView) {
