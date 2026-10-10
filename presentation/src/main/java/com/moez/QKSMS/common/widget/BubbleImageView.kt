@@ -47,7 +47,7 @@ class BubbleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
 
     private val path = Path()
     private val radiusSmall = 4.dpToPx(context).toFloat()
-    private val radiusLarge get() = (when(dev.texto.privacy.TextoAppearance.prefs(context).getString("card_shape", "soft")) { "minimal" -> 12; "round" -> 30; else -> 16 }).dpToPx(context).toFloat()
+    private val radiusLarge get() = (when(dev.texto.privacy.TextoAppearance.prefs(context).getString("card_shape", "soft")) { "square" -> 0; "pill" -> 48; "minimal" -> 12; "round" -> 30; else -> 16 }).dpToPx(context).toFloat()
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)

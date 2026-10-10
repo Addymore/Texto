@@ -107,6 +107,8 @@ class SettingsController : QkController<SettingsControllerBinding, SettingsView,
             dev.texto.privacy.TextoAppearance.styleSettingsCard(it)
         }
 
+        dev.texto.privacy.SettingsSections.organize(binding.preferences)
+
         when (Build.VERSION.SDK_INT >= 29) {
             true -> nightModeDialog.adapter.setData(R.array.night_modes)
             false -> nightModeDialog.adapter.data = context.resources.getStringArray(R.array.night_modes)

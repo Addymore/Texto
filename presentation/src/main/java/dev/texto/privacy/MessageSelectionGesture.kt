@@ -18,7 +18,7 @@ class MessageSelectionGesture(private val body: TextView, private val row: View,
     private var held=false; private var canceled=false; private var native=false
     private var preparing=false; private var releasedWhilePreparing=false
     private var movement: MovementMethod?=null
-    private val slop=ViewConfiguration.get(body.context).scaledTouchSlop
+    private val slop=ViewConfiguration.get(body.context).scaledTouchSlop * 2
     private val selectText=Runnable { if(held && !canceled && body.isShown && body.hasWindowFocus() && !selectionActive()) beginTextSelection() }
     init {
         body.setTextIsSelectable(false)
@@ -62,6 +62,7 @@ class MessageSelectionGesture(private val body: TextView, private val row: View,
                 if(Build.VERSION.SDK_INT >= 24) body.performLongClick(x,y) else body.performLongClick()
                 body.cancelLongPress()
                 preparing=false
+                body.postDelayed({ ensureSelection() },250)
                 if (releasedWhilePreparing) {
                     val up=MotionEvent.obtain(down,SystemClock.uptimeMillis(),MotionEvent.ACTION_UP,x,y,0)
                     body.onTouchEvent(up); up.recycle()
@@ -71,7 +72,10 @@ class MessageSelectionGesture(private val body: TextView, private val row: View,
     }
     override fun onTouch(v: View, e: MotionEvent): Boolean {
         if(native) {
-            if (!preparing) return false
+            if (!preparing) {
+                if(e.actionMasked == MotionEvent.ACTION_UP) body.postDelayed({ ensureSelection() },150)
+                return false
+            }
             if (e.actionMasked == MotionEvent.ACTION_UP) releasedWhilePreparing=true
             if (e.actionMasked == MotionEvent.ACTION_CANCEL) reset()
             return true
@@ -79,13 +83,14 @@ class MessageSelectionGesture(private val body: TextView, private val row: View,
         when(e.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 x=e.x; y=e.y; down=e.eventTime; held=true; canceled=false
+                body.parent?.requestDisallowInterceptTouchEvent(true)
                 body.postDelayed(selectText,3000L)
                 return true
             }
-            MotionEvent.ACTION_MOVE -> if(abs(e.x-x)>slop || abs(e.y-y)>slop) { canceled=true; held=false; body.removeCallbacks(selectText) }
-            MotionEvent.ACTION_POINTER_DOWN,MotionEvent.ACTION_CANCEL -> { canceled=true; held=false; body.removeCallbacks(selectText) }
+            MotionEvent.ACTION_MOVE -> if(abs(e.x-x)>slop || abs(e.y-y)>slop) { canceled=true; held=false; body.removeCallbacks(selectText); body.parent?.requestDisallowInterceptTouchEvent(false) }
+            MotionEvent.ACTION_POINTER_DOWN,MotionEvent.ACTION_CANCEL -> { canceled=true; held=false; body.removeCallbacks(selectText); body.parent?.requestDisallowInterceptTouchEvent(false) }
             MotionEvent.ACTION_UP -> {
-                held=false; body.removeCallbacks(selectText)
+                held=false; body.removeCallbacks(selectText); body.parent?.requestDisallowInterceptTouchEvent(false)
                 if(!canceled) {
                     if(e.eventTime-down >= ViewConfiguration.getLongPressTimeout()) {
                         row.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS); row.performLongClick()
@@ -94,6 +99,28 @@ class MessageSelectionGesture(private val body: TextView, private val row: View,
             }
         }
         return true
+    }
+    private fun ensureSelection() {
+        if (!native || !body.isAttachedToWindow || !body.hasWindowFocus()) return
+        if (body.selectionStart >= 0 && body.selectionEnd > body.selectionStart) return
+        // Some OEM TextView editors refuse to open selection in RecyclerView. Use an
+        // editable-buffer, read-only surface so native handles still select arbitrary text.
+        val text=body.text.toString()
+        reset()
+        val field=android.widget.EditText(body.context).apply {
+            setText(text);keyListener=null;setTextIsSelectable(true);showSoftInputOnFocus=false
+            setTextColor(TextoAppearance.readableText(body.context));setBackgroundColor(android.graphics.Color.TRANSPARENT)
+            textSize=body.textSize/resources.displayMetrics.scaledDensity
+            setPadding(32,24,32,24)
+        }
+        val dialog=TextoDialogs.builder(body.context).setTitle("Select message text").setView(field).setPositiveButton("Done",null).create()
+        dialog.setOnShowListener {
+            var context=body.context
+            while(context is android.content.ContextWrapper && context !is android.app.Activity) context=context.baseContext
+            if ((context as? android.app.Activity)?.window?.attributes?.flags?.and(android.view.WindowManager.LayoutParams.FLAG_SECURE) != 0) dialog.window?.addFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE)
+            field.requestFocus();field.post { field.setSelection(0,text.indexOf(' ').takeIf { it>0 } ?: text.length);field.performLongClick() }
+        }
+        dialog.show()
     }
     private fun clickLink(x: Float,y: Float): Boolean {
         val text=body.text as? Spanned ?: return false

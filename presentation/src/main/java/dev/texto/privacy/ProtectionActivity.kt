@@ -86,6 +86,12 @@ class ProtectionActivity : AppCompatActivity() {
             openTool(ProtectionActivity::class.java)
             return
         }
+        if(key !in listOf("words","prefixes")) {
+            lockedRuleDialog=RuleContactCards.show(this,key,title) { editText(key,title) }
+        } else editText(key,title)
+    }
+    private fun editText(key: String,title: String) {
+        if(key in listOf("locked","archived","protected_tools") && policy.hasPin() && !PrivacyGate.unlocked) return
         val field = TextInputEditText(this).apply { minLines = 4; maxLines = 10; inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE; setText((policy.entries(key) + listOfNotNull(intent.getStringExtra("address").takeIf { key != "words" && key != "prefixes" })).sorted().joinToString("\n")) }
         val dialog = dev.texto.privacy.TextoDialogs.builder(this).setTitle(title).setMessage("One entry per line. Remove an entry to stop applying that rule.")
             .setView(field).setNegativeButton("Cancel", null).setPositiveButton("Save") { _, _ ->

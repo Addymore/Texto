@@ -39,22 +39,6 @@ class VaultActivity : QkThemedActivity() {
         list.layoutManager = LinearLayoutManager(this)
         list.adapter = conversationsAdapter
         conversationsAdapter.emptyView = findViewById(R.id.privateEmpty)
-        conversationsAdapter.onConversationLongClick = { id ->
-            dialog = dev.texto.privacy.TextoDialogs.builder(this).setTitle("Private conversation")
-                .setItems(arrayOf("Open conversation", "Privacy & protection", "Move to recycle bin")) { _, which ->
-                    if (PrivacyGate.unlocked) when(which) {
-                        0 -> startActivity(Intent(this,dev.octoshrimpy.quik.feature.compose.ComposeActivity::class.java).putExtra("threadId",id))
-                        1 -> startActivity(Intent(this,ProtectionActivity::class.java))
-                        2 -> Thread {
-                            val result = runCatching { Realm.getDefaultInstance().use { r ->
-                                val ids = r.where(dev.octoshrimpy.quik.model.Message::class.java).equalTo("threadId",id).equalTo("trashedAt",0L).findAll().map { it.id }
-                                TrashStore(this).move(ids)
-                            } }
-                            runOnUiThread { if(!isDestroyed && PrivacyGate.unlocked && result.isFailure) android.widget.Toast.makeText(this,"Could not move messages. Please try again.",android.widget.Toast.LENGTH_LONG).show() }
-                        }.start()
-                    }
-                }.show()
-        }
         findViewById<TextInputEditText>(R.id.privateSearch).doAfterTextChanged { query=it.toString(); load() }
         findViewById<MaterialButton>(R.id.privateThemes).setOnClickListener { startActivity(Intent(this,ThemesActivity::class.java).putExtra("from_private",true)) }
         findViewById<MaterialButton>(R.id.privateMore).setOnClickListener {

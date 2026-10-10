@@ -1,5 +1,25 @@
 [
   {
+    "versionCode": 2320,
+    "versionName": "1.6.3",
+    "added": [
+      "Visual color ring with intensity and brightness controls.",
+      "Pastel, Duotone, High contrast and Bold outline finishes; Square and Pill shapes.",
+      "Drag and pinch cropping for header artwork and backgrounds."
+    ],
+    "improved": [
+      "Grouped settings with indented options.",
+      "Contact cards and photos for privacy number rules.",
+      "Move locked or archived conversations to inbox, archive or recycle bin.",
+      "Three-second text selection with an OEM fallback selection sheet."
+    ],
+    "fixed": [
+      "Archived conversations remain archived after receiving or sending messages.",
+      "Artwork preserves its proportions instead of stretching."
+    ],
+    "removed": []
+  },
+  {
     "versionCode": 2310,
     "versionName": "1.6.2",
     "added": [],

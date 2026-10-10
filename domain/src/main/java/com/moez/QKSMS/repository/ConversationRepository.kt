@@ -83,7 +83,7 @@ interface ConversationRepository {
 
     fun markArchived(vararg threadIds: Long)
 
-    fun markUnarchived(threadIds: Collection<Long>)
+    fun markUnarchived(threadIds: Collection<Long>, userInitiated: Boolean = false)
 
     fun markPinned(vararg threadIds: Long)
 

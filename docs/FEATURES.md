@@ -49,3 +49,15 @@ Private space is app-level access control, not encryption of Android's shared SM
 ### Consistent message surfaces (1.6.2)
 
 Message bubbles share card finish, shape, size and spacing with the app. File/contact attachments share themed surfaces; photo/video thumbnails follow corner and grouping choices. Navigation and privacy dialogs use the shared renderer. No cards removes decorative surfaces; modal dialogs remain opaque for readability.
+
+### Archive, privacy and appearance controls (1.6.3)
+
+- Archived conversations stay archived when new SMS/MMS arrive or replies are sent; existing archives receive persistent number rules.
+- Locked and archived conversation menus offer explicit moves to inbox/archive, locking and recycle-bin actions.
+- Privacy number lists use contact cards with photos or modern fallback avatars.
+- Settings are grouped into GENERAL, APPEARANCE and PRIVACY with indented options and non-clickable headings.
+- A visual color ring, intensity and brightness controls replace numeric-only custom color entry.
+- Four additional card finishes (Pastel, Duotone, High contrast and Bold outline) and Square/Pill shapes share the app renderer.
+- Header/background artwork supports drag-and-pinch cropping and preserves image proportions.
+- Three-second text selection tolerates small finger movements, with a native read-only selection sheet when an OEM refuses inline selection.
+- Reviewed QUIK changes through 02542049 and removed the unused billing version declaration; overlapping upstream premium-removal work is documented separately.

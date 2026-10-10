@@ -29,7 +29,7 @@ class MessageContrastInstrumentation : Instrumentation() {
             val previousFinish = appearance.getString("card_finish", null)
             runOnMainSync {
                 try {
-                    for (finish in listOf("tonal","neutral","tinted","outlined","gradient","glass","amoled","none")) {
+                    for (finish in listOf("tonal","neutral","tinted","outlined","gradient","glass","amoled","pastel","duotone","bold","contrast","none")) {
                     appearance.edit().putString("card_finish",finish).commit()
                     for (night in listOf(false, true)) for (black in listOf(false, true)) {
                         val config = Configuration(targetContext.resources.configuration).apply {
@@ -90,7 +90,7 @@ class MessageContrastInstrumentation : Instrumentation() {
                 }
             }
             failure?.let { throw it }
-            result.putString("result", "PASS: $cases message contrast cases across all eight finishes; phone/web and confirmation links, light/dark/AMOLED, incoming/outgoing, custom accents and recycled views; shared palette, Settings cards and scheduled date picker")
+            result.putString("result", "PASS: $cases message contrast cases across all twelve finishes; phone/web and confirmation links, light/dark/AMOLED, incoming/outgoing, custom accents and recycled views; shared palette, Settings cards and scheduled date picker")
             finish(0, result)
         } catch (error: Throwable) { result.putString("error", error.stackTraceToString()); finish(1, result) }
     }

@@ -32,7 +32,7 @@ object MessageBodyStyle {
         val window = attrs.getColor(0, Color.WHITE); attrs.recycle()
         val p = TextoAppearance.prefs(view.context)
         val old = view.background as? android.graphics.drawable.GradientDrawable
-        val radius = when (p.getString("card_shape", "soft")) { "minimal" -> 12; "round" -> 30; else -> 16 } * view.resources.displayMetrics.density
+        val radius = when (p.getString("card_shape", "soft")) { "square" -> 0; "pill" -> 48; "minimal" -> 12; "round" -> 30; else -> 16 } * view.resources.displayMetrics.density
         val corners = if (p.getString("bubbles", "fluid") == "classic" && Build.VERSION.SDK_INT >= 24)
             old?.cornerRadii?.map { if (it <= 5 * view.resources.displayMetrics.density) it else radius }?.toFloatArray() else null
         view.backgroundTintList = null

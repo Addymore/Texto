@@ -21,7 +21,7 @@ object TextoAppearance {
     fun noCards(context: Context) = prefs(context).getString("card_finish", "tonal") == "none"
     fun card(context: Context, selected: Boolean = false, accentColor: Int = accent(context), corners: FloatArray? = null): android.graphics.drawable.Drawable {
         val p = prefs(context); val dark = context.resources.configuration.uiMode and 0x30 == 0x20
-        val radius = when(p.getString("card_shape", "soft")) { "minimal" -> 12; "round" -> 30; else -> 16 }
+        val radius = when(p.getString("card_shape", "soft")) { "square" -> 0; "pill" -> 48; "minimal" -> 12; "round" -> 30; else -> 16 }
         val base = if(dark) 0xFF23262D.toInt() else 0xFFF3F5F9.toInt()
         val finish = p.getString("card_finish","tonal")
         if (finish == "none") {
@@ -36,7 +36,7 @@ object TextoAppearance {
             cornerRadius = radius * context.resources.displayMetrics.density
             if (fills.size > 1) { orientation = GradientDrawable.Orientation.TL_BR; colors = fills }
             else setColor(ColorStateList(arrayOf(intArrayOf(android.R.attr.state_activated), intArrayOf()), intArrayOf(androidx.core.graphics.ColorUtils.blendARGB(base,accentColor,.24f), if(selected) androidx.core.graphics.ColorUtils.blendARGB(base,accentColor,.24f) else fills[0])))
-            if (finish in listOf("outlined", "tonal", "glass", "amoled")) setStroke(context.resources.displayMetrics.density.toInt().coerceAtLeast(1), androidx.core.graphics.ColorUtils.blendARGB(base, accentColor, if(finish == "tonal") .18f else .4f))
+            if (finish in listOf("outlined", "tonal", "glass", "amoled", "bold")) setStroke((context.resources.displayMetrics.density * if(finish == "bold") 2 else 1).toInt().coerceAtLeast(1), androidx.core.graphics.ColorUtils.blendARGB(base, accentColor, if(finish == "tonal") .18f else .4f))
         }
         if (corners != null) shape.cornerRadii = corners
         if (selected && finish in listOf("gradient", "glass", "amoled")) shape.setStroke((2*context.resources.displayMetrics.density).toInt(), accentColor)
@@ -49,11 +49,20 @@ object TextoAppearance {
         return when(prefs(context).getString("card_finish", "tonal")) {
             "none" -> intArrayOf(Color.TRANSPARENT)
             "gradient" -> intArrayOf(blend(accentColor, .28f), base)
+            "pastel" -> intArrayOf(blend(accentColor, if(dark) .24f else .16f))
+            "duotone" -> intArrayOf(blend(accentColor, .22f), blend(androidx.core.graphics.ColorUtils.blendARGB(accentColor, if(dark) Color.WHITE else Color.BLACK,.25f), .12f))
+            "contrast" -> intArrayOf(if(dark) 0xFF111111.toInt() else Color.WHITE)
             "glass" -> intArrayOf(blend(Color.WHITE, if(dark) .06f else .55f))
             "amoled" -> intArrayOf(if(dark) Color.BLACK else Color.WHITE)
             "tinted", "tonal" -> intArrayOf(blend(accentColor, if(dark) .16f else .08f))
             else -> intArrayOf(base)
         }
+    }
+    fun readableText(context: Context): Int {
+        val a=context.obtainStyledAttributes(intArrayOf(android.R.attr.windowBackground))
+        val window=a.getColor(0,Color.WHITE);a.recycle()
+        val backgrounds=cardColors(context).map { androidx.core.graphics.ColorUtils.compositeColors(it,window) }
+        return listOf(Color.BLACK,Color.WHITE).maxByOrNull { fg -> backgrounds.minOf { androidx.core.graphics.ColorUtils.calculateContrast(fg,it) } }!!
     }
     fun onAccent(context: Context): Int = if (androidx.core.graphics.ColorUtils.calculateLuminance(accent(context)) > .179) Color.BLACK else Color.WHITE
     fun styleConversation(binding: dev.octoshrimpy.quik.databinding.ConversationListItemBinding, count: Long, unread: Long, selected: Boolean = false) {
@@ -94,7 +103,7 @@ object TextoAppearance {
         val spacing = when(p.getString("density", "comfortable")) { "compact" -> 8; "airy" -> 16; else -> 12 }
         view.minimumHeight = (64*d*scale).toInt()
         (view.layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.let {
-            it.setMargins((16*d).toInt(),(4*d).toInt(),(16*d).toInt(),(4*d).toInt())
+            it.setMargins(((if(view.tag == "texto_submenu") 36 else 16)*d).toInt(),(4*d).toInt(),(16*d).toInt(),(4*d).toInt())
             view.layoutParams = it
         }
         if (view is android.widget.TextView) {

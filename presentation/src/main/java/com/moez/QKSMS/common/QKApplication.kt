@@ -95,6 +95,11 @@ class QKApplication : Application(), HasActivityInjector, HasBroadcastReceiverIn
             trash.reconcile(realm)
             if (!getSharedPreferences("texto_privacy", MODE_PRIVATE).getBoolean("counts_v17", false)) dev.texto.privacy.TrashStore.refresh(realm)
             val policy = dev.texto.privacy.TextoPolicy(this)
+            if(!policy.preferences.getBoolean("persistent_archive_v1",false)) {
+                val addresses=realm.where(dev.octoshrimpy.quik.model.Conversation::class.java).equalTo("archived",true).findAll().flatMap { c -> c.recipients.map { it.address } }
+                policy.save("archived",policy.entries("archived")+addresses)
+                policy.preferences.edit().putBoolean("persistent_archive_v1",true).commit()
+            }
             realm.where(dev.octoshrimpy.quik.model.Conversation::class.java).findAll().forEach { conversation ->
                 conversation.textoLocked = conversation.recipients.any { policy.decision(it.address).locked }
                 if (conversation.textoLocked) conversation.archived = true

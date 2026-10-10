@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.6.3 — 10 October 2026
+
+- Archived conversations stay archived when new SMS/MMS arrive or replies are sent; existing archives receive persistent number rules.
+- Locked and archived conversation menus offer explicit moves to inbox/archive, locking and recycle-bin actions.
+- Privacy number lists use contact cards with photos or modern fallback avatars.
+- Settings are grouped into GENERAL, APPEARANCE and PRIVACY with indented options and non-clickable headings.
+- A visual color ring, intensity and brightness controls replace numeric-only custom color entry.
+- Four additional card finishes (Pastel, Duotone, High contrast and Bold outline) and Square/Pill shapes share the app renderer.
+- Header/background artwork supports drag-and-pinch cropping and preserves image proportions.
+- Three-second text selection tolerates small finger movements, with a native read-only selection sheet when an OEM refuses inline selection.
+- Reviewed QUIK changes through 02542049 and removed the unused billing version declaration; overlapping upstream premium-removal work is documented separately.
+
 ## 1.6.2 — 8 October 2026
 
 - Message text bubbles now share the selected card finish and shape, including gradients, frosted and AMOLED styles; card size and spacing also apply inside conversations.

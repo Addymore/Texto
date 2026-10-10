@@ -1,0 +1,1 @@
+Persistent archiving for incoming and sent messages. Locked/archive conversation actions. Grouped settings and privacy contact cards. Visual color ring, four additional finishes and Square/Pill shapes. Drag/pinch artwork cropping without stretching. More reliable three-second text selection with an OEM fallback.

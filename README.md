@@ -4,11 +4,11 @@
 
 A customizable Kotlin SMS/MMS app for Android by **[Addymore](https://github.com/Addymore)**, built on [QUIK](https://github.com/quik-sms/quik) and QKSMS. Reachable navigation, consistent public and private conversations, and a theme that feels like yours.
 
-[Download 1.6.2](https://github.com/Addymore/Texto/releases/tag/v1.6.2) · [Changelog](CHANGELOG.md) · [Report a bug](https://github.com/Addymore/Texto/issues) · [Telegram](https://t.me/addymore)
+[Download 1.6.3](https://github.com/Addymore/Texto/releases/tag/v1.6.3) · [Changelog](CHANGELOG.md) · [Report a bug](https://github.com/Addymore/Texto/issues) · [Telegram](https://t.me/addymore)
 
 **Two APKs:** choose the signed release APK for a new installation, or the debug APK to update a previous Texto development installation. Neither is a Google Play publication. Android 6+; physical OnePlus 13 / Android 16 and carrier validation are still required. See [validation](VALIDATION.md).
 
-See the [complete feature list](docs/FEATURES.md) and [1.6.2 changelog](CHANGELOG.md).
+See the [complete feature list](docs/FEATURES.md) and [1.6.3 changelog](CHANGELOG.md).
 
 ## A look of your own
 
@@ -43,7 +43,7 @@ Open Backup & restore, choose a writable folder, and create a backup. Select **E
 
 ## Install
 
-1. Download `Texto-1.6.2-release.apk` for a new install, or `Texto-1.6.2-debug.apk` to upgrade your development installation from the [release](https://github.com/Addymore/Texto/releases/tag/v1.6.2).
+1. Download `Texto-1.6.3-release.apk` for a new install, or `Texto-1.6.3-debug.apk` to upgrade your development installation from the [release](https://github.com/Addymore/Texto/releases/tag/v1.6.3).
 2. Install it and select Texto as your default SMS app. Allow the permissions needed for messaging and contacts.
 3. Personalize it in **Themes** and configure your privacy PIN and number rules in **Settings → Privacy & protection**.
 

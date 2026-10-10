@@ -409,16 +409,21 @@ class ConversationRepositoryImpl @Inject constructor(
                 .anyOf("id", threadIds)
                 .findAll()
 
+            val policy=dev.texto.privacy.TextoPolicy(context)
+            policy.save("archived",policy.entries("archived") + conversations.flatMap { c -> c.recipients.map { it.address } })
             realm.executeTransaction { conversations.forEach { it.archived = true } }
         }
 
-    override fun markUnarchived(threadIds: Collection<Long>) =
-        Realm.getDefaultInstance().use { realm ->
+    override fun markUnarchived(threadIds: Collection<Long>, userInitiated: Boolean) =
+        if (!userInitiated) Unit else Realm.getDefaultInstance().use { realm ->
             val conversations = realm.where(Conversation::class.java)
                 .anyOf("id", threadIds.toLongArray())
                 .findAll()
 
-            realm.executeTransaction { conversations.forEach { conversation -> if (conversation.recipients.none { dev.texto.privacy.TextoPolicy(context).decision(it.address).archived }) conversation.archived = false } }
+            val policy=dev.texto.privacy.TextoPolicy(context)
+            val numbers=conversations.filter { !it.textoLocked }.flatMap { c -> c.recipients.map { policy.normalize(it.address) } }.toSet()
+            policy.save("archived",policy.entries("archived")-numbers)
+            realm.executeTransaction { conversations.forEach { conversation -> if (conversation.recipients.none { policy.decision(it.address).archived }) conversation.archived = false } }
         }
 
     override fun markPinned(vararg threadIds: Long) =
@@ -521,7 +526,7 @@ class ConversationRepositoryImpl @Inject constructor(
                             recipients.clear()
                             recipients.addAll(matchedRecipients)
                 textoLocked = recipients.any { dev.texto.privacy.TextoPolicy(context).decision(it.address).locked }
-                if (textoLocked) archived = true
+                if (recipients.any { dev.texto.privacy.TextoPolicy(context).decision(it.address).archived }) archived = true
 
                             this.sendAsGroup =
                                 if (recipients.size <= 1) false
@@ -564,7 +569,7 @@ class ConversationRepositoryImpl @Inject constructor(
                 recipients.clear()
                 recipients.addAll(matchedRecipients)
                 textoLocked = recipients.any { dev.texto.privacy.TextoPolicy(context).decision(it.address).locked }
-                if (textoLocked) archived = true
+                if (recipients.any { dev.texto.privacy.TextoPolicy(context).decision(it.address).archived }) archived = true
                 this.sendAsGroup =
                     if (recipients.size <= 1) false
                     else sendAsGroup

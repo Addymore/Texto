@@ -28,7 +28,7 @@ class ThemesActivity : QkThemedActivity() {
         if(uri != null) {
             try {
                 contentResolver.takePersistableUriPermission(uri,Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                TextoAppearance.prefs(this).edit().putString(imageKey,uri.toString()).apply(); render()
+                ArtworkCrop.show(this,uri,imageKey) { render() }
             } catch(e: SecurityException) { Toast.makeText(this,"Could not keep access to this image. Choose another image.",Toast.LENGTH_LONG).show() }
         }
     }
@@ -106,7 +106,7 @@ class ThemesActivity : QkThemedActivity() {
             },LinearLayout.LayoutParams(0,dp(56),1f).apply { marginEnd=dp(4) })
             content.addView(swatches)
         }
-        row("Custom accent",String.format("#%06X",accent and 0xFFFFFF)) { customAccent() }
+        row("Color wheel","Choose any color") { customAccent() }
         if(android.os.Build.VERSION.SDK_INT >= 31) toggle("Use wallpaper colors","dynamic_colors",false)
         val modes=arrayOf("System","Light","Dark","Scheduled")
         row("Appearance",modes[prefs.nightMode.get().coerceIn(0,3)]) {
@@ -116,8 +116,8 @@ class ThemesActivity : QkThemedActivity() {
         }
         content.addView(MaterialSwitch(this).apply { text="Pure black in dark mode"; minHeight=dp(56); isChecked=prefs.black.get(); setOnCheckedChangeListener { _,checked -> prefs.black.set(checked) } })
         label("Cards & surfaces",22f)
-        choice("Card shape","card_shape",arrayOf("Soft","Round","Minimal"),arrayOf("soft","round","minimal"),"soft")
-        choice("Card finish","card_finish",arrayOf("Tonal cards","Neutral","Accent tint","Outlined","Aurora gradient","Frosted glass","AMOLED outline","No cards — everywhere"),arrayOf("tonal","neutral","tinted","outlined","gradient","glass","amoled","none"),"tonal")
+        choice("Card shape","card_shape",arrayOf("Soft","Round","Minimal","Square","Pill"),arrayOf("soft","round","minimal","square","pill"),"soft")
+        choice("Card finish","card_finish",arrayOf("Tonal cards","Neutral","Accent tint","Outlined","Aurora gradient","Frosted glass","AMOLED outline","Pastel","Two-tone gradient","Bold outline","High contrast","No cards — everywhere"),arrayOf("tonal","neutral","tinted","outlined","gradient","glass","amoled","pastel","duotone","bold","contrast","none"),"tonal")
         label("Card finish, shape, size and spacing also apply to messages inside conversations.",13f)
         choice("Card size","card_size",arrayOf("Small","Medium","Large"),arrayOf("small","medium","large"),"medium")
         choice("Spacing","density",arrayOf("Compact","Comfortable","Airy"),arrayOf("compact","comfortable","airy"),"comfortable")
@@ -130,6 +130,8 @@ class ThemesActivity : QkThemedActivity() {
         row("Motto",appearance.getString("inbox_motto","Messages, comfortably within reach").orEmpty()) { customText("Motto","inbox_motto","Messages, comfortably within reach",100) }
         row("Background image",if(appearance.contains("background_image")) "Selected" else "None") { pickImage("background_image") }
         row("Header artwork",if(appearance.contains("header_image")) "Selected" else "None") { pickImage("header_image") }
+        if(appearance.contains("header_image")) row("Adjust header crop","") { ArtworkCrop.show(this,android.net.Uri.parse(appearance.getString("header_image","")!!),"header_image") { render() } }
+        if(appearance.contains("background_image")) row("Adjust background crop","") { ArtworkCrop.show(this,android.net.Uri.parse(appearance.getString("background_image","")!!),"background_image") { render() } }
         row("Remove background image","") { appearance.edit().remove("background_image").apply(); render() }
         row("Remove header artwork","") { appearance.edit().remove("header_image").apply(); render() }
         label("Images remain on your device. A readability overlay keeps messages legible. Long press your header title for Archive.",13f)
@@ -166,14 +168,5 @@ class ThemesActivity : QkThemedActivity() {
         TextoAppearance.prefs(this).edit().putBoolean("dynamic_colors",false).apply()
         prefs.theme().set(color); prefs.autoColor.set(false); render()
     }
-    private fun customAccent() {
-        val input=TextInputEditText(this).apply { hint="#RRGGBB"; setSingleLine(); setText(String.format("#%06X",TextoAppearance.accent(this@ThemesActivity) and 0xFFFFFF)); setPadding(dp(24),dp(16),dp(24),dp(16)) }
-        val prompt=dev.texto.privacy.TextoDialogs.builder(this).setTitle("Custom accent color").setView(input).setNegativeButton("Cancel",null).setPositiveButton("Apply",null).create()
-        dialog=prompt
-        prompt.setOnShowListener { prompt.getButton(-1).setOnClickListener {
-            val value=input.text.toString().trim().removePrefix("#")
-            if(!value.matches(Regex("[0-9a-fA-F]{6}"))) input.error="Enter six hexadecimal digits, such as 375BCD"
-            else { prompt.dismiss(); saveAccent(Color.parseColor("#$value")) }
-        } }; prompt.show()
-    }
+    private fun customAccent() { dialog=ColorRing.show(this,TextoAppearance.accent(this),::saveAccent) }
 }

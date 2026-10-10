@@ -26,7 +26,7 @@ class MarkUnarchived @Inject constructor(private val conversationRepo: Conversat
     : Interactor<List<Long>>() {
     override fun buildObservable(params: List<Long>): Flowable<*> {
         return Flowable.just(params)
-            .doOnNext { threadIds -> conversationRepo.markUnarchived(threadIds) }
+            .doOnNext { threadIds -> conversationRepo.markUnarchived(threadIds, userInitiated = true) }
     }
 
 }

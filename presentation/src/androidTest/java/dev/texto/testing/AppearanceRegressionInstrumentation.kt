@@ -41,6 +41,27 @@ class AppearanceRegressionInstrumentation : Instrumentation() {
             val dial=PhoneDialing.intent(targetContext,"0722 000 123")
             check(dial.action==Intent.ACTION_DIAL && dial.data?.schemeSpecificPart=="0722000123")
             val compose=startActivitySync(Intent(targetContext,ComposeActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) as ComposeActivity
+            val policy=TextoPolicy(targetContext)
+            val archivedBefore=policy.entries("archived");val lockedBefore=policy.entries("locked")
+            val testNumber="+15550101633"
+            try {
+                Realm.getDefaultInstance().use { r -> r.executeTransaction { realm ->
+                    realm.insertOrUpdate(dev.octoshrimpy.quik.model.Conversation().apply { id=99163;recipients.add(dev.octoshrimpy.quik.model.Recipient().apply { id=99163;address=testNumber }) })
+                } }
+                compose.conversationRepo.markArchived(99163)
+                check(policy.decision(testNumber).archived)
+                compose.conversationRepo.markUnarchived(listOf(99163))
+                Realm.getDefaultInstance().use { r -> check(r.where(dev.octoshrimpy.quik.model.Conversation::class.java).equalTo("id",99163L).findFirst()!!.archived) }
+                compose.conversationRepo.markUnarchived(listOf(99163),userInitiated=true)
+                check(!policy.decision(testNumber).archived)
+                policy.save("locked",lockedBefore+testNumber)
+                compose.conversationRepo.markArchived(99163)
+                compose.conversationRepo.markUnarchived(listOf(99163),userInitiated=true)
+                check(policy.decision(testNumber).locked && policy.decision(testNumber).archived)
+            } finally {
+                policy.save("archived",archivedBefore);policy.save("locked",lockedBefore)
+                Realm.getDefaultInstance().use { r -> r.executeTransaction { it.where(dev.octoshrimpy.quik.model.Conversation::class.java).equalTo("id",99163L).findAll().deleteAllFromRealm();it.where(dev.octoshrimpy.quik.model.Recipient::class.java).equalTo("id",99163L).findAll().deleteAllFromRealm() } }
+            }
             adapter=compose.messageAdapter
             // Dispose the live compose model before binding the isolated fixture. Otherwise
             // its asynchronous empty-thread result can overwrite the fixture's adapter data.
@@ -126,7 +147,7 @@ class AppearanceRegressionInstrumentation : Instrumentation() {
                     check(TextoAppearance.card(screen) is android.graphics.drawable.RippleDrawable)
                 }
             }
-            result.putString("result","PASS: real message adapter, TightTextView and RecyclerView select and copy an individual word only after three seconds; displayed phone numbers and optional country code; no-card settings and message bubbles; all new card finishes")
+            result.putString("result","PASS: persistent archive survives automatic receive/send unarchive, explicit unarchive works and locked rules remain protected; real message adapter, TightTextView and RecyclerView select and copy an individual word only after three seconds; displayed phone numbers and optional country code; no-card settings and message bubbles; all new card finishes")
         } catch(e: Throwable) { result.putString("error",e.stackTraceToString()) }
         finally {
             main { adapter?.updateData(null); realm?.close(); activity?.finish() }

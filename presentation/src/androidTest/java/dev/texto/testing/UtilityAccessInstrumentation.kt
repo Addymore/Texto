@@ -57,8 +57,21 @@ class UtilityAccessInstrumentation : Instrumentation() {
             val home = startActivitySync(targetContext.packageManager.getLaunchIntentForPackage(targetContext.packageName)!!.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
             android.os.SystemClock.sleep(2000)
             main {
-                check(home.findViewById<View>(dev.octoshrimpy.quik.R.id.textoHeader).background is android.graphics.drawable.LayerDrawable) { "Header art failed to load" }
-                check(home.findViewById<View>(dev.octoshrimpy.quik.R.id.textoReachable).background is android.graphics.drawable.LayerDrawable) { "Background failed to load" }
+                check(home.findViewById<View>(dev.octoshrimpy.quik.R.id.textoHeader).background != null) { "Header art failed to load" }
+                check(home.findViewById<View>(dev.octoshrimpy.quik.R.id.textoReachable).background != null) { "Background failed to load" }
+                val cropSource=android.graphics.Bitmap.createBitmap(200,100,android.graphics.Bitmap.Config.ARGB_8888)
+                val cropCanvas=android.graphics.Canvas(cropSource)
+                cropCanvas.drawColor(android.graphics.Color.BLUE)
+                cropCanvas.drawCircle(100f,50f,20f,android.graphics.Paint().apply { color=android.graphics.Color.RED })
+                val crop=dev.texto.privacy.ArtworkCrop(home,cropSource);crop.layout(0,0,200,200)
+                val cropped=crop.result()
+                check(cropped.getPixel(100,65)==android.graphics.Color.RED && cropped.getPixel(65,100)==android.graphics.Color.RED)
+                check(cropped.getPixel(100,50)==android.graphics.Color.BLUE && cropped.getPixel(50,100)==android.graphics.Color.BLUE) { "Artwork crop distorted image proportions" }
+                cropped.recycle();cropSource.recycle()
+                val ring=dev.texto.privacy.ColorRing(home,android.graphics.Color.RED);ring.layout(0,0,200,200)
+                val ringEvent=android.view.MotionEvent.obtain(0,0,android.view.MotionEvent.ACTION_DOWN,100f,190f,0)
+                ring.onTouchEvent(ringEvent);ringEvent.recycle()
+                check(kotlin.math.abs(ring.hsv[0]-90f)<1f) { "Hue ring did not select the touched hue" }
                 val texts=views(home.window.decorView).filterIsInstance<TextView>().map { it.text.toString() }
                 check("My inbox" in texts && "Small moments matter" in texts)
                 val sample=dev.octoshrimpy.quik.databinding.ConversationListItemBinding.inflate(home.layoutInflater)
@@ -105,8 +118,22 @@ class UtilityAccessInstrumentation : Instrumentation() {
             main { check(!gestureBody.isTextSelectable) { "Text selection opened before three seconds" } }
             android.os.SystemClock.sleep(1800)
             waitForIdleSync()
-            main { check(gestureBody.isTextSelectable && gestureBody.selectionStart>=0 && gestureBody.selectionEnd>gestureBody.selectionStart) { "Three-second hold did not start native text selection: selectable=${gestureBody.isTextSelectable}, selection=${gestureBody.selectionStart}..${gestureBody.selectionEnd}, shown=${gestureBody.isShown}, windowFocus=${gestureBody.hasWindowFocus()}, focus=${gestureBody.hasFocus()}, size=${gestureBody.width}x${gestureBody.height}" } }
-            touch(android.view.MotionEvent.ACTION_UP,android.os.SystemClock.uptimeMillis())
+            var fallback=false
+            main {
+                fallback=!gestureBody.isTextSelectable
+                if(!fallback) check(gestureBody.selectionStart>=0 && gestureBody.selectionEnd>gestureBody.selectionStart)
+            }
+            if(fallback) {
+                check(uiAutomation.rootInActiveWindow.findAccessibilityNodeInfosByText("Select message text").isNotEmpty()) { "Neither inline selection nor selection sheet opened" }
+                val field=uiAutomation.rootInActiveWindow.findAccessibilityNodeInfosByText("Select these words inside the message").single()
+                check(field.performAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_SET_SELECTION,Bundle().apply {
+                    putInt(android.view.accessibility.AccessibilityNodeInfo.ACTION_ARGUMENT_SELECTION_START_INT,0)
+                    putInt(android.view.accessibility.AccessibilityNodeInfo.ACTION_ARGUMENT_SELECTION_END_INT,6)
+                }))
+                check(field.performAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_COPY))
+                main { check((home.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager).primaryClip?.getItemAt(0)?.text.toString()=="Select") }
+                uiAutomation.rootInActiveWindow.findAccessibilityNodeInfosByText("Done").single().performAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK)
+            } else touch(android.view.MotionEvent.ACTION_UP,android.os.SystemClock.uptimeMillis())
             waitForIdleSync()
             uiAutomation.takeScreenshot()?.let { image -> java.io.File(targetContext.getExternalFilesDir(null),"text-selection-160.png").outputStream().use { image.compress(android.graphics.Bitmap.CompressFormat.PNG,100,it) }; image.recycle() }
             main { dev.texto.privacy.MessageSelectionGesture.bind(gestureBody,2L); check(!gestureBody.isTextSelectable) }
