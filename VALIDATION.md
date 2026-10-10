@@ -2,12 +2,14 @@
 
 ## 1.6.3 archive and appearance regression checks — 10 October 2026
 
+- Debug and optimized release builds passed in the final Gradle run (7m 22s). Both APKs passed signature/certificate continuity and zip alignment checks. The signed release upgraded the existing Android 14 emulator installation, displayed the 1.6.3 release notes and opened the synthetic inbox with no crash in the emulator crash buffer.
 - Final debug and instrumentation builds passed. The 19 unchanged common JVM tests remain passing (Gradle up-to-date results).
 - Android 14 synthetic-emulator regression: persistent number archiving survives automatic unarchive attempts; explicit unarchive works and locked rules remain protected. Receive/send call sites use the automatic path. New/recreated conversations also apply saved archive rules.
 - The actual MessagesAdapter, TightTextView and RecyclerView select an individual word after three seconds, preserve selection on release and copy only that word. Earlier overlapping instrumentation was discarded; isolated final runs passed. Physical OnePlus native/fallback selection remains unverified.
 - All 480 contrast cases passed across 12 finishes: incoming/outgoing messages, links, light/dark/AMOLED, custom accents and recycled views, plus settings and scheduled picker checks.
 - Utility/privacy regression passed: ordinary utilities open freely, protected utilities remain hidden until PIN authentication, cancellation closes protected screens, scroll movement cancels text selection, custom title/motto/artwork load, crop preserves a synthetic circle's proportions, hue-ring touch selects the expected hue, and card-size/no-card checks pass.
 - Manual emulator checks confirmed the indented settings groups, working Theme navigation, archive action menu and move to inbox, color-ring dialog, saved artwork crop after dragging, and privacy number cards through the normal PIN flow.
+- F-Droid metadata lint and source scan passed on GitHub Actions run 38085383901, job 114310686687. Existing submission !50918 now targets 1.6.3/code 2320; GitLab pipeline 2934603858 created zero jobs because identity verification is required. Official F-Droid CI/inclusion remains pending.
 - Physical OnePlus frame pacing, carrier SMS/MMS, fingerprint hardware, real email delivery and a complete backup/restore round trip remain unverified. The earlier reported system reboot has no confirmed cause or claimed fix. F-Droid review and Google Play publication are separate pending processes.
 
 

@@ -19,7 +19,9 @@ The recipe in `metadata/app.texto.sms.yml` uses the normal release variant. The 
 
 ## Validation
 
-Version 1.6.0 debug and optimized release builds passed locally; all 19 unchanged common JVM tests remain passing. Android 14 instrumentation passed three-second text selection, artwork and card controls, ordinary/protected utility access, PIN/cancel checks and 40 contrast cases. The production-signed APK passed clean-install launch checks. Full Linux Android CI is tracked separately from the metadata job. Metadata lint and source scanning passed for the 1.6.0 recipe with fdroidserver 2.4.5 on 4 October 2026: https://github.com/Addymore/Texto/actions/runs/37233479899/job/111527872393. The inherited lint configuration reports 81 non-aborting ExtraTranslation errors; this is not a clean lint result. Physical-device, carrier, real email and full backup/restore round-trip validation remain outstanding.
+Version 1.6.3 debug/instrumentation builds passed locally; the 19 unchanged JVM tests remain passing (up-to-date). Final Android 14 emulator regressions passed individual-word selection/Copy, persistent archiving, ordinary/protected utility access, PIN/cancel checks, crop proportions, hue selection and 480 contrast cases. Metadata lint and source scanning passed with fdroidserver 2.4.5 on 10 October 2026: https://github.com/Addymore/Texto/actions/runs/38085383901/job/114310686687. See VALIDATION.md for release build and APK checks.
+
+The submission recipe was updated in GitLab commit 5e544c18650402f9a71e68470b66b681560ef9c2. GitLab pipeline 2934603858 created zero jobs and requests identity verification; this is not a completed F-Droid build. Maintainer-triggered CI is still needed. The inherited non-aborting lint configuration and translation issues remain; a clean full Android lint result is not claimed. Physical-device, carrier, real email and full backup/restore round-trip validation remain outstanding.
 
 ## Listing and scope
 
