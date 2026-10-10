@@ -1,5 +1,16 @@
 # Texto validation — 8 October 2026
 
+## 1.6.3 archive and appearance regression checks — 10 October 2026
+
+- Final debug and instrumentation builds passed. The 19 unchanged common JVM tests remain passing (Gradle up-to-date results).
+- Android 14 synthetic-emulator regression: persistent number archiving survives automatic unarchive attempts; explicit unarchive works and locked rules remain protected. Receive/send call sites use the automatic path. New/recreated conversations also apply saved archive rules.
+- The actual MessagesAdapter, TightTextView and RecyclerView select an individual word after three seconds, preserve selection on release and copy only that word. Earlier overlapping instrumentation was discarded; isolated final runs passed. Physical OnePlus native/fallback selection remains unverified.
+- All 480 contrast cases passed across 12 finishes: incoming/outgoing messages, links, light/dark/AMOLED, custom accents and recycled views, plus settings and scheduled picker checks.
+- Utility/privacy regression passed: ordinary utilities open freely, protected utilities remain hidden until PIN authentication, cancellation closes protected screens, scroll movement cancels text selection, custom title/motto/artwork load, crop preserves a synthetic circle's proportions, hue-ring touch selects the expected hue, and card-size/no-card checks pass.
+- Manual emulator checks confirmed the indented settings groups, working Theme navigation, archive action menu and move to inbox, color-ring dialog, saved artwork crop after dragging, and privacy number cards through the normal PIN flow.
+- Physical OnePlus frame pacing, carrier SMS/MMS, fingerprint hardware, real email delivery and a complete backup/restore round trip remain unverified. The earlier reported system reboot has no confirmed cause or claimed fix. F-Droid review and Google Play publication are separate pending processes.
+
+
 ## 1.6.2 theme consistency checks
 
 - Final release and debug builds passed in 14m 28s; all 19 common JVM tests remain passing (Gradle up-to-date). Both APK signatures, existing certificates and 4-byte alignment verified. Version is 1.6.2, code 2310. The signed release upgraded the emulator installation and launched successfully with the SMS role; no crash was recorded in the emulator crash buffer.

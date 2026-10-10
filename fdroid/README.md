@@ -4,7 +4,7 @@ Submitted on 2 October 2026: [F-Droid merge request !50918](https://gitlab.com/f
 
 ## Build
 
-The proposed package is `app.texto.sms`, version 1.6.0 (2290), source tag `v1.6.0-fdroid1`. The tag pins the same application source as the GitHub 1.6.0 release (d9a26ecd814bbb1bd2f58b3af00661391866f055).
+The proposed package is `app.texto.sms`, version 1.6.3 (2320), source tag `v1.6.3-fdroid1`. The tag pins the same application source as the GitHub 1.6.3 release (application commit 81a6e8c66227a1da33f0c99096735d27dc324d1c).
 
 Use OpenJDK 17, Android SDK platform 34 and build tools 34.0.0:
 
@@ -12,7 +12,7 @@ Use OpenJDK 17, Android SDK platform 34 and build tools 34.0.0:
 ./gradlew :presentation:assembleRelease :common:testDebugUnitTest --no-daemon
 ```
 
-Output: `presentation/build/outputs/apk/release/Texto-v1.6.0-release-unsigned.apk`.
+Output: `presentation/build/outputs/apk/release/Texto-v1.6.3-release-unsigned.apk`.
 Release builds are unsigned by default. No private key, account, API key or proprietary service plugin is required. The optional `-PtextoSignRelease` enables locally configured signing for maintainers only; F-Droid must not use it.
 
 The recipe in `metadata/app.texto.sms.yml` uses the normal release variant. The inherited custom `fdroid` build type is not used for the official submission. Dedicated `vX.Y.Z-fdroidN` tags select reviewed source revisions for F-Droid updates. Increase versionCode for each future app update.

@@ -12,6 +12,8 @@ See the [complete feature list](docs/FEATURES.md) and [1.6.3 changelog](CHANGELO
 
 ## A look of your own
 
+<table><tr><td><img src="docs/images/color-wheel-1.6.3.png" width="280" alt="Texto 1.6.3 visual color ring with intensity and brightness" /></td><td><img src="docs/images/artwork-crop-1.6.3.png" width="280" alt="Drag and pinch artwork crop with preserved proportions" /></td></tr></table>
+
 <table><tr><td><img src="docs/images/conversation-1.6.2.png" width="280" alt="Message bubbles using the selected gradient finish" /></td><td><img src="docs/images/settings-1.6.2.png" width="280" alt="Matching gradient Settings cards" /></td></tr></table>
 
 <table><tr><td><img src="docs/images/settings-flat-1.6.1.png" width="280" alt="Texto 1.6.1 No cards in Settings with a visible Privacy icon" /></td><td><img src="docs/images/selection-1.6.1.png" width="280" alt="Three-second word selection with native Copy and selection handles" /></td><td><img src="docs/images/changelog-1.6.1.png" width="280" alt="Rounded release notes using the selected Jade accent" /></td></tr></table>
