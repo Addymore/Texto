@@ -1,5 +1,18 @@
 [
   {
+    "versionCode": 2330,
+    "versionName": "1.6.4",
+    "added": [],
+    "improved": [
+      "More compact conversation cards, avatars and badges across every finish and size.",
+      "Tighter message bubbles and settings rows while keeping text size adjustable.",
+      "Inbox & Contacts and SMS & MMS settings groups, with fewer items in General.",
+      "Less repeated layout, link detection and background work when scrolling."
+    ],
+    "fixed": [],
+    "removed": []
+  },
+  {
     "versionCode": 2320,
     "versionName": "1.6.3",
     "added": [

@@ -21,9 +21,13 @@ object InboxArtwork {
                 override fun onResourceReady(resource: android.graphics.Bitmap, transition: Transition<in android.graphics.Bitmap>?) {
                     view.background=object: Drawable() {
                         val paint=android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG or android.graphics.Paint.FILTER_BITMAP_FLAG)
-                        override fun draw(canvas: android.graphics.Canvas) {
+                        private val matrix=android.graphics.Matrix()
+                        override fun onBoundsChange(bounds: android.graphics.Rect) {
                             val scale=maxOf(bounds.width().toFloat()/resource.width,bounds.height().toFloat()/resource.height)
-                            val matrix=android.graphics.Matrix().apply { setScale(scale,scale);postTranslate(bounds.left+(bounds.width()-resource.width*scale)/2,bounds.top+(bounds.height()-resource.height*scale)/2) }
+                            matrix.setScale(scale,scale)
+                            matrix.postTranslate(bounds.left+(bounds.width()-resource.width*scale)/2,bounds.top+(bounds.height()-resource.height*scale)/2)
+                        }
+                        override fun draw(canvas: android.graphics.Canvas) {
                             val save=canvas.save();canvas.clipRect(bounds);canvas.drawBitmap(resource,matrix,paint);canvas.drawColor(scrim);canvas.restoreToCount(save)
                         }
                         override fun setAlpha(alpha: Int) { paint.alpha=alpha }

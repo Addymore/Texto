@@ -83,7 +83,14 @@ class UtilityAccessInstrumentation : Instrumentation() {
                 check(sample.root.minimumHeight>small)
                 policy.preferences.edit().putString("card_finish","none").commit()
                 dev.texto.privacy.TextoAppearance.styleConversation(sample,5,2)
-                check(((sample.root.background as android.graphics.drawable.RippleDrawable).getDrawable(0) as android.graphics.drawable.ColorDrawable).color==android.graphics.Color.TRANSPARENT)
+                val flat=android.graphics.Bitmap.createBitmap(32,32,android.graphics.Bitmap.Config.ARGB_8888)
+                sample.root.background.setBounds(0,0,32,32)
+                sample.root.background.draw(android.graphics.Canvas(flat))
+                check(android.graphics.Color.alpha(flat.getPixel(16,16))==0) { "No-cards row is not transparent" }
+                sample.root.background.state=intArrayOf(android.R.attr.state_activated)
+                sample.root.background.draw(android.graphics.Canvas(flat))
+                check(android.graphics.Color.alpha(flat.getPixel(16,16))>0) { "No-cards selection is invisible" }
+                flat.recycle()
                 policy.preferences.edit().remove("card_size").remove("card_finish").commit()
             }
             uiAutomation.takeScreenshot()?.let { image -> java.io.File(targetContext.getExternalFilesDir(null),"inbox-160.png").outputStream().use { image.compress(android.graphics.Bitmap.CompressFormat.PNG,100,it) }; image.recycle() }

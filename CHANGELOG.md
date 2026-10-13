@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.6.4 — 13 October 2026
+
+- More compact conversation cards across all finishes and sizes: reduced padding, smaller avatars and unread badges, and tighter row spacing.
+- Smaller message bubble padding and gaps; denser settings rows with readable text and accessible touch targets.
+- Settings organized into General, Inbox & Contacts, SMS & MMS, Appearance and Privacy. Existing options and click actions are retained.
+- Reuse unchanged conversation styling and message surfaces; cache link detection per recycled message view. Avoid redundant avatar remeasurement and full-list refreshes when a scheduled-thread marker changes.
+- Header artwork reuses its drawing matrix between size changes.
+- Reviewed QUIK master and Actions again; no new master changes since 02542049.
+
 ## 1.6.3 — 10 October 2026
 
 - Archived conversations stay archived when new SMS/MMS arrive or replies are sent; existing archives receive persistent number rules.

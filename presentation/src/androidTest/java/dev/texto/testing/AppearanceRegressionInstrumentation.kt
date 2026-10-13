@@ -133,6 +133,19 @@ class AppearanceRegressionInstrumentation : Instrumentation() {
             }
             waitForIdleSync()
             main {
+                val holder=checkNotNull(list.findViewHolderForAdapterPosition(0)) as dev.octoshrimpy.quik.common.base.QkViewHolder
+                val cached=body.getTag(R.id.texto_message_links)
+                messages.onBindViewHolder(holder,0)
+                check(body.getTag(R.id.texto_message_links) === cached) { "Unchanged text reran link detection" }
+                realm!!.executeTransaction { r -> r.where(Message::class.java).findFirst()!!.body="Call 0722 000 999 instead." }
+                messages.onBindViewHolder(holder,0)
+                val updated=body.text as android.text.Spanned
+                val links=updated.getSpans(0,updated.length,android.text.style.ClickableSpan::class.java)
+                check(links.any { updated.subSequence(updated.getSpanStart(it),updated.getSpanEnd(it)).toString().contains("999") }) { "Edited message retained stale phone link" }
+                realm!!.executeTransaction { r -> r.where(Message::class.java).findFirst()!!.body="No phone or web links here." }
+                messages.onBindViewHolder(holder,0)
+                val plain=body.text as android.text.Spanned
+                check(plain.getSpans(0,plain.length,android.text.style.ClickableSpan::class.java).isEmpty()) { "Recycled plain text retained a link" }
                 prefs.edit().putString("card_finish","none").commit()
                 val button=com.google.android.material.button.MaterialButton(screen)
                 TextoAppearance.styleSettingsCard(button)

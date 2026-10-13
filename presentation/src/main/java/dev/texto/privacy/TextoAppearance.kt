@@ -67,26 +67,41 @@ object TextoAppearance {
     fun onAccent(context: Context): Int = if (androidx.core.graphics.ColorUtils.calculateLuminance(accent(context)) > .179) Color.BLACK else Color.WHITE
     fun styleConversation(binding: dev.octoshrimpy.quik.databinding.ConversationListItemBinding, count: Long, unread: Long, selected: Boolean = false) {
         val context = binding.root.context; val p = prefs(context); val d = context.resources.displayMetrics.density
-        val spacing = when(p.getString("density","comfortable")) { "compact" -> 12; "airy" -> 20; else -> 16 }
-        val scale = when(p.getString("card_size","medium")) { "small" -> .8f; "large" -> 1.25f; else -> 1f }
-        val padding = (spacing*d*scale).toInt()
-        binding.root.setPadding(padding,padding,padding,padding)
-        binding.root.minimumHeight = ((spacing*4+30)*d*scale).toInt()
-        binding.root.background = if(p.getString("card_finish","tonal") == "none") RippleDrawable(ColorStateList.valueOf(accent(context) and 0x00FFFFFF or 0x22000000),android.graphics.drawable.ColorDrawable(if(selected) accent(context) and 0x00FFFFFF or 0x33000000 else Color.TRANSPARENT),null) else card(context,selected)
-        binding.avatars.visibility = if(p.getBoolean("list_avatars",true)) View.VISIBLE else View.GONE
-        val lines = p.getString("preview_lines","2")?.toIntOrNull()?.coerceIn(0,3) ?: 2
-        binding.snippet.visibility = if(lines == 0) View.GONE else View.VISIBLE
-        binding.snippet.maxLines = lines.coerceAtLeast(1)
-        binding.messageCount.visibility = if(p.getBoolean("message_counts",true)) View.VISIBLE else View.GONE
-        binding.messageCount.text = "$count ${if(count == 1L) "message" else "messages"}"
+        // Keep a style snapshot on the holder, not a global cache of views or message data.
+        // Counts/selection still update on every bind; unchanged styles do not request layout.
+        val style = listOf(p.getString("density","comfortable"), p.getString("card_size","medium"),
+            p.getString("card_shape","soft"), p.getString("card_finish","tonal"), accent(context),
+            context.resources.configuration.uiMode, d, binding.unread.textSize, selected, p.getBoolean("list_avatars",true),
+            p.getString("preview_lines","2"), p.getBoolean("message_counts",true), p.getString("unread_style","count"))
         val dot = p.getString("unread_style","count") == "dot"
+        if (binding.root.getTag(dev.octoshrimpy.quik.R.id.texto_conversation_style) != style) {
+            binding.root.setTag(dev.octoshrimpy.quik.R.id.texto_conversation_style, style)
+            val spacing = when(p.getString("density","comfortable")) { "compact" -> 6; "airy" -> 10; else -> 8 }
+            val scale = when(p.getString("card_size","medium")) { "small" -> .85f; "large" -> 1.15f; else -> 1f }
+            binding.root.setPadding((12*d*scale).toInt(),(spacing*d*scale).toInt(),(12*d*scale).toInt(),(spacing*d*scale).toInt())
+            binding.root.minimumHeight = (64*d*scale).toInt().coerceAtLeast((48*d).toInt())
+            binding.root.background = card(context,selected)
+            binding.avatars.visibility = if(p.getBoolean("list_avatars",true)) View.VISIBLE else View.GONE
+            val avatarSize = (44*d*scale).toInt()
+            if (binding.avatars.layoutParams.width != avatarSize) binding.avatars.layoutParams = binding.avatars.layoutParams.apply { width=avatarSize; height=avatarSize }
+            val lines = p.getString("preview_lines","2")?.toIntOrNull()?.coerceIn(0,3) ?: 2
+            binding.snippet.visibility = if(lines == 0) View.GONE else View.VISIBLE
+            binding.snippet.maxLines = lines.coerceAtLeast(1)
+            binding.messageCount.visibility = if(p.getBoolean("message_counts",true)) View.VISIBLE else View.GONE
+            binding.unread.setTextColor(onAccent(context))
+            binding.unread.minWidth = ((if(dot) 10 else 20)*d).toInt()
+            binding.unread.layoutParams = binding.unread.layoutParams.apply {
+                width = if(dot) (10*d).toInt() else -2
+                height = if(dot) (10*d).toInt() else maxOf((20*d).toInt(), kotlin.math.ceil(binding.unread.paint.fontSpacing+4*d).toInt())
+            }
+            binding.unread.setPadding(if(dot) 0 else (6*d).toInt(),0,if(dot) 0 else (6*d).toInt(),0)
+            binding.unread.background = GradientDrawable().apply { cornerRadius=10*d; setColor(accent(context)) }
+        }
+        val countText = "$count ${if(count == 1L) "message" else "messages"}"
+        if (binding.messageCount.text.toString() != countText) binding.messageCount.text = countText
         binding.unread.visibility = if(unread > 0) View.VISIBLE else View.GONE
-        binding.unread.text = if(dot) "" else if(unread > 99) "99+ new" else "$unread new"
-        binding.unread.setTextColor(onAccent(context))
-        binding.unread.minWidth = ((if(dot) 10 else 24)*d).toInt()
-        binding.unread.layoutParams = binding.unread.layoutParams.apply { width = if(dot) (10*d).toInt() else -2; height = ((if(dot) 10 else 24)*d).toInt() }
-        binding.unread.setPadding(if(dot) 0 else (8*d).toInt(),0,if(dot) 0 else (8*d).toInt(),0)
-        binding.unread.background = GradientDrawable().apply { cornerRadius=12*d; setColor(accent(context)) }
+        val unreadText = if(dot) "" else if(unread > 99) "99+ new" else "$unread new"
+        if (binding.unread.text.toString() != unreadText) binding.unread.text = unreadText
     }
     fun styleSettingsCard(view: View) {
         val d = view.resources.displayMetrics.density
@@ -99,15 +114,15 @@ object TextoAppearance {
         }
         view.backgroundTintList = null
         val p = prefs(view.context)
-        val scale = when(p.getString("card_size", "medium")) { "small" -> .8f; "large" -> 1.25f; else -> 1f }
-        val spacing = when(p.getString("density", "comfortable")) { "compact" -> 8; "airy" -> 16; else -> 12 }
-        view.minimumHeight = (64*d*scale).toInt()
+        val scale = when(p.getString("card_size", "medium")) { "small" -> .85f; "large" -> 1.15f; else -> 1f }
+        val spacing = when(p.getString("density", "comfortable")) { "compact" -> 6; "airy" -> 10; else -> 8 }
+        view.minimumHeight = (56*d*scale).toInt().coerceAtLeast((48*d).toInt())
         (view.layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.let {
             it.setMargins(((if(view.tag == "texto_submenu") 36 else 16)*d).toInt(),(4*d).toInt(),(16*d).toInt(),(4*d).toInt())
             view.layoutParams = it
         }
         if (view is android.widget.TextView) {
-            view.setTextColor(if (view.resources.configuration.uiMode and 0x30 == 0x20) Color.WHITE else 0xFF20232B.toInt())
+            view.setTextColor(readableText(view.context))
             view.gravity = android.view.Gravity.START or android.view.Gravity.CENTER_VERTICAL
             view.setPadding((20*d*scale).toInt(),(spacing*d*scale).toInt(),(20*d*scale).toInt(),(spacing*d*scale).toInt())
         }

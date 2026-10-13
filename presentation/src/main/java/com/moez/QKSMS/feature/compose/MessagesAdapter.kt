@@ -127,6 +127,7 @@ class MessagesAdapter @Inject constructor(
 
     private val contactCache = ContactCache()
     private val expanded = HashMap<Long, Boolean>()
+    private data class LinkedBody(val text: String, val linkMode: Int, val subject: String, val spans: CharSequence)
     private val subs = subscriptionManager.activeSubscriptionInfoList
 
     var theme: Colors.Theme = colors.theme()
@@ -335,7 +336,7 @@ class MessagesAdapter @Inject constructor(
 
         // Bind the grouping
         holder.itemView.setPadding(
-            bottom = if (canGroup(message, next)) 0 else 16.dpToPx(context)
+            bottom = if (canGroup(message, next)) 0 else 10.dpToPx(context)
         )
 
         // Bind the body text
@@ -348,45 +349,49 @@ class MessagesAdapter @Inject constructor(
             }
         )
 
-        val spanString = SpannableStringBuilder(displayText)
-
-        // All spans are added explicitly: TextView autoLink replaces the movement method
-        // needed by native word selection when the view becomes selectable.
-        body.autoLinkMask = 0
-        body.linksClickable = true
-        body.movementMethod = LinkMovementMethod.getInstance()
         val linkMode = prefs.messageLinkHandling.get()
-        val mask = Linkify.PHONE_NUMBERS or if (linkMode == Preferences.MESSAGE_LINK_HANDLING_BLOCK) 0 else (Linkify.EMAIL_ADDRESSES or Linkify.WEB_URLS)
-        Linkify.addLinks(spanString, mask)
-        for (span in spanString.getSpans(0, spanString.length, URLSpan::class.java)) {
-            val start = spanString.getSpanStart(span)
-            val end = spanString.getSpanEnd(span)
-            val phone = span.url.startsWith("tel:", ignoreCase = true)
-            if (phone || linkMode == Preferences.MESSAGE_LINK_HANDLING_ASK) {
-                val visibleNumber = spanString.subSequence(start, end).toString()
-                spanString.setSpan(object : ClickableSpan() {
-                    override fun onClick(widget: View) {
-                        if (phone) dev.texto.privacy.PhoneDialing.open(widget.context, visibleNumber)
-                        else messageLinkClicks.onNext(span.url.toUri())
-                    }
-                }, start, end, spanString.getSpanFlags(span))
-                spanString.removeSpan(span)
+        val cached=body.getTag(R.id.texto_message_links) as? LinkedBody
+        val spanString = if(cached?.text == displayText.toString() && cached.linkMode == linkMode && cached.subject == subject) cached.spans else {
+            val linked = SpannableStringBuilder(displayText)
+
+            // All spans are added explicitly: TextView autoLink replaces the movement method
+            // needed by native word selection when the view becomes selectable.
+            body.autoLinkMask = 0
+            body.linksClickable = true
+            if(!body.isTextSelectable) body.movementMethod = LinkMovementMethod.getInstance()
+            val mask = Linkify.PHONE_NUMBERS or if (linkMode == Preferences.MESSAGE_LINK_HANDLING_BLOCK) 0 else (Linkify.EMAIL_ADDRESSES or Linkify.WEB_URLS)
+            Linkify.addLinks(linked, mask)
+            for (span in linked.getSpans(0, linked.length, URLSpan::class.java)) {
+                val start = linked.getSpanStart(span)
+                val end = linked.getSpanEnd(span)
+                val phone = span.url.startsWith("tel:", ignoreCase = true)
+                if (phone || linkMode == Preferences.MESSAGE_LINK_HANDLING_ASK) {
+                    val visibleNumber = linked.subSequence(start, end).toString()
+                    linked.setSpan(object : ClickableSpan() {
+                        override fun onClick(widget: View) {
+                            if (phone) dev.texto.privacy.PhoneDialing.open(widget.context, visibleNumber)
+                            else messageLinkClicks.onNext(span.url.toUri())
+                        }
+                    }, start, end, linked.getSpanFlags(span))
+                    linked.removeSpan(span)
+                }
             }
+
+            body.setTag(R.id.texto_message_links,LinkedBody(displayText.toString(),linkMode,subject,linked))
+            linked
         }
+        if(!body.isTextSelectable) body.movementMethod = LinkMovementMethod.getInstance()
 
         body.apply {
-            text = spanString
+            if (!android.text.TextUtils.equals(text,spanString) || cached?.linkMode != linkMode || cached?.subject != subject) text = spanString
             setVisible(message.isSms() || spanString.isNotBlank())
 
-            setBackgroundResource(
-                if (!emojiOnly && dev.texto.privacy.TextoAppearance.prefs(context).getString("bubbles", "fluid") == "fluid") R.drawable.texto_message_fluid else getBubble(
-                    emojiOnly = emojiOnly,
-                    canGroupWithPrevious = canGroup(message, previous) ||
-                            message.parts.any { !it.isSmil() && !it.isText() },
-                    canGroupWithNext = canGroup(message, next),
-                    isMe = message.isMe()
-                )
-            )
+            // The shared fluid surface can be reused. Classic grouping supplies its corner mask.
+            if (dev.texto.privacy.TextoAppearance.prefs(context).getString("bubbles", "fluid") == "classic") {
+                setBackgroundResource(getBubble(emojiOnly = emojiOnly,
+                    canGroupWithPrevious = canGroup(message, previous) || message.parts.any { !it.isSmil() && !it.isText() },
+                    canGroupWithNext = canGroup(message, next), isMe = message.isMe()))
+            }
         }
 
         // Apply after the drawable and spans: recycled rows and links share bubble contrast.

@@ -1,4 +1,19 @@
-# Texto validation — 8 October 2026
+# Texto validation — 13 October 2026
+
+## 1.6.4 compact layouts and scrolling — 13 October 2026
+
+- Final optimized release and debug builds passed in 15m 43s; the final test-harness-only rebuild passed in 1m 26s. The 19 unchanged common JVM tests have zero failures/errors (Gradle up-to-date results). Release/debug APK signatures, existing certificate fingerprints and 4-byte alignment passed.
+- Android 14 compact-layout regression passed all 108 finish/size/spacing combinations. The standard sample row measured 77 dp, larger text expanded naturally, and the unread badge accommodated larger text without clipping. Every settings row and click listener survived regrouping into five sections.
+- A real conversation adapter displayed and recycled 1,000 synthetic conversations. Reapplying unchanged conversation styling reused its drawable without requesting layout; counts and selection still updated. This is not a measured physical-device frame-rate claim.
+- The real message adapter selected and copied an individual word after a three-second hold. Added assertions verify cached link reuse, an edited message's new phone number, and removal of stale links when the row becomes plain text. Persistent archive and protected-number assertions also passed.
+- All 480 contrast cases passed on the final APK, covering 12 finishes, light/dark/AMOLED, incoming/outgoing text, links, custom accents, recycled views, Settings cards and the scheduling date picker. The harness now yields between configuration batches: an earlier unbatched run caused a background-service ANR and was discarded. Final results were accepted only with an explicit PASS, not merely the instrumentation exit code.
+- Privacy/utility regression passed: ordinary utilities open without a PIN, protected tools remain gated, cancellation closes protected utilities, and no-card transparency plus visible selection are checked by rendered pixels. Title, motto, artwork, crop, hue ring and gesture checks also passed.
+- The signed production APK upgraded the existing Android 14 emulator installation without clearing app data. Texto 1.6.4 release notes appeared, the production SMS role was confirmed, the synthetic inbox loaded and the crash buffer was empty. Both release/debug packages retain their respective signing identities.
+- Manual UI checks confirmed the five settings groups and working moved Dialing country code and Delayed sending dialogs.
+- The initial workstation build ran out of native memory while the emulator was running. Building and testing sequentially succeeded. This was a development-computer resource failure, not an app crash.
+- Release lint still reports the same 81 inherited translation errors as 1.6.3 under the existing non-aborting configuration; a clean lint result is not claimed.
+- QUIK master and Actions were reviewed again: master is unchanged at 02542049. No unreviewed upstream PR artifacts were imported.
+- Physical OnePlus frame pacing, carrier SMS/MMS, fingerprint hardware, full backup/restore and official F-Droid/Google Play publication remain separate, unverified checks.
 
 ## 1.6.3 archive and appearance regression checks — 10 October 2026
 

@@ -27,11 +27,15 @@ class MessageContrastInstrumentation : Instrumentation() {
             var cases = 0
             val appearance = dev.texto.privacy.TextoAppearance.prefs(targetContext)
             val previousFinish = appearance.getString("card_finish", null)
-            runOnMainSync {
-                try {
-                    for (finish in listOf("tonal","neutral","tinted","outlined","gradient","glass","amoled","pastel","duotone","bold","contrast","none")) {
+            try {
+                check(android.os.Build.MODEL.contains("sdk",true)) { "Synthetic emulator only" }
+                for (finish in listOf("tonal","neutral","tinted","outlined","gradient","glass","amoled","pastel","duotone","bold","contrast","none")) {
                     appearance.edit().putString("card_finish",finish).commit()
                     for (night in listOf(false, true)) for (black in listOf(false, true)) {
+                        // Yield between configurations so the stress test does not starve
+                        // Android service callbacks and trigger an artificial background ANR.
+                        runOnMainSync {
+                            try {
                         val config = Configuration(targetContext.resources.configuration).apply {
                             uiMode = (uiMode and Configuration.UI_MODE_NIGHT_MASK.inv()) or
                                 if (night) Configuration.UI_MODE_NIGHT_YES else Configuration.UI_MODE_NIGHT_NO
@@ -83,13 +87,16 @@ class MessageContrastInstrumentation : Instrumentation() {
                                 cases++
                             }
                         }
+                            } catch (error: Throwable) { failure=error }
+                        }
+                        failure?.let { throw it }
+                        waitForIdleSync()
                     }
-                    }
-                } catch (error: Throwable) { failure = error } finally {
-                    if(previousFinish == null) appearance.edit().remove("card_finish").commit() else appearance.edit().putString("card_finish",previousFinish).commit()
                 }
+            } finally {
+                if(previousFinish == null) appearance.edit().remove("card_finish").commit() else appearance.edit().putString("card_finish",previousFinish).commit()
             }
-            failure?.let { throw it }
+            check(cases==480)
             result.putString("result", "PASS: $cases message contrast cases across all twelve finishes; phone/web and confirmation links, light/dark/AMOLED, incoming/outgoing, custom accents and recycled views; shared palette, Settings cards and scheduled date picker")
             finish(0, result)
         } catch (error: Throwable) { result.putString("error", error.stackTraceToString()); finish(1, result) }

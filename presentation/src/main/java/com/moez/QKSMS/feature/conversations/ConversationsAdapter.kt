@@ -52,8 +52,11 @@ class ConversationsAdapter @Inject constructor(
     var hasScheduledConversation: Set<Long> = emptySet()
         set(value) {
             if (field == value) return
+            val changed = (field - value) + (value - field)
             field = value
-            notifyDataSetChanged()
+            for(position in 0 until itemCount) {
+                if(getItemId(position) in changed) notifyItemChanged(position)
+            }
         }
 
     init {
@@ -96,9 +99,8 @@ class ConversationsAdapter @Inject constructor(
 
         binding.avatars.recipients = conversation.recipients
         binding.title.collapseEnabled = conversation.recipients.size > 1
-        binding.title.text = buildSpannedString {
-            append(conversation.getTitle())
-        }
+        val title = conversation.getTitle()
+        binding.title.text = title
         binding.date.text = conversation.date.takeIf { it > 0 }?.let(dateFormatter::getConversationTimestamp)
         binding.snippet.text = when {
             conversation.draft.isNotEmpty() -> context.getString(R.string.main_sender_draft, conversation.draft)
@@ -115,7 +117,7 @@ class ConversationsAdapter @Inject constructor(
         dev.texto.privacy.TextoAppearance.styleConversation(binding, conversation.messageCount, conversation.unreadCount, isSelected(conversation.id))
         binding.title.setTypeface(null, if (conversation.unread) Typeface.BOLD else Typeface.NORMAL)
         binding.snippet.setTypeface(null, if (conversation.draft.isNotEmpty()) Typeface.ITALIC else Typeface.NORMAL)
-        binding.root.contentDescription = "${conversation.getTitle()}, ${conversation.messageCount} messages, ${conversation.unreadCount} unread. ${conversation.snippet.orEmpty()}"
+        binding.root.contentDescription = "${title}, ${conversation.messageCount} messages, ${conversation.unreadCount} unread. ${conversation.snippet.orEmpty()}"
     }
 
     override fun getItemId(position: Int): Long {

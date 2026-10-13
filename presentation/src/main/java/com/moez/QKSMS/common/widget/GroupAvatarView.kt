@@ -39,7 +39,7 @@ class GroupAvatarView @JvmOverloads constructor(
 
     var recipients: List<Recipient> = ArrayList()
         set(value) {
-            field = value.sortedWith(compareByDescending { contact -> contact.contact?.lookupKey })
+            field = if (value.size < 2) value else value.sortedWith(compareByDescending { contact -> contact.contact?.lookupKey })
             updateView()
         }
 
@@ -52,13 +52,17 @@ class GroupAvatarView @JvmOverloads constructor(
     }
 
     private fun updateView() {
+        val grouped = recipients.size > 1
+        // Recycled single-contact rows do not need to remeasure the avatar frame.
+        if ((layout.avatar1Frame.layoutParams as LayoutParams).matchConstraintPercentWidth != (if(grouped) .75f else 1f)) {
+            layout.avatar1Frame.updateLayoutParams<LayoutParams> {
+                matchConstraintPercentWidth = if (grouped) 0.75f else 1.0f
+            }
+        }
         layout.avatar1Frame.setBackgroundTint(when (recipients.size > 1) {
             true -> context.resolveThemeColor(android.R.attr.windowBackground)
             false -> context.getColorCompat(android.R.color.transparent)
         })
-        layout.avatar1Frame.updateLayoutParams<LayoutParams> {
-            matchConstraintPercentWidth = if (recipients.size > 1) 0.75f else 1.0f
-        }
         layout.avatar2.isVisible = recipients.size > 1
 
 

@@ -42,9 +42,9 @@
         android:duplicateParentState="true"
         android:orientation="vertical"
         android:paddingLeft="12dp"
-        android:paddingTop="16dp"
+        android:paddingTop="10dp"
         android:paddingRight="12dp"
-        android:paddingBottom="16dp">
+        android:paddingBottom="10dp">
 
         <dev.octoshrimpy.quik.common.widget.QkTextView
             android:id="@+id/titleView"

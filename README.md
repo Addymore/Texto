@@ -4,13 +4,15 @@
 
 A customizable Kotlin SMS/MMS app for Android by **[Addymore](https://github.com/Addymore)**, built on [QUIK](https://github.com/quik-sms/quik) and QKSMS. Reachable navigation, consistent public and private conversations, and a theme that feels like yours.
 
-[Download 1.6.3](https://github.com/Addymore/Texto/releases/tag/v1.6.3) · [Changelog](CHANGELOG.md) · [Report a bug](https://github.com/Addymore/Texto/issues) · [Telegram](https://t.me/addymore)
+[Download 1.6.4](https://github.com/Addymore/Texto/releases/tag/v1.6.4) · [Changelog](CHANGELOG.md) · [Report a bug](https://github.com/Addymore/Texto/issues) · [Telegram](https://t.me/addymore)
 
 **Two APKs:** choose the signed release APK for a new installation, or the debug APK to update a previous Texto development installation. Neither is a Google Play publication. Android 6+; physical OnePlus 13 / Android 16 and carrier validation are still required. See [validation](VALIDATION.md).
 
-See the [complete feature list](docs/FEATURES.md) and [1.6.3 changelog](CHANGELOG.md).
+See the [complete feature list](docs/FEATURES.md) and [1.6.4 changelog](CHANGELOG.md).
 
 ## A look of your own
+
+<table><tr><td><img src="docs/images/inbox-compact-1.6.4.png" width="280" alt="Texto 1.6.4 compact conversation cards with message totals and unread badges" /></td><td><img src="docs/images/settings-groups-1.6.4.png" width="280" alt="Texto 1.6.4 focused General and Inbox and Contacts settings groups" /></td></tr></table>
 
 <table><tr><td><img src="docs/images/color-wheel-1.6.3.png" width="280" alt="Texto 1.6.3 visual color ring with intensity and brightness" /></td><td><img src="docs/images/artwork-crop-1.6.3.png" width="280" alt="Drag and pinch artwork crop with preserved proportions" /></td></tr></table>
 
@@ -29,10 +31,11 @@ Screenshots use synthetic messages and sample contacts. Private screens are prot
 - **Deliberate text selection.** A shorter long press selects the message; hold its text for three seconds to select words inside the bubble. Scrolling cancels the hold.
 - **One consistent layout.** Public and private lists share conversation cards, avatars, dates, message totals and unread badges. Private SMS/MMS opens in the same full conversation screen.
 - **Your header and artwork.** Custom inbox title and motto, separate background and header images, local image storage access and a readability overlay.
-- **Flexible cards.** Small, medium or large cards; tonal, neutral, tinted, outlined or no-card conversation lists.
+- **Compact layouts.** Tighter conversation cards, message bubbles and settings rows. Settings groups keep inbox/contact and SMS/MMS controls easy to find.
+- **Flexible cards.** Small, medium or large cards, five shapes and twelve finishes, including a No cards option throughout the app.
 - **Scoped message tools.** Ordinary tools open without authentication. Privacy holds PIN/fingerprint-protected tools for locked, archived and selected numbers; public cleanup and exports exclude those numbers.
 - **Photo-less avatars.** Gradient initials and modern geometric portraits, with real contact photos when available.
-- **Personal themes.** Eight palettes, custom hex accents, wallpaper colors, light/dark/system appearance, AMOLED, card shapes and finishes, spacing, preview lengths, avatar/count toggles and unread dots or number badges.
+- **Personal themes.** Eight palettes, a visual color ring, wallpaper colors, light/dark/system appearance, AMOLED, card shapes and finishes, spacing, preview lengths, avatar/count toggles and unread dots or number badges.
 - **Reachable navigation.** A collapsible large heading and floating Messages / Themes navigation. Settings is in the three-dot menu; Contacts lives in Settings.
 - **Private conversations.** Persistent number rules, PIN/strong biometrics, silent notifications and exclusion from public search, widgets and shortcuts. Future messages from locked numbers stay private.
 - **Recoverable deletion.** A protected recycle bin retains SMS/MMS attachments, with restore and 30/60/90-day expiry.
@@ -45,7 +48,7 @@ Open Backup & restore, choose a writable folder, and create a backup. Select **E
 
 ## Install
 
-1. Download `Texto-1.6.3-release.apk` for a new install, or `Texto-1.6.3-debug.apk` to upgrade your development installation from the [release](https://github.com/Addymore/Texto/releases/tag/v1.6.3).
+1. Download `Texto-1.6.4-release.apk` for a new install, or `Texto-1.6.4-debug.apk` to upgrade your development installation from the [release](https://github.com/Addymore/Texto/releases/tag/v1.6.4).
 2. Install it and select Texto as your default SMS app. Allow the permissions needed for messaging and contacts.
 3. Personalize it in **Themes** and configure your privacy PIN and number rules in **Settings → Privacy & protection**.
 

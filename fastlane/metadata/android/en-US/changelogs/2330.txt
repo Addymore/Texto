@@ -1,0 +1,1 @@
+Compact conversation cards, avatars and badges across every finish. Tighter message bubbles and settings rows. Settings now group inbox/contact and SMS/MMS options separately. Less repeated layout, link detection and background work when scrolling. Privacy, persistent archive rules and three-second word selection are retained.

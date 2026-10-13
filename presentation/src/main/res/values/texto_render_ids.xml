@@ -1,0 +1,10 @@
+<resources>
+    <item name="texto_conversation_style" type="id" />
+    <item name="texto_message_surface" type="id" />
+    <item name="texto_message_links" type="id" />
+    <item name="textoDialingSettings" type="id" />
+    <string name="texto_settings_inbox_contacts">INBOX &amp; CONTACTS</string>
+    <string name="texto_settings_messaging">SMS &amp; MMS</string>
+    <string name="texto_settings_privacy">PRIVACY</string>
+    <string name="texto_settings_dialing">Dialing country code</string>
+</resources>

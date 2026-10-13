@@ -13,9 +13,11 @@
 ## Layout and themes
 
 - Reachable collapsible header; Messages/Themes bottom navigation; Settings in the overflow menu.
-- Accent-aware drawer and settings cards, eight palettes, custom hex accents and supported Android wallpaper colors.
+- Accent-aware drawer and settings cards, eight palettes, a visual color ring and supported Android wallpaper colors.
 - System/light/dark/scheduled appearance, AMOLED and text-size controls.
-- Small/medium/large conversation card size; soft/round/minimal shape; tonal/neutral/tinted/outlined, Aurora gradient, frosted glass and AMOLED outline finishes. No cards removes decorative card surfaces across lists, Settings, navigation, bubbles and file/contact attachments.
+- Small/medium/large compact card sizes; Soft, Round, Minimal, Square and Pill shapes. Twelve finishes: Tonal, Neutral, Accent tint, Outlined, Aurora gradient, Frosted glass, AMOLED outline, Pastel, Two-tone gradient, Bold outline, High contrast and No cards. No cards removes decorative card surfaces across lists, Settings, navigation, bubbles and file/contact attachments.
+- Compact cards, smaller avatars and badges, and reduced message/settings padding in 1.6.4.
+- General, Inbox & Contacts, SMS & MMS, Appearance and Privacy settings groups.
 - Compact/comfortable/airy spacing, zero-to-three preview lines, optional avatars/totals and unread dots/counts.
 - Shared public/private conversation layouts and message bubble themes.
 - Custom inbox title and motto; separate background image and header artwork with a readability overlay; removal/reset controls.

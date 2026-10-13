@@ -9,3 +9,7 @@ Before each Texto change/release, fetch `upstream/master` from https://github.co
 - The other new commits remove old QKSMS+ UI and strings. They overlap Texto's modified backup/privacy/settings screens and require a separate migration; no new message-selection fix is present in these commits.
 - Runs 37797998238 and 37797715680 require approval. Run 36799149810 succeeded for Auto-Update MMS configs; it is not an APK build certification.
 - Keep Texto's number-based privacy receive paths, signing identity, themes and existing tests when integrating further changes.
+
+## Checkpoint: 13 October 2026
+
+Fetched upstream master and checked the live Actions API. Master remains `02542049207bab8e467a90cc0e50d3febe2b6a8d`; there are no new master commits to merge. The newest two PR build runs still require approval. Texto's compact layout and rendering changes are local; no unreviewed PR artifacts were imported.
