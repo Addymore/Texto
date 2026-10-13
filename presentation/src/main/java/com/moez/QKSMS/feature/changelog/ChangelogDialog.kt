@@ -31,7 +31,12 @@ import io.reactivex.subjects.Subject
 class ChangelogDialog(private val activity: MainActivity) {
     val moreClicks: Subject<Unit> = PublishSubject.create()
 
+    private var visibleDialog: AlertDialog? = null
+    fun dismiss() { visibleDialog?.dismiss(); visibleDialog = null }
+
     fun show(changelog: ChangelogManager.CumulativeChangelog) {
+        if (activity.isFinishing || activity.isDestroyed) return
+        dismiss()
         val d = activity.resources.displayMetrics.density
         val content = android.widget.LinearLayout(activity).apply {
             orientation = android.widget.LinearLayout.VERTICAL
@@ -50,7 +55,7 @@ class ChangelogDialog(private val activity: MainActivity) {
                 }) }
             }
         }
-        dev.texto.privacy.TextoDialogs.builder(activity)
+        visibleDialog = dev.texto.privacy.TextoDialogs.builder(activity)
             .setTitle("What’s new in Texto ${BuildConfig.VERSION_NAME.removeSuffix("-debug")}")
             .setView(android.widget.ScrollView(activity).apply { addView(content) })
             .setPositiveButton("Got it", null)

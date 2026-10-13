@@ -336,7 +336,7 @@ class MessagesAdapter @Inject constructor(
 
         // Bind the grouping
         holder.itemView.setPadding(
-            bottom = if (canGroup(message, next)) 0 else 10.dpToPx(context)
+            bottom = if (canGroup(message, next)) 0 else 8.dpToPx(context)
         )
 
         // Bind the body text
@@ -369,7 +369,7 @@ class MessagesAdapter @Inject constructor(
                     val visibleNumber = linked.subSequence(start, end).toString()
                     linked.setSpan(object : ClickableSpan() {
                         override fun onClick(widget: View) {
-                            if (phone) dev.texto.privacy.PhoneDialing.open(widget.context, visibleNumber)
+                            if (phone) dev.texto.privacy.PhoneDialing.choose(widget.context, visibleNumber)
                             else messageLinkClicks.onNext(span.url.toUri())
                         }
                     }, start, end, linked.getSpanFlags(span))

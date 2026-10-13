@@ -262,23 +262,19 @@ class MainViewModel @Inject constructor(
         view.queryChangedIntent
                 .debounce(200, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .map { query -> query.trim() }
-                .withLatestFrom(state) { query, state ->
-                    if (query.isEmpty() && state.page is Searching) {
-                        newState { copy(page = Inbox(data = conversationRepo.getConversations(prefs.unreadAtTop.get()))) }
-                    }
-                    query
-                }
-                .filter { query -> query.length >= 2 }
+                .map { it.toString().trim() }
                 .distinctUntilChanged()
-                .doOnNext {
-                    newState {
-                        val page = (page as? Searching) ?: Searching()
-                        copy(page = page.copy(loading = true))
+                .switchMap { query ->
+                    if (query.length < 2) {
+                        newState { if (page is Searching) copy(page = Inbox(data = conversationRepo.getConversations(prefs.unreadAtTop.get()))) else this }
+                        io.reactivex.Observable.empty<List<dev.octoshrimpy.quik.model.SearchResult>>()
+                    } else {
+                        newState { copy(page = Searching(loading = true)) }
+                        io.reactivex.Observable.fromCallable { conversationRepo.searchConversations(query) }
+                            .subscribeOn(Schedulers.io())
                     }
                 }
-                .observeOn(Schedulers.io())
-                .map(conversationRepo::searchConversations)
+                .observeOn(AndroidSchedulers.mainThread())
                 .autoDisposable(view.scope())
                 .subscribe { data -> newState { copy(page = Searching(loading = false, data = data)) } }
 

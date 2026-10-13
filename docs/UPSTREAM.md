@@ -13,3 +13,7 @@ Before each Texto change/release, fetch `upstream/master` from https://github.co
 ## Checkpoint: 13 October 2026
 
 Fetched upstream master and checked the live Actions API. Master remains `02542049207bab8e467a90cc0e50d3febe2b6a8d`; there are no new master commits to merge. The newest two PR build runs still require approval. Texto's compact layout and rendering changes are local; no unreviewed PR artifacts were imported.
+
+## Checkpoint: 14 October 2026
+
+Fetched upstream master again before the 1.7.0 release. It remains `02542049207bab8e467a90cc0e50d3febe2b6a8d`. The latest three Actions runs (37797998238, 37797715680 and 36812456618) report `action_required`; no new reviewed master fix or validated build artifact is available to import.

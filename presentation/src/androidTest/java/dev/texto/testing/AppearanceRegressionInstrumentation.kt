@@ -22,6 +22,12 @@ class AppearanceRegressionInstrumentation : Instrumentation() {
         runOnMainSync { try { block() } catch (e: Throwable) { error=e } }
         error?.let { throw it }
     }
+    private fun windows(): List<android.view.View> {
+        fun flatten(view: android.view.View): List<android.view.View> = listOf(view) +
+            if (view is android.view.ViewGroup) (0 until view.childCount).flatMap { flatten(view.getChildAt(it)) } else emptyList()
+        return android.view.inspector.WindowInspector.getGlobalWindowViews().flatMap { flatten(it) }
+    }
+    private fun stage(name: String) { sendStatus(1, Bundle().apply { putString("stage", name) }) }
     override fun onStart() {
         val result=Bundle()
         var realm: Realm?=null
@@ -40,7 +46,37 @@ class AppearanceRegressionInstrumentation : Instrumentation() {
             prefs.edit().putString("dial_country_code", "").commit()
             val dial=PhoneDialing.intent(targetContext,"0722 000 123")
             check(dial.action==Intent.ACTION_DIAL && dial.data?.schemeSpecificPart=="0722000123")
+            stage("Open compose")
             val compose=startActivitySync(Intent(targetContext,ComposeActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) as ComposeActivity
+            stage("Public SMS/MMS search")
+            // Public search returns each matching SMS/MMS, never locked, blocked or trashed content.
+            val searchIds = longArrayOf(991701,991702,991703,991704)
+            try {
+                Realm.getDefaultInstance().use { r -> r.executeTransaction { db ->
+                    searchIds.forEachIndexed { index, id ->
+                        val message = Message().apply { this.id=id; threadId=if(index==3) 991700L else 991700L+index; type=Message.TYPE_SMS; body="TextoSearch170 match $index"; date=id; if(index==3) trashedAt=1 }
+                        db.insertOrUpdate(message)
+                        if(index<3) db.insertOrUpdate(dev.octoshrimpy.quik.model.Conversation().apply {
+                            this.id=message.threadId; lastMessage=message; textoLocked=index==1; blocked=index==2
+                            recipients.add(dev.octoshrimpy.quik.model.Recipient().apply { this.id=id; address="+1555010$id" })
+                        })
+                    }
+                    db.insertOrUpdate(Message().apply { id=991705; threadId=991700; type=Message.TYPE_MMS; date=991705
+                        parts.add(dev.octoshrimpy.quik.model.MmsPart().apply { id=991705; text="TextoSearch170 MMS paragraph" }) })
+                } }
+                val matches=compose.conversationRepo.searchConversations("TextoSearch170").filter { it.messages>0 }
+                check(matches.size==2 && matches.map { it.messageId }.toSet()==setOf(991701L,991705L)) { "Wrong public search matches: $matches" }
+                check(matches.first().body.contains("MMS paragraph"))
+                check(matches.all { it.date>0 && it.body.contains("TextoSearch170") })
+            } finally {
+                Realm.getDefaultInstance().use { r -> r.executeTransaction { db ->
+                    db.where(Message::class.java).between("id",991701L,991705L).findAll().deleteAllFromRealm()
+                    db.where(dev.octoshrimpy.quik.model.Conversation::class.java).between("id",991700L,991702L).findAll().deleteAllFromRealm()
+                    db.where(dev.octoshrimpy.quik.model.Recipient::class.java).between("id",991701L,991705L).findAll().deleteAllFromRealm()
+                    db.where(dev.octoshrimpy.quik.model.MmsPart::class.java).equalTo("id",991705L).findAll().deleteAllFromRealm()
+                } }
+            }
+            stage("Archive rules")
             val policy=TextoPolicy(targetContext)
             val archivedBefore=policy.entries("archived");val lockedBefore=policy.entries("locked")
             val testNumber="+15550101633"
@@ -62,6 +98,7 @@ class AppearanceRegressionInstrumentation : Instrumentation() {
                 policy.save("archived",archivedBefore);policy.save("locked",lockedBefore)
                 Realm.getDefaultInstance().use { r -> r.executeTransaction { it.where(dev.octoshrimpy.quik.model.Conversation::class.java).equalTo("id",99163L).findAll().deleteAllFromRealm();it.where(dev.octoshrimpy.quik.model.Recipient::class.java).equalTo("id",99163L).findAll().deleteAllFromRealm() } }
             }
+            stage("Bind actual message row")
             adapter=compose.messageAdapter
             // Dispose the live compose model before binding the isolated fixture. Otherwise
             // its asynchronous empty-thread result can overwrite the fixture's adapter data.
@@ -91,16 +128,25 @@ class AppearanceRegressionInstrumentation : Instrumentation() {
                 check(body.autoLinkMask==0)
                 check(body.text is android.text.Spanned)
             }
+            stage("Number action dialog")
             val dialMonitor=addMonitor(android.content.IntentFilter(Intent.ACTION_DIAL).apply { addDataScheme("tel") }, Instrumentation.ActivityResult(android.app.Activity.RESULT_CANCELED,null),true)
             main {
                 val text=body.text as android.text.Spanned
                 val span=text.getSpans(0,text.length,android.text.style.ClickableSpan::class.java).first {
                     text.subSequence(text.getSpanStart(it),text.getSpanEnd(it)).toString().contains("0722")
                 }
+                screen.window.addFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE)
                 span.onClick(body)
             }
-            check(dialMonitor.hits==1) { "Actual message phone link did not open the dialer directly" }
+            waitForIdleSync()
+            main { windows().filterIsInstance<android.widget.ListView>().last().let {
+                check((it.rootView.layoutParams as android.view.WindowManager.LayoutParams).flags and android.view.WindowManager.LayoutParams.FLAG_SECURE != 0)
+                it.performItemClick(it.getChildAt(0), 0, it.adapter.getItemId(0))
+                screen.window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE)
+            } }
+            check(dialMonitor.hits==1) { "Confirmed message phone link did not open the dialer" }
             removeMonitor(dialMonitor)
+            stage("Three-second selection")
             val now=SystemClock.uptimeMillis()
             main {
                 val x=body.totalPaddingLeft+body.layout.getPrimaryHorizontal(9)
@@ -109,29 +155,37 @@ class AppearanceRegressionInstrumentation : Instrumentation() {
                 body.dispatchTouchEvent(down); down.recycle()
             }
             SystemClock.sleep(1600)
-            main { check(!body.isTextSelectable) { "Selection started too early" } }
+            main { check(windows().filterIsInstance<android.widget.EditText>().none { it.text.toString().startsWith("Select these") }) { "Selection started too early" } }
             SystemClock.sleep(1800); waitForIdleSync()
+            lateinit var selectedField: android.widget.EditText
             main {
-                check(body.isTextSelectable && body.selectionStart>=0 && body.selectionEnd>body.selectionStart) { "Selection not ready: selectable=${body.isTextSelectable}, range=${body.selectionStart}..${body.selectionEnd}, focus=${body.hasFocus()}, window=${body.hasWindowFocus()}, shown=${body.isShown}, movement=${body.movementMethod}" }
-                check(body.selectionEnd-body.selectionStart<body.text.length) { "Whole message selected instead of a word" }
-                check(body.movementMethod is android.text.method.ArrowKeyMovementMethod)
-                val up=MotionEvent.obtain(now,SystemClock.uptimeMillis(),MotionEvent.ACTION_UP,
-                    body.totalPaddingLeft+body.layout.getPrimaryHorizontal(9), body.totalPaddingTop+body.layout.getLineBottom(0)/2f,0)
+                selectedField = windows().filterIsInstance<android.widget.EditText>().first { it.text.toString().startsWith("Select these") }
+                check(selectedField.selectionStart >= 0 && selectedField.selectionEnd > selectedField.selectionStart)
+                check(selectedField.selectionEnd - selectedField.selectionStart < selectedField.text.length)
+                check(selectedField.keyListener == null && !selectedField.showSoftInputOnFocus)
+                val up=MotionEvent.obtain(now,SystemClock.uptimeMillis(),MotionEvent.ACTION_UP,0f,0f,0)
                 body.dispatchTouchEvent(up); up.recycle()
             }
             waitForIdleSync()
+            SystemClock.sleep(500)
+            main { check(windows().filterIsInstance<TextView>().any { it.isShown && it.text.toString() == "Copy" }) { "Native text selection toolbar did not open" } }
             uiAutomation.takeScreenshot()?.let { image ->
                 java.io.File(targetContext.getExternalFilesDir(null),"word-selection-161.png").outputStream().use { image.compress(android.graphics.Bitmap.CompressFormat.PNG,100,it) }
                 image.recycle()
             }
             main {
-                check(body.selectionStart>=0 && body.selectionEnd>body.selectionStart) { "Word selection disappeared on finger release" }
-                val selected=body.text.subSequence(body.selectionStart,body.selectionEnd).toString()
-                check(body.onTextContextMenuItem(android.R.id.copy))
+                check(selectedField.selectionEnd > selectedField.selectionStart) { "Selection disappeared on finger release" }
+                val selected=selectedField.text.subSequence(selectedField.selectionStart,selectedField.selectionEnd).toString()
+                check(selectedField.onTextContextMenuItem(android.R.id.copy))
                 val clip=screen.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
-                check(clip.primaryClip?.getItemAt(0)?.text.toString()==selected) { "Copy did not preserve the selected word" }
+                check(clip.primaryClip?.getItemAt(0)?.text.toString()==selected)
+                selectedField.setSelection(0, 36)
+                check(selectedField.onTextContextMenuItem(android.R.id.copy))
+                check(clip.primaryClip?.getItemAt(0)?.text.toString() == selectedField.text.substring(0,36))
+                windows().filterIsInstance<TextView>().first { it.text.toString() == "Done" }.performClick()
             }
             waitForIdleSync()
+            stage("Recycled links and surfaces")
             main {
                 val holder=checkNotNull(list.findViewHolderForAdapterPosition(0)) as dev.octoshrimpy.quik.common.base.QkViewHolder
                 val cached=body.getTag(R.id.texto_message_links)
@@ -160,7 +214,23 @@ class AppearanceRegressionInstrumentation : Instrumentation() {
                     check(TextoAppearance.card(screen) is android.graphics.drawable.RippleDrawable)
                 }
             }
-            result.putString("result","PASS: persistent archive survives automatic receive/send unarchive, explicit unarchive works and locked rules remain protected; real message adapter, TightTextView and RecyclerView select and copy an individual word only after three seconds; displayed phone numbers and optional country code; no-card settings and message bubbles; all new card finishes")
+            stage("Protected dialog lifecycle")
+            main {
+                screen.window.addFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE)
+                dev.texto.privacy.SelectMessageText.show(screen, "Protected selection fixture")
+            }
+            waitForIdleSync()
+            main {
+                val field=windows().filterIsInstance<android.widget.EditText>().single { it.text.toString() == "Protected selection fixture" }
+                check((field.rootView.layoutParams as android.view.WindowManager.LayoutParams).flags and android.view.WindowManager.LayoutParams.FLAG_SECURE != 0)
+            }
+            val next = startActivitySync(Intent(targetContext, dev.texto.privacy.ThemesActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            waitForIdleSync()
+            main {
+                check(windows().filterIsInstance<android.widget.EditText>().none { it.isShown && it.text.toString() == "Protected selection fixture" }) { "Protected selection dialog remained visible after its screen paused" }
+                screen.finish(); next.finish()
+            }
+            result.putString("result","PASS: individual SMS/MMS search results exclude locked, blocked and trashed messages; persistent archive survives automatic receive/send unarchive, explicit unarchive works and locked rules remain protected; real message adapter, TightTextView and RecyclerView select and copy an individual word only after three seconds; displayed phone numbers and optional country code; no-card settings and message bubbles; all new card finishes; secure selection dialog closes when its Activity pauses")
         } catch(e: Throwable) { result.putString("error",e.stackTraceToString()) }
         finally {
             main { adapter?.updateData(null); realm?.close(); activity?.finish() }

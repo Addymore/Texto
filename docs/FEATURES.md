@@ -5,14 +5,14 @@
 - SMS and carrier MMS, group conversations and attachments.
 - Dual-SIM selection, delayed sending, scheduled messages, drafts, search, pinning, conversation renaming, reactions, speech and notification quick reply inherited from QUIK.
 - Sent, delivered (when the carrier reports delivery) and received indicators. No SMS read receipts or RCS claim.
-- Hold message text for three seconds to select text inside the bubble; a shorter long press selects the message for actions. Scrolling cancels the hold; normal link taps are preserved.
-- Phone links open the dialer directly, preserving the displayed number. An optional country-code setting replaces a local leading zero only when configured; international and short service numbers are preserved.
+- Hold message text for three seconds to open a native selection window for words or paragraphs; a shorter long press selects the message for actions. Scrolling cancels the hold; normal link taps are preserved.
+- Phone links offer Open in dialer or Copy number, preserving the displayed number. An optional country-code setting replaces a local leading zero only when configured; international and short service numbers are preserved.
 - Conversation message totals and unread badges or dots.
 - Contact names/photos, gradient initials and geometric fallback avatars, contact profiles and contact access from Settings.
 
 ## Layout and themes
 
-- Reachable collapsible header; Messages/Themes bottom navigation; Settings in the overflow menu.
+- Reachable collapsible header; optional bottom navigation with up to five shortcuts (Messages/Themes by default); Settings in the overflow menu.
 - Accent-aware drawer and settings cards, eight palettes, a visual color ring and supported Android wallpaper colors.
 - System/light/dark/scheduled appearance, AMOLED and text-size controls.
 - Small/medium/large compact card sizes; Soft, Round, Minimal, Square and Pill shapes. Twelve finishes: Tonal, Neutral, Accent tint, Outlined, Aurora gradient, Frosted glass, AMOLED outline, Pastel, Two-tone gradient, Bold outline, High contrast and No cards. No cards removes decorative card surfaces across lists, Settings, navigation, bubbles and file/contact attachments.
@@ -63,3 +63,13 @@ Message bubbles share card finish, shape, size and spacing with the app. File/co
 - Header/background artwork supports drag-and-pinch cropping and preserves image proportions.
 - Three-second text selection tolerates small finger movements, with a native read-only selection sheet when an OEM refuses inline selection.
 - Reviewed QUIK changes through 02542049 and removed the unused billing version declaration; overlapping upstream premium-removal work is documented separately.
+
+## 1.7.0 additions
+
+- Native message text-selection window after a three-second hold, with selectable words and paragraphs.
+- Phone-number actions: open the dialer or copy the number.
+- Individual SMS/MMS search cards with highlighted snippets, dates, full preview and text selection; newest 500 matches.
+- Hide the bottom bar or choose up to five of Messages, Themes, Contacts, Scheduled, Settings and Backup. Search always hides the bar.
+- Eight optional visual presets across the shared card and message renderer. Presets are inspired styling, not OEM system features.
+
+Current themes are kept on upgrade. Optional OEM presets require Apply and offer Restore my previous theme. Conversation padding, avatars and row gaps are smaller, with unchanged font sizes and preview settings. Unchanged text avoids repeated layout, and returning to the inbox no longer forces a full redraw.

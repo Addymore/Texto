@@ -102,6 +102,10 @@ class SettingsController : QkController<SettingsControllerBinding, SettingsView,
             setOnClickListener { dev.texto.privacy.PhoneDialing.settings(context) }
         }
         binding.preferences.addView(dialing, 1)
+        binding.preferences.addView(com.google.android.material.button.MaterialButton(binding.root.context).apply {
+            id = R.id.textoNavigationSettings; text = "Bottom bar & visual styles"; isAllCaps = false
+            setOnClickListener { activity?.let { it.startActivity(android.content.Intent(it, dev.texto.privacy.ThemesActivity::class.java)) } }
+        })
         dev.texto.privacy.TextoAppearance.styleSettingsCard(dialing)
         binding.preferences.layoutTransition = null
         listOf(binding.textoPrivacySettings, binding.textoContactsSettings, binding.textoBinSettings).forEach {

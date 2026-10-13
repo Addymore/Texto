@@ -49,8 +49,14 @@ class SearchAdapter @Inject constructor(
         val binding = SearchListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return QkBindingViewHolder(binding).apply {
             itemView.setOnClickListener {
+                if (adapterPosition == androidx.recyclerview.widget.RecyclerView.NO_POSITION) return@setOnClickListener
                 val result = getItem(adapterPosition)
-                navigator.showConversation(result.conversation.id, result.query.takeIf { result.messages > 0 })
+                if (result.messages == 0) navigator.showConversation(result.conversation.id)
+                else dev.texto.privacy.TextoDialogs.builder(itemView.context)
+                    .setTitle(result.conversation.getTitle()).setMessage(result.body)
+                    .setPositiveButton("Open conversation") { _, _ -> navigator.showConversation(result.conversation.id, result.query) }
+                    .setNeutralButton("Select text") { _, _ -> dev.texto.privacy.SelectMessageText.show(itemView.context, result.body) }
+                    .setNegativeButton("Close", null).show()
             }
         }
     }
@@ -59,13 +65,16 @@ class SearchAdapter @Inject constructor(
         val previous = data.getOrNull(position - 1)
         val result = getItem(position)
 
-        holder.binding.resultsHeader.setVisible(result.messages > 0 && previous?.messages == 0)
+        holder.binding.resultsHeader.setVisible(result.messages > 0 && (previous == null || previous.messages == 0))
+        holder.binding.resultsTitle.text = "Matching messages · newest first (up to 500)"
+        holder.itemView.background = dev.texto.privacy.TextoAppearance.card(holder.itemView.context)
+        holder.binding.snippet.maxLines = 4
 
         val query = result.query
         val title = SpannableString(result.conversation.getTitle())
         var index = title.removeAccents().indexOf(query, ignoreCase = true)
 
-        while (index >= 0) {
+        while (query.isNotEmpty() && index >= 0) {
             title.setSpan(BackgroundColorSpan(highlightColor), index, index + query.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             index = title.indexOf(query, index + query.length, true)
         }
@@ -84,19 +93,30 @@ class SearchAdapter @Inject constructor(
             }
 
             false -> {
-                holder.binding.date.setVisible(false)
-                holder.binding.snippet.text = context.getString(R.string.main_message_results, result.messages)
+                holder.binding.date.setVisible(true)
+                holder.binding.date.text = dateFormatter.getConversationTimestamp(result.date)
+                val match = result.body.indexOf(query, ignoreCase = true)
+                val start = (match - 60).coerceAtLeast(0)
+                val excerpt = (if (start > 0) "…" else "") + result.body.substring(start).take(400)
+                val highlighted = SpannableString(excerpt)
+                var offset = excerpt.indexOf(query, ignoreCase = true)
+                while (query.isNotEmpty() && offset >= 0) {
+                    highlighted.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), offset, offset + query.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    highlighted.setSpan(android.text.style.UnderlineSpan(), offset, offset + query.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    offset = excerpt.indexOf(query, offset + query.length, true)
+                }
+                holder.binding.snippet.text = highlighted
             }
         }
     }
 
     override fun areItemsTheSame(old: SearchResult, new: SearchResult): Boolean {
-        return old.conversation.id == new.conversation.id && old.messages > 0 == new.messages > 0
+        return old.conversation.id == new.conversation.id && old.messageId == new.messageId && (old.messages > 0) == (new.messages > 0)
     }
 
     override fun areContentsTheSame(old: SearchResult, new: SearchResult): Boolean {
         return old.query == new.query && // Queries are the same
                 old.conversation.id == new.conversation.id // Conversation id is the same
-                && old.messages == new.messages // Result count is the same
+                && old.messages == new.messages && old.body == new.body && old.date == new.date
     }
 }

@@ -1,5 +1,25 @@
 [
   {
+    "versionCode": 2340,
+    "versionName": "1.7.0",
+    "added": [
+      "Show or hide the bottom bar and choose up to five shortcuts.",
+      "Editable visual presets inspired by Samsung, ColorOS/OxygenOS, Pixel, Xiaomi, Nothing, Motorola, Honor and vivo.",
+      "OEM presets stay in a separate optional section, with Apply and Restore my previous theme. Current themes are preserved by default."
+    ],
+    "improved": [
+      "Search lists individual matching SMS and MMS with text previews and timestamps, newest first.",
+      "Search hides bottom navigation and cancels stale results when the query changes.",
+      "Explicit camera URI permission grants for newer Android versions.",
+      "Tighter conversation cards and message gaps without smaller fonts; fewer redundant inbox redraws."
+    ],
+    "fixed": [
+      "A three-second hold opens a dedicated native text selector for copying words or paragraphs.",
+      "Phone links offer Open in dialer or Copy number without an external-link warning."
+    ],
+    "removed": []
+  },
+  {
     "versionCode": 2330,
     "versionName": "1.6.4",
     "added": [],

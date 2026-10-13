@@ -147,7 +147,7 @@ class MainActivity : QkThemedActivity(), MainView {
         binding.textoNavigation.onTabSelected = { tab ->
             when (tab) {
                 0 -> binding.drawer.inbox.performClick()
-                1 -> startActivity(Intent(this, dev.texto.privacy.ThemesActivity::class.java))
+                else -> dev.texto.privacy.BottomNavigation.open(this, tab)
             }
         }
         binding.drawer.archived.visibility = View.GONE
@@ -234,7 +234,8 @@ class MainActivity : QkThemedActivity(), MainView {
         if (::binding.isInitialized) {
             dev.texto.privacy.TextoAppearance.smooth(binding.recyclerView)
             dev.texto.privacy.TextoAppearance.refreshRate(this)
-            conversationsAdapter.notifyDataSetChanged()
+            binding.textoNavigation.rebuild()
+            binding.textoNavigation.isVisible = !searchVisible && dev.texto.privacy.BottomNavigation.enabled(this)
         }
     }
 
@@ -244,6 +245,8 @@ class MainActivity : QkThemedActivity(), MainView {
             it.run(onNewIntentIntent::onNext)
         } ?: Unit
 
+    private var searchVisible = false
+
     override fun render(state: MainState) {
         if (state.hasError) {
             finish()
@@ -251,6 +254,8 @@ class MainActivity : QkThemedActivity(), MainView {
         }
 
         binding.textoHeader.isVisible = state.page !is Searching && resources.configuration.orientation != android.content.res.Configuration.ORIENTATION_LANDSCAPE
+        searchVisible = state.page is Searching
+        binding.textoNavigation.isVisible = !searchVisible && dev.texto.privacy.BottomNavigation.enabled(this)
         binding.textoNavigation.select(0)
         binding.textoReachable.privatePullEnabled = state.page is Inbox
         conversationsAdapter.hasScheduledConversation = state.scheduledConversationIds
@@ -420,11 +425,22 @@ class MainActivity : QkThemedActivity(), MainView {
 
 
 
-    override fun onPause() =
-        super.onPause().also { activityResumedIntent.onNext(false) }
+    override fun onPause() {
+        // Search contains detached message previews. Discard them before another
+        // screen can change a number's privacy rules; never show a stale preview.
+        if (searchVisible) {
+            searchAdapter.data = emptyList()
+            binding.toolbarSearch.text = null
+        }
+        super.onPause()
+        activityResumedIntent.onNext(false)
+    }
 
-    override fun onDestroy() =
-        super.onDestroy().also { disposables.dispose() }
+    override fun onDestroy() {
+        changelogDialog.dismiss()
+        disposables.dispose()
+        super.onDestroy()
+    }
 
     override fun showBackButton(show: Boolean) =
         toggle.let {

@@ -15,6 +15,15 @@ object PhoneDialing {
     fun intent(context: Context, raw: String): Intent = Intent(Intent.ACTION_DIAL,
         Uri.fromParts("tel", number(raw, TextoAppearance.prefs(context).getString("dial_country_code", "").orEmpty()), null))
 
+    fun choose(context: Context, raw: String) {
+        TextoDialogs.builder(context).setTitle(raw)
+            .setItems(arrayOf("Open in dialer", "Copy number")) { _, which ->
+                if (which == 0) open(context, raw)
+                else (context.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager)
+                    .setPrimaryClip(android.content.ClipData.newPlainText("Phone number", raw))
+            }.setNegativeButton("Cancel", null).show()
+    }
+
     fun open(context: Context, raw: String) {
         try { context.startActivity(intent(context, raw)) }
         catch (_: android.content.ActivityNotFoundException) {

@@ -14,7 +14,7 @@ object MessageBodyStyle {
         val foreground = surface(body, accent, emojiOnly)
         val p = TextoAppearance.prefs(body.context)
         val scale = when (p.getString("card_size", "medium")) { "small" -> .85f; "large" -> 1.15f; else -> 1f }
-        val spacing = when (p.getString("density", "comfortable")) { "compact" -> 6; "airy" -> 10; else -> 8 }
+        val spacing = when (p.getString("density", "comfortable")) { "compact" -> 5; "airy" -> 9; else -> 7 }
         val d = body.resources.displayMetrics.density
         body.setPadding(((spacing+4)*d*scale).toInt(), (spacing*d*scale).toInt(), ((spacing+4)*d*scale).toInt(), (spacing*d*scale).toInt())
         body.setTextColor(foreground)

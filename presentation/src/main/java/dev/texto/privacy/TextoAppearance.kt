@@ -76,13 +76,13 @@ object TextoAppearance {
         val dot = p.getString("unread_style","count") == "dot"
         if (binding.root.getTag(dev.octoshrimpy.quik.R.id.texto_conversation_style) != style) {
             binding.root.setTag(dev.octoshrimpy.quik.R.id.texto_conversation_style, style)
-            val spacing = when(p.getString("density","comfortable")) { "compact" -> 6; "airy" -> 10; else -> 8 }
+            val spacing = when(p.getString("density","comfortable")) { "compact" -> 4; "airy" -> 8; else -> 6 }
             val scale = when(p.getString("card_size","medium")) { "small" -> .85f; "large" -> 1.15f; else -> 1f }
             binding.root.setPadding((12*d*scale).toInt(),(spacing*d*scale).toInt(),(12*d*scale).toInt(),(spacing*d*scale).toInt())
-            binding.root.minimumHeight = (64*d*scale).toInt().coerceAtLeast((48*d).toInt())
+            binding.root.minimumHeight = (60*d*scale).toInt().coerceAtLeast((48*d).toInt())
             binding.root.background = card(context,selected)
             binding.avatars.visibility = if(p.getBoolean("list_avatars",true)) View.VISIBLE else View.GONE
-            val avatarSize = (44*d*scale).toInt()
+            val avatarSize = (40*d*scale).toInt()
             if (binding.avatars.layoutParams.width != avatarSize) binding.avatars.layoutParams = binding.avatars.layoutParams.apply { width=avatarSize; height=avatarSize }
             val lines = p.getString("preview_lines","2")?.toIntOrNull()?.coerceIn(0,3) ?: 2
             binding.snippet.visibility = if(lines == 0) View.GONE else View.VISIBLE
@@ -135,7 +135,7 @@ object TextoAppearance {
         list.overScrollMode = View.OVER_SCROLL_IF_CONTENT_SCROLLS
     }
     fun refreshRate(activity: Activity) {
-        if (!prefs(activity).getBoolean("high_refresh", false)) { activity.window.attributes = activity.window.attributes.apply { preferredDisplayModeId = 0 }; return }
+        if (!prefs(activity).getBoolean("high_refresh", false)) { if (activity.window.attributes.preferredDisplayModeId != 0) activity.window.attributes = activity.window.attributes.apply { preferredDisplayModeId = 0 }; return }
         @Suppress("DEPRECATION") val display = activity.windowManager.defaultDisplay
         val current = display.mode
         val best = display.supportedModes.filter { it.physicalWidth == current.physicalWidth && it.physicalHeight == current.physicalHeight }.maxByOrNull { it.refreshRate } ?: return

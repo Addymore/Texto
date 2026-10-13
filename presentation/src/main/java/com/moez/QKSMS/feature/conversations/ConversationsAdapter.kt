@@ -100,23 +100,25 @@ class ConversationsAdapter @Inject constructor(
         binding.avatars.recipients = conversation.recipients
         binding.title.collapseEnabled = conversation.recipients.size > 1
         val title = conversation.getTitle()
-        binding.title.text = title
-        binding.date.text = conversation.date.takeIf { it > 0 }?.let(dateFormatter::getConversationTimestamp)
-        binding.snippet.text = when {
+        if (!android.text.TextUtils.equals(binding.title.text, title)) binding.title.text = title
+        val date = conversation.date.takeIf { it > 0 }?.let(dateFormatter::getConversationTimestamp)
+        if (!android.text.TextUtils.equals(binding.date.text, date)) binding.date.text = date
+        val snippet = when {
             conversation.draft.isNotEmpty() -> context.getString(R.string.main_sender_draft, conversation.draft)
             conversation.me -> context.getString(R.string.main_sender_you, conversation.snippet)
             else -> conversation.snippet
         }
 
-        // Make the preview in italics if draft
-        if (conversation.draft.isNotEmpty()) binding.snippet.setTypeface(null, Typeface.ITALIC)
+        if (!android.text.TextUtils.equals(binding.snippet.text, snippet)) binding.snippet.text = snippet
 
         binding.scheduled.isVisible = conversation.id in hasScheduledConversation
 
         binding.pinned.isVisible = conversation.pinned
         dev.texto.privacy.TextoAppearance.styleConversation(binding, conversation.messageCount, conversation.unreadCount, isSelected(conversation.id))
-        binding.title.setTypeface(null, if (conversation.unread) Typeface.BOLD else Typeface.NORMAL)
-        binding.snippet.setTypeface(null, if (conversation.draft.isNotEmpty()) Typeface.ITALIC else Typeface.NORMAL)
+        val titleStyle = if (conversation.unread) Typeface.BOLD else Typeface.NORMAL
+        val snippetStyle = if (conversation.draft.isNotEmpty()) Typeface.ITALIC else Typeface.NORMAL
+        if (binding.title.typeface?.style != titleStyle) binding.title.setTypeface(null, titleStyle)
+        if (binding.snippet.typeface?.style != snippetStyle) binding.snippet.setTypeface(null, snippetStyle)
         binding.root.contentDescription = "${title}, ${conversation.messageCount} messages, ${conversation.unreadCount} unread. ${conversation.snippet.orEmpty()}"
     }
 
@@ -125,7 +127,7 @@ class ConversationsAdapter @Inject constructor(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (getItem(position)?.unread == false) 0 else 1
+        return 0 // Read and unread rows share the same layout and recycling pool.
     }
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {

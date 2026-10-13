@@ -125,6 +125,10 @@ class ThemesActivity : QkThemedActivity() {
         choice("Unread indicator","unread_style",arrayOf("Number badge","Dot"),arrayOf("count","dot"),"count")
         toggle("Show contact avatars","list_avatars",true)
         toggle("Show message totals","message_counts",true)
+        label("Navigation",22f)
+        toggle("Show bottom bar", "bottom_bar_visible", true)
+        row("Bottom bar shortcuts", "Choose up to 5") { BottomNavigation.configure(this) { render() } }
+        label("The bottom bar is hidden while searching. All tools stay available in the menu.",13f)
         label("Your inbox",22f)
         row("Header title",appearance.getString("inbox_title","Texto").orEmpty()) { customText("Header title","inbox_title","Texto",32) }
         row("Motto",appearance.getString("inbox_motto","Messages, comfortably within reach").orEmpty()) { customText("Motto","inbox_motto","Messages, comfortably within reach",100) }
@@ -145,11 +149,24 @@ class ThemesActivity : QkThemedActivity() {
         toggle("Reduce motion","reduce_motion",false)
         label("Changes apply to public and private conversations. Your phone controls the available refresh rate.",13f)
         row("Fonts, scheduled dark mode & more","") { startActivity(Intent(this,dev.octoshrimpy.quik.feature.settings.SettingsActivity::class.java)) }
+        label("OEM-inspired presets · optional",22f)
+        label("Your current Texto theme stays unchanged. Browse a preset, then choose Apply to use it. Colors, images and privacy settings are kept.",13f)
+        row("Browse OEM presets", appearance.getString("skin_preset", "Current Texto theme").orEmpty()) {
+            dialog = TextoDialogs.builder(this).setTitle("OEM-inspired presets")
+                .setItems(SkinPresets.names) { _, i ->
+                    dialog = TextoDialogs.builder(this).setTitle(SkinPresets.names[i])
+                        .setMessage("Apply this preset's card finish and shape, compact spacing, small cards and fluid bubbles? You can restore your previous card settings here afterward.")
+                        .setNegativeButton("Cancel", null)
+                        .setPositiveButton("Apply") { _, _ -> SkinPresets.apply(this, i); render() }.show()
+                }.setNegativeButton("Close", null).show()
+        }
+        if (appearance.contains("before_oem_preset")) row("Restore my previous theme", "Before OEM preset") { SkinPresets.restore(this); render() }
+        label("Presets are editable Texto styling, not native OEM features.",13f)
         row("Reset appearance","") {
             dialog=dev.texto.privacy.TextoDialogs.builder(this).setTitle("Reset appearance?").setMessage("Restore default colors, cards and motion settings. Messages and privacy settings are kept.")
                 .setNegativeButton("Cancel",null).setPositiveButton("Reset") { _,_ ->
                     val edit=appearance.edit()
-                    listOf("card_shape","card_finish","density","preview_lines","unread_style","list_avatars","message_counts","bubbles","high_refresh","reduce_motion","dynamic_colors","card_size","inbox_title","inbox_motto","background_image","header_image").forEach { edit.remove(it) }; edit.apply()
+                    listOf("bottom_bar_visible","bottom_bar_items","skin_preset","before_oem_preset","card_shape","card_finish","density","preview_lines","unread_style","list_avatars","message_counts","bubbles","high_refresh","reduce_motion","dynamic_colors","card_size","inbox_title","inbox_motto","background_image","header_image").forEach { edit.remove(it) }; edit.apply()
                     prefs.theme().set(0xFF375BCD.toInt()); prefs.autoColor.set(false); prefs.black.set(false); prefs.textSize.set(1)
                     nightModeManager.updateNightMode(0); render()
                 }.show()
@@ -159,9 +176,9 @@ class ThemesActivity : QkThemedActivity() {
         if(intent.getBooleanExtra("from_private",false)) shell.addView(MaterialButton(this).apply {
             text="Back to private messages"; backgroundTintList=ColorStateList.valueOf(accent); setTextColor(TextoAppearance.onAccent(this@ThemesActivity)); setOnClickListener { finish() }
         },LinearLayout.LayoutParams(-1,dp(56)))
-        else shell.addView(TextoTabBar(this).apply { select(1); onTabSelected={ tab -> when(tab) {
-            0 -> { startActivity(Intent(this@ThemesActivity,dev.octoshrimpy.quik.feature.main.MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)); finish() }
-        } } },LinearLayout.LayoutParams(-1,dp(66)))
+        else if (BottomNavigation.enabled(this)) shell.addView(TextoTabBar(this).apply {
+            select(1); onTabSelected = { tab -> if (tab != 1) { BottomNavigation.open(this@ThemesActivity, tab); finish() } }
+        },LinearLayout.LayoutParams(-1,dp(66)))
         setContentView(shell); scroller?.post { scroller?.scrollTo(0,position) }
     }
     private fun saveAccent(color: Int) {

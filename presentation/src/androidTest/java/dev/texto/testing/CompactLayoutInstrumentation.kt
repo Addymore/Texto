@@ -86,6 +86,29 @@ class CompactLayoutInstrumentation : Instrumentation() {
                 MessageBodyStyle.apply(body,false,0xFF007E70.toInt(),false)
                 check(body.background !== first)
                 prefs.edit().putString("card_finish","tonal").commit()
+                val optionalKeys = listOf("card_shape", "card_finish", "card_size", "density", "bubbles", "skin_preset", "before_oem_preset", "bottom_bar_items")
+                val savedOptional = optionalKeys.associateWith { prefs.getString(it, null) }
+                try {
+                    prefs.edit().remove("before_oem_preset").putString("card_shape", "square").putString("card_finish", "none").putString("bottom_bar_items", "0,1,2,3,4,5,99,0").commit()
+                    check(BottomNavigation.items(screen) == listOf(0,1,2,3,4))
+                    val bar = TextoTabBar(screen)
+                    check(bar.childCount == 5)
+                    val firstButton = bar.getChildAt(0)
+                    bar.rebuild()
+                    check(bar.getChildAt(0) === firstButton) { "Unchanged navigation was reinflated" }
+                    bar.select(3)
+                    check((0 until bar.childCount).count { bar.getChildAt(it).isSelected } == 1)
+                    val before = listOf("card_shape", "card_finish", "card_size", "density", "bubbles").associateWith { prefs.getString(it,null) }
+                    SkinPresets.apply(screen, 1)
+                    check(prefs.getString("card_finish", "") == "glass")
+                    SkinPresets.apply(screen, 2)
+                    SkinPresets.restore(screen)
+                    check(before.all { (key,value) -> prefs.getString(key,null) == value }) { "Preset restore lost the user's original settings" }
+                } finally {
+                    val restore = prefs.edit()
+                    savedOptional.forEach { (key,value) -> if(value==null) restore.remove(key) else restore.putString(key,value) }
+                    restore.commit()
+                }
                 val settings=SettingsControllerBinding.inflate(screen.layoutInflater)
                 val dialing=com.google.android.material.button.MaterialButton(screen).apply { id=R.id.textoDialingSettings }
                 settings.preferences.addView(dialing)

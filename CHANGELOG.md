@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.7.0 — 14 October 2026
+
+- Further reduced card padding, avatar size and vertical gaps without reducing fonts or preview lines. Read/unread rows share a recycling pool; unchanged text avoids repeat layout and returning to the inbox no longer forces a full redraw.
+
+- Three-second message holds open a stable native text selector with word/paragraph handles and Copy selection.
+- Phone links offer Open in dialer or Copy number, preserving the optional country-code setting.
+- Protected dialogs inherit screenshot protection and close when their screen leaves the foreground.
+- Search shows individual matching SMS/MMS previews and timestamps, newest first (up to 500), with full-text preview and selection. Locked, blocked and deleted messages stay excluded. Stale queries are cancelled.
+- Configurable bottom bar: hide it entirely or choose up to five shortcuts; hidden during search.
+- Your existing theme remains the default. OEM presets are grouped separately, require Apply, and can restore the previous card settings.
+- Eight optional visual starting styles including Samsung, ColorOS/OxygenOS, Pixel, Xiaomi, Nothing, Motorola, Honor and vivo inspired presets.
+- Explicit camera URI grants improve newer-Android compatibility. Android 17/OEM device certification is not claimed; compile/target SDK remains unchanged pending a full platform migration.
+
 ## 1.6.4 — 13 October 2026
 
 - More compact conversation cards across all finishes and sizes: reduced padding, smaller avatars and unread badges, and tighter row spacing.

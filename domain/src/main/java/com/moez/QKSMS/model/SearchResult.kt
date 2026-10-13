@@ -18,4 +18,4 @@
  */
 package dev.octoshrimpy.quik.model
 
-data class SearchResult(val query: String, val conversation: Conversation, val messages: Int)
+data class SearchResult(val query: String, val conversation: Conversation, val messages: Int, val messageId: Long = 0, val body: String = "", val date: Long = 0)

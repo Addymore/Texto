@@ -142,7 +142,8 @@ class ConversationRepositoryImpl @Inject constructor(
         }.subscribeOn(Schedulers.io()) // Ensure the operation is performed on a background thread
 
     override fun searchConversations(query: CharSequence): List<SearchResult> {
-        val realm = Realm.getDefaultInstance()
+        if (query.toString().trim().length < 2) return emptyList()
+        Realm.getDefaultInstance().use { realm ->
 
         val searchQuery = query.toString()
         val conversations = realm.copyFromRealm(realm
@@ -155,28 +156,24 @@ class ConversationRepositoryImpl @Inject constructor(
             .sort("pinned", Sort.DESCENDING, "lastMessage.date", Sort.DESCENDING)
             .findAll())
 
-        val messagesByConversation = realm.copyFromRealm(realm
-            .where(Message::class.java).equalTo("trashedAt", 0L)
-            .beginGroup()
-            .contains("body", searchQuery, Case.INSENSITIVE)
-            .or()
-            .contains("parts.text", searchQuery, Case.INSENSITIVE)
-            .endGroup()
-            .findAll())
-            .groupBy { message -> message.threadId }
-            .filter { (threadId, _) -> conversations.firstOrNull { it.id == threadId } != null }
-            .map { (threadId, messages) -> Pair(conversations.first { it.id == threadId }, messages.size) }
-            .map { (conversation, messages) -> SearchResult(searchQuery, conversation, messages) }
-            .sortedByDescending { result -> result.messages }
+        val allowed = conversations.associateBy { it.id }
+        // Read fields from managed results; avoid copying every MMS attachment into memory.
+        val messagesByConversation = realm.where(Message::class.java).equalTo("trashedAt", 0L)
+            .beginGroup().contains("body", searchQuery, Case.INSENSITIVE)
+            .or().contains("parts.text", searchQuery, Case.INSENSITIVE).endGroup()
+            .sort("date", Sort.DESCENDING).findAll().asSequence()
+            .filter { it.threadId in allowed }.take(500)
+            .map { message -> SearchResult(searchQuery, allowed.getValue(message.threadId), 1,
+                message.id, if (message.isMms()) message.parts.mapNotNull { it.text }.joinToString("\n") else message.body, message.date) }
             .toList()
 
-        realm.close()
 
-        return conversations
+        return messagesByConversation + conversations
             .filter { conversation -> conversationFilter.filter(conversation, searchQuery) }
             .map {
                     conversation -> SearchResult(searchQuery, conversation, 0)
-            } + messagesByConversation
+            }
+        }
     }
 
     override fun getBlockedConversations(): RealmResults<Conversation> =

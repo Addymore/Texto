@@ -131,15 +131,21 @@ class UtilityAccessInstrumentation : Instrumentation() {
                 if(!fallback) check(gestureBody.selectionStart>=0 && gestureBody.selectionEnd>gestureBody.selectionStart)
             }
             if(fallback) {
-                check(uiAutomation.rootInActiveWindow.findAccessibilityNodeInfosByText("Select message text").isNotEmpty()) { "Neither inline selection nor selection sheet opened" }
-                val field=uiAutomation.rootInActiveWindow.findAccessibilityNodeInfosByText("Select these words inside the message").single()
-                check(field.performAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_SET_SELECTION,Bundle().apply {
-                    putInt(android.view.accessibility.AccessibilityNodeInfo.ACTION_ARGUMENT_SELECTION_START_INT,0)
-                    putInt(android.view.accessibility.AccessibilityNodeInfo.ACTION_ARGUMENT_SELECTION_END_INT,6)
-                }))
-                check(field.performAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_COPY))
-                main { check((home.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager).primaryClip?.getItemAt(0)?.text.toString()=="Select") }
-                uiAutomation.rootInActiveWindow.findAccessibilityNodeInfosByText("Done").single().performAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK)
+                // The floating selection toolbar may temporarily have no accessibility
+                // root. Inspect the app's actual windows instead of racing that bridge.
+                main {
+                    val windowViews = android.view.inspector.WindowInspector.getGlobalWindowViews().flatMap(::views)
+                    check(windowViews.filterIsInstance<TextView>().any { it.text.toString() == "Select message text" }) { "Neither inline selection nor selection sheet opened" }
+                    val field = windowViews.filterIsInstance<android.widget.EditText>().single { it.text.toString() == "Select these words inside the message" }
+                    field.performAccessibilityAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_SET_SELECTION,Bundle().apply {
+                        putInt(android.view.accessibility.AccessibilityNodeInfo.ACTION_ARGUMENT_SELECTION_START_INT,0)
+                        putInt(android.view.accessibility.AccessibilityNodeInfo.ACTION_ARGUMENT_SELECTION_END_INT,6)
+                    })
+                    check(field.selectionStart == 0 && field.selectionEnd == 6) { "Native selection range was not applied" }
+                    check(field.performAccessibilityAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_COPY,null))
+                    check((home.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager).primaryClip?.getItemAt(0)?.text.toString()=="Select")
+                    windowViews.filterIsInstance<TextView>().single { it.text.toString() == "Done" }.performClick()
+                }
             } else touch(android.view.MotionEvent.ACTION_UP,android.os.SystemClock.uptimeMillis())
             waitForIdleSync()
             uiAutomation.takeScreenshot()?.let { image -> java.io.File(targetContext.getExternalFilesDir(null),"text-selection-160.png").outputStream().use { image.compress(android.graphics.Bitmap.CompressFormat.PNG,100,it) }; image.recycle() }

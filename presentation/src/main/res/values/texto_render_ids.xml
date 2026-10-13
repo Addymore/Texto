@@ -7,4 +7,5 @@
     <string name="texto_settings_messaging">SMS &amp; MMS</string>
     <string name="texto_settings_privacy">PRIVACY</string>
     <string name="texto_settings_dialing">Dialing country code</string>
+    <item name="textoNavigationSettings" type="id" />
 </resources>

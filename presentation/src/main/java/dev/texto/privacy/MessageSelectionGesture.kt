@@ -1,13 +1,9 @@
 package dev.texto.privacy
 
-import android.os.Build
-import android.os.SystemClock
 import android.text.Spanned
-import android.text.method.MovementMethod
 import android.text.style.ClickableSpan
 import android.view.*
 import android.widget.TextView
-import androidx.core.view.doOnLayout
 import dev.octoshrimpy.quik.R
 import kotlin.math.abs
 
@@ -15,71 +11,32 @@ import kotlin.math.abs
 class MessageSelectionGesture(private val body: TextView, private val row: View, private val selectionActive: () -> Boolean) : View.OnTouchListener {
     private var id=Long.MIN_VALUE
     private var x=0f; private var y=0f; private var down=0L
-    private var held=false; private var canceled=false; private var native=false
-    private var preparing=false; private var releasedWhilePreparing=false
-    private var movement: MovementMethod?=null
+    private var held=false; private var canceled=false
     private val slop=ViewConfiguration.get(body.context).scaledTouchSlop * 2
     private val selectText=Runnable { if(held && !canceled && body.isShown && body.hasWindowFocus() && !selectionActive()) beginTextSelection() }
     init {
         body.setTextIsSelectable(false)
         body.setOnTouchListener(this)
-        body.setOnLongClickListener { if(native) false else row.performLongClick() }
+        body.setOnLongClickListener { row.performLongClick() }
         body.addOnAttachStateChangeListener(object: View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(v: View) {}
             override fun onViewDetachedFromWindow(v: View) { reset() }
         })
-        body.customSelectionActionModeCallback=object: ActionMode.Callback {
-            override fun onCreateActionMode(mode: ActionMode, menu: Menu)=true
-            override fun onPrepareActionMode(mode: ActionMode, menu: Menu)=false
-            override fun onActionItemClicked(mode: ActionMode, item: MenuItem)=false
-            override fun onDestroyActionMode(mode: ActionMode) { body.post { reset() } }
-        }
+
     }
     fun bind(messageId: Long) { if(id != messageId) { reset(); id=messageId } }
     private fun reset() {
         held=false; canceled=true; body.removeCallbacks(selectText)
-        preparing=false; releasedWhilePreparing=false
         body.parent?.requestDisallowInterceptTouchEvent(false)
-        if(native) { native=false; body.setTextIsSelectable(false); body.movementMethod=movement; body.clearFocus() }
     }
     private fun beginTextSelection() {
-        held=false; native=true; movement=body.movementMethod
-        preparing=true; releasedWhilePreparing=false
-        body.autoLinkMask = 0
-        body.setTextIsSelectable(true)
-        body.movementMethod = android.text.method.ArrowKeyMovementMethod.getInstance()
-        body.parent?.requestDisallowInterceptTouchEvent(true)
-        body.requestFocus()
-        // TightTextView must finish its selectable layout before Editor can create
-        // selection handles. An immediate long-click can silently do nothing.
-        body.doOnLayout {
-            body.post {
-                if (!native) return@post
-                if (!body.isAttachedToWindow || !body.hasWindowFocus()) { reset(); return@post }
-                val event=MotionEvent.obtain(down,SystemClock.uptimeMillis(),MotionEvent.ACTION_DOWN,x,y,0)
-                body.onTouchEvent(event); event.recycle()
-                body.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-                if(Build.VERSION.SDK_INT >= 24) body.performLongClick(x,y) else body.performLongClick()
-                body.cancelLongPress()
-                preparing=false
-                body.postDelayed({ ensureSelection() },250)
-                if (releasedWhilePreparing) {
-                    val up=MotionEvent.obtain(down,SystemClock.uptimeMillis(),MotionEvent.ACTION_UP,x,y,0)
-                    body.onTouchEvent(up); up.recycle()
-                }
-            }
-        }
+        val text = body.text.toString()
+        val offset = body.getOffsetForPosition(x, y).coerceIn(0, text.length)
+        reset()
+        body.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+        SelectMessageText.show(body.context, text, offset)
     }
     override fun onTouch(v: View, e: MotionEvent): Boolean {
-        if(native) {
-            if (!preparing) {
-                if(e.actionMasked == MotionEvent.ACTION_UP) body.postDelayed({ ensureSelection() },150)
-                return false
-            }
-            if (e.actionMasked == MotionEvent.ACTION_UP) releasedWhilePreparing=true
-            if (e.actionMasked == MotionEvent.ACTION_CANCEL) reset()
-            return true
-        }
         when(e.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 x=e.x; y=e.y; down=e.eventTime; held=true; canceled=false
@@ -99,28 +56,6 @@ class MessageSelectionGesture(private val body: TextView, private val row: View,
             }
         }
         return true
-    }
-    private fun ensureSelection() {
-        if (!native || !body.isAttachedToWindow || !body.hasWindowFocus()) return
-        if (body.selectionStart >= 0 && body.selectionEnd > body.selectionStart) return
-        // Some OEM TextView editors refuse to open selection in RecyclerView. Use an
-        // editable-buffer, read-only surface so native handles still select arbitrary text.
-        val text=body.text.toString()
-        reset()
-        val field=android.widget.EditText(body.context).apply {
-            setText(text);keyListener=null;setTextIsSelectable(true);showSoftInputOnFocus=false
-            setTextColor(TextoAppearance.readableText(body.context));setBackgroundColor(android.graphics.Color.TRANSPARENT)
-            textSize=body.textSize/resources.displayMetrics.scaledDensity
-            setPadding(32,24,32,24)
-        }
-        val dialog=TextoDialogs.builder(body.context).setTitle("Select message text").setView(field).setPositiveButton("Done",null).create()
-        dialog.setOnShowListener {
-            var context=body.context
-            while(context is android.content.ContextWrapper && context !is android.app.Activity) context=context.baseContext
-            if ((context as? android.app.Activity)?.window?.attributes?.flags?.and(android.view.WindowManager.LayoutParams.FLAG_SECURE) != 0) dialog.window?.addFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE)
-            field.requestFocus();field.post { field.setSelection(0,text.indexOf(' ').takeIf { it>0 } ?: text.length);field.performLongClick() }
-        }
-        dialog.show()
     }
     private fun clickLink(x: Float,y: Float): Boolean {
         val text=body.text as? Spanned ?: return false
