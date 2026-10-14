@@ -48,8 +48,8 @@
             style="@style/PreferenceCategory"
             android:text="@string/settings_category_appearance" />
 
-        <com.google.android.material.button.MaterialButton android:id="@+id/textoContactsSettings" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Contacts"   android:layout_marginHorizontal="20dp" />
-        <com.google.android.material.button.MaterialButton android:id="@+id/textoBinSettings" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Recycle bin · PIN protected"   android:layout_marginHorizontal="20dp" />
+        <com.google.android.material.button.MaterialButton app:icon="@drawable/ic_people_black_24dp" android:id="@+id/textoContactsSettings" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Contacts"   android:layout_marginHorizontal="20dp" />
+        <com.google.android.material.button.MaterialButton app:icon="@drawable/ic_delete_white_24dp" android:id="@+id/textoBinSettings" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Recycle bin · PIN protected"   android:layout_marginHorizontal="20dp" />
         <dev.octoshrimpy.quik.common.widget.PreferenceView
             android:id="@+id/theme"
             android:layout_width="match_parent"
@@ -67,7 +67,7 @@
             tools:summary="Automatic" />
 
         <dev.octoshrimpy.quik.common.widget.PreferenceView
-            android:id="@+id/black"
+            app:icon="@drawable/ic_invert_colors_black_24dp" android:id="@+id/black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
@@ -75,7 +75,7 @@
             app:widget="@layout/settings_switch_widget" />
 
         <dev.octoshrimpy.quik.common.widget.PreferenceView
-            android:id="@+id/nightStart"
+            app:icon="@drawable/ic_av_timer_black_24dp" android:id="@+id/nightStart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
@@ -83,7 +83,7 @@
             tools:summary="6:00PM" />
 
         <dev.octoshrimpy.quik.common.widget.PreferenceView
-            android:id="@+id/nightEnd"
+            app:icon="@drawable/ic_av_timer_black_24dp" android:id="@+id/nightEnd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
@@ -140,7 +140,7 @@
             app:title="@string/settings_notifications_title" />
 
         <dev.octoshrimpy.quik.common.widget.PreferenceView
-            android:id="@+id/autoEmoji"
+            app:icon="@drawable/ic_texto_emoji" android:id="@+id/autoEmoji"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"

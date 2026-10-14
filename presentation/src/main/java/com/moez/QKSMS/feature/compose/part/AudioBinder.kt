@@ -194,16 +194,10 @@ class AudioBinder @Inject constructor(colors: Colors, private val context: Conte
             audioState.viewHolder = null
 
         // tint colours
-        val secondaryColor =
-            if (!message.isMe())
-                theme.theme
-            else
-                holder.itemView.context.resolveThemeColor(R.attr.bubbleColor)
-        val primaryColor =
-            if (!message.isMe())
-                theme.textPrimary
-            else
-                holder.itemView.context.resolveThemeColor(android.R.attr.textColorPrimary)
+        val primaryColor = dev.texto.privacy.MessageBodyStyle.surface(binding.frame, theme.theme, outgoing = message.isMe())
+        val secondaryColor = primaryColor
+        GlideApp.with(context).clear(binding.thumbnail)
+        binding.thumbnail.setImageDrawable(null)
 
         // sound wave
         binding.soundWave.setTint(primaryColor)
@@ -253,7 +247,7 @@ class AudioBinder @Inject constructor(colors: Colors, private val context: Conte
                     else {
                         visibility = View.VISIBLE
                         setTextColor(primaryColor)
-                        setBackgroundTint(secondaryColor.withAlpha(0xcc))    // hex value is alpha
+                        setBackgroundTint((if(primaryColor == android.graphics.Color.WHITE) android.graphics.Color.BLACK else android.graphics.Color.WHITE).withAlpha(0xcc))    // hex value is alpha
                     }
                 }
 
@@ -275,8 +269,8 @@ class AudioBinder @Inject constructor(colors: Colors, private val context: Conte
                     val embeddedPicture = embeddedPicture
                     if (embeddedPicture == null) {
                         binding.frame.layoutParams.height = (binding.frame.layoutParams.width / 2)
-                        setTint(secondaryColor)
-                        setImageResource(R.drawable.rectangle)
+                        setTint(null)
+                        setImageDrawable(null)
                     } else {
                         binding.frame.layoutParams.height = binding.frame.layoutParams.width
                         setTint(null)

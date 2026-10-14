@@ -51,6 +51,7 @@ class ThemesActivity : QkThemedActivity() {
         fun label(text: String,size: Float=16f) { content.addView(TextView(this).apply { this.text=text; textSize=size; setTextColor(if(resources.configuration.uiMode and 0x30 == 0x20) 0xFFE9EDF4.toInt() else 0xFF343D49.toInt()); setPadding(dp(8),dp(16),dp(8),dp(12)) }) }
         fun row(title: String,value: String,action: () -> Unit) {
             content.addView(MaterialButton(this).apply {
+                setIconResource(when { title.contains("image",true) || title.contains("art",true) -> dev.octoshrimpy.quik.R.drawable.ic_photo_size_select_actual_black_24dp; title.contains("text",true) || title.contains("title",true) -> dev.octoshrimpy.quik.R.drawable.ic_title_black_24dp; else -> dev.octoshrimpy.quik.R.drawable.ic_palette_black_24dp })
                 text=if(value.isEmpty()) title else "$title  ·  $value"; isAllCaps=false; gravity=Gravity.START or Gravity.CENTER_VERTICAL
                 minHeight=dp(56); cornerRadius=dp(18); setPadding(dp(16),dp(12),dp(16),dp(12))
                 backgroundTintList=ColorStateList.valueOf(androidx.core.graphics.ColorUtils.blendARGB(if(resources.configuration.uiMode and 0x30 == 0x20) 0xFF23262D.toInt() else 0xFFF3F5F9.toInt(),accent,.07f))
@@ -174,7 +175,7 @@ class ThemesActivity : QkThemedActivity() {
         scroller=ScrollView(this).apply { addView(content); isFillViewport=true }
         shell.addView(scroller,LinearLayout.LayoutParams(-1,0,1f))
         if(intent.getBooleanExtra("from_private",false)) shell.addView(MaterialButton(this).apply {
-            text="Back to private messages"; backgroundTintList=ColorStateList.valueOf(accent); setTextColor(TextoAppearance.onAccent(this@ThemesActivity)); setOnClickListener { finish() }
+            text="Back to private messages"; setIconResource(dev.octoshrimpy.quik.R.drawable.ic_texto_privacy); TextoAppearance.styleSettingsCard(this); setOnClickListener { finish() }
         },LinearLayout.LayoutParams(-1,dp(56)))
         else if (BottomNavigation.enabled(this)) shell.addView(TextoTabBar(this).apply {
             select(1); onTabSelected = { tab -> if (tab != 1) { BottomNavigation.open(this@ThemesActivity, tab); finish() } }

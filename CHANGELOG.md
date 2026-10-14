@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.7.2 — 14 October 2026
+
+- OEM themes now apply consistently to sent and received SMS bubbles and MMS file, contact and audio surfaces, including custom card finishes and older saved presets.
+- Sent messages retain their outgoing palette instead of falling back to incoming contact colors.
+- Shared card surfaces and readable text now cover blocked messages, scheduled messages, contacts and the protected recycle bin. No-card mode also carries through these utilities.
+- Settings and About rows have icons; controls follow the selected accent with contrast adjustment for very pale or dark colors. Removed leftover fixed-blue attachment and permission controls.
+- Tap the version in About to reopen the installed version's actual changelog, even after it has been read.
+
 ## 1.7.1 — 14 October 2026
 
 - Bounded notification, widget and sharing-shortcut avatars now release image requests and retain safe bitmap copies, reducing retained image resources on Android 15–17 and older supported versions. Full API 37 migration and physical-device certification remain pending.

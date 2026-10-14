@@ -70,6 +70,9 @@ class BlockedMessagesAdapter @Inject constructor(
     override fun onBindViewHolder(holder: QkBindingViewHolder<BlockedListItemBinding>, position: Int) {
         val conversation = getItem(position) ?: return
         val binding = holder.binding
+        binding.root.background = dev.texto.privacy.TextoAppearance.card(binding.root.context)
+        val foreground = dev.texto.privacy.TextoAppearance.readableText(binding.root.context)
+        listOf(binding.title, binding.date, binding.blocker, binding.reason).forEach { it.setTextColor(foreground) }
 
         holder.itemView.isActivated = isSelected(conversation.id)
 

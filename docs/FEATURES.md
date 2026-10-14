@@ -85,3 +85,7 @@ Optional OEM-inspired profiles now coordinate accent palettes, header scale/alig
 - Bounded notification, widget and sharing-shortcut avatars now release image requests and retain safe bitmap copies, reducing retained image resources on Android 15–17 and older supported versions. Full API 37 migration and physical-device certification remain pending.
 
 See [Android 15–17 compatibility](ANDROID_17.md) for platform scope and outstanding physical-device checks.
+
+### Theme consistency (1.7.2)
+
+OEM palettes and custom finishes carry through SMS bodies and MMS attachment surfaces. Older saved OEM presets remain recognized. Blocked, scheduled, contact and recycle-bin lists share theme surfaces and readable foregrounds; settings and About include icons. The About version row reopens the installed release changelog.

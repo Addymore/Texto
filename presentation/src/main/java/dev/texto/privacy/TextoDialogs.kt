@@ -48,6 +48,6 @@ object TextoDialogs {
         val context = dialog.context
         val d = context.resources.displayMetrics.density
         dialog.window?.setBackgroundDrawable(InsetDrawable(background(context), (20*d).toInt()))
-        listOf(-1,-2,-3).forEach { dialog.getButton(it)?.setTextColor(TextoAppearance.accent(context)) }
+        listOf(-1,-2,-3).forEach { dialog.getButton(it)?.setTextColor(TextoAppearance.controlColor(context)) }
     }
 }

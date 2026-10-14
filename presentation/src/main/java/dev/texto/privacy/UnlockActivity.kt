@@ -34,6 +34,8 @@ class UnlockActivity : AppCompatActivity() {
         box.addView(title); box.addView(note); box.addView(pin); box.addView(error)
         box.addView(MaterialButton(this).apply {
             text = "Unlock"
+            setIconResource(R.drawable.ic_texto_privacy)
+            TextoAppearance.styleSettingsCard(this)
             setOnClickListener {
                 isEnabled = false
                 val value = pin.text.toString()
@@ -62,6 +64,8 @@ class UnlockActivity : AppCompatActivity() {
             }
             box.addView(MaterialButton(this).apply {
                 text = "Try fingerprint again"
+                setIconResource(R.drawable.ic_texto_privacy)
+                TextoAppearance.styleSettingsCard(this)
                 setOnClickListener { authenticate() }
             })
             if (savedInstanceState == null) autoPrompt = authenticate
@@ -69,6 +73,8 @@ class UnlockActivity : AppCompatActivity() {
 
         box.addView(MaterialButton(this).apply {
             text = "Cancel"
+            setIconResource(R.drawable.ic_texto_privacy)
+            TextoAppearance.styleSettingsCard(this)
             setOnClickListener { PrivacyGate.session.lock(); finish() }
         })
         setContentView(box)

@@ -50,8 +50,8 @@
         android:layout_marginTop="28dp"
         android:max="10"
         android:progress="5"
-        android:progressTint="@color/tools_theme"
-        android:thumbTint="@color/tools_theme" />
+        android:progressTint="?attr/colorAccent"
+        android:thumbTint="?attr/colorAccent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -70,7 +70,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/exo_icon_play"
-            app:tint="@color/tools_theme" />
+            app:tint="?attr/colorAccent" />
 
         <dev.octoshrimpy.quik.common.widget.QkTextView
             android:id="@+id/metadataTitle"
@@ -81,7 +81,7 @@
             android:layout_marginStart="12dp"
             android:layout_marginEnd="12dp"
             android:background="@drawable/rounded_rectangle_22dp"
-            android:backgroundTint="@color/tools_theme"
+            android:backgroundTint="?attr/colorAccent"
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
             android:focusable="true"

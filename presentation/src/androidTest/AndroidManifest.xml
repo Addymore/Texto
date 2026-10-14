@@ -3,4 +3,5 @@
     <instrumentation android:name="dev.texto.testing.AppearanceRegressionInstrumentation" android:targetPackage="app.texto.sms.debug" />
     <instrumentation android:name="dev.texto.testing.UtilityAccessInstrumentation" android:targetPackage="app.texto.sms.debug" />
     <instrumentation android:name="dev.texto.testing.MessageContrastInstrumentation" android:targetPackage="app.texto.sms.debug" />
+    <instrumentation android:name="dev.texto.testing.ThemeConsistencyInstrumentation" android:targetPackage="app.texto.sms.debug" />
 </manifest>

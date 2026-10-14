@@ -24,6 +24,8 @@ import io.reactivex.Observable
 
 interface AboutView : QkViewContract<Unit> {
 
+    fun showCurrentChangelog()
+
     fun preferenceClicks(): Observable<PreferenceView>
 
 }

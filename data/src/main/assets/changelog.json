@@ -1,5 +1,21 @@
 [
   {
+    "versionCode": 2342,
+    "versionName": "1.7.2",
+    "added": [],
+    "improved": [
+      "Settings and About entries now have matching themed icons.",
+      "Shared themed surfaces and readable text across scheduled, blocked, contact, recycle-bin and unlock screens.",
+      "Previously saved OEM presets keep their message styling without reapplying them."
+    ],
+    "fixed": [
+      "OEM and custom finishes stay consistent inside SMS messages, files, contact cards and audio attachments.",
+      "Sent-message colors no longer use the incoming contact-color path.",
+      "Tap Version in About Texto to reopen the installed version’s changelog, even after dismissing it."
+    ],
+    "removed": []
+  },
+  {
     "versionCode": 2341,
     "versionName": "1.7.1",
     "added": [],

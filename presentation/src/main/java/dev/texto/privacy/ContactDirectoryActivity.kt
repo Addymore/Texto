@@ -114,8 +114,8 @@ class ContactDirectoryActivity : AppCompatActivity() {
             val image = ImageView(this@ContactDirectoryActivity).apply { scaleType = ImageView.ScaleType.CENTER_CROP }
             avatar.addView(initial, FrameLayout.LayoutParams(-1,-1)); avatar.addView(image, FrameLayout.LayoutParams(-1,-1)); row.addView(avatar, LinearLayout.LayoutParams(dp(54),dp(54)))
             val words = LinearLayout(this@ContactDirectoryActivity).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(14),0,dp(4),0) }
-            val name = TextView(this@ContactDirectoryActivity).apply { textSize = 17f; setTypeface(null,Typeface.BOLD); maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END }
-            val number = TextView(this@ContactDirectoryActivity).apply { textSize = 14f; setPadding(0,dp(4),0,0); setTextColor(if (dark) 0xFFBDC1CE.toInt() else 0xFF676E7E.toInt()) }
+            val name = TextView(this@ContactDirectoryActivity).apply { textSize = 17f; setTextColor(TextoAppearance.readableText(context)); setTypeface(null,Typeface.BOLD); maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END }
+            val number = TextView(this@ContactDirectoryActivity).apply { textSize = 14f; setPadding(0,dp(4),0,0); setTextColor(TextoAppearance.readableText(context)) }
             words.addView(name); words.addView(number); row.addView(words,LinearLayout.LayoutParams(0,-2,1f))
             return PersonHolder(row, avatar, initial, image, name, number)
         }

@@ -30,6 +30,7 @@ import dev.octoshrimpy.quik.databinding.AboutControllerBinding
 import dev.octoshrimpy.quik.injection.appComponent
 import io.reactivex.Observable
 import javax.inject.Inject
+import kotlinx.coroutines.*
 
 class AboutController : QkController<AboutControllerBinding, AboutView, Unit, AboutPresenter>(), AboutView {
 
@@ -37,6 +38,32 @@ class AboutController : QkController<AboutControllerBinding, AboutView, Unit, Ab
         AboutControllerBinding.inflate(inflater, container, false)
 
     @Inject override lateinit var presenter: AboutPresenter
+
+    @Inject lateinit var changelogManager: dev.octoshrimpy.quik.manager.ChangelogManager
+    @Inject lateinit var externalNavigator: dev.octoshrimpy.quik.common.ExternalNavigator
+    private var changelogJob: Job? = null
+    private var changelogDialog: dev.octoshrimpy.quik.feature.changelog.ChangelogDialog? = null
+    private var moreClick: io.reactivex.disposables.Disposable? = null
+
+    override fun showCurrentChangelog() {
+        val host=activity ?: return
+        changelogJob?.cancel()
+        changelogJob=CoroutineScope(Dispatchers.Main).launch {
+            val changes=changelogManager.getChangelog(currentVersionOnly = true)
+            if(activity !== host || !isAttached) return@launch
+            changelogDialog?.dismiss(); moreClick?.dispose()
+            changelogDialog=dev.octoshrimpy.quik.feature.changelog.ChangelogDialog(host).also {
+                moreClick=it.moreClicks.subscribe { externalNavigator.showChangelog() }
+                it.show(changes)
+            }
+        }
+    }
+
+    override fun onDetach(view: View) {
+        changelogJob?.cancel(); changelogDialog?.dismiss(); changelogDialog=null
+        moreClick?.dispose(); moreClick=null
+        super.onDetach(view)
+    }
 
     init {
         appComponent.inject(this)

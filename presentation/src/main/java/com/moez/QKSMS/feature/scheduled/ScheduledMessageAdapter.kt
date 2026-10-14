@@ -91,6 +91,8 @@ class ScheduledMessageAdapter @Inject constructor(
         holder.binding.root.isActivated = isSelected(message.id) || highlight == message.id
 
         holder.binding.root.background = dev.texto.privacy.TextoAppearance.card(holder.itemView.context)
+        val foreground = dev.texto.privacy.TextoAppearance.readableText(holder.itemView.context)
+        listOf(holder.binding.recipients, holder.binding.date, holder.binding.body).forEach { it.setTextColor(foreground) }
 
         val adapter = holder.binding.attachments.adapter as ScheduledMessageAttachmentAdapter
         adapter.data = message.attachments.map(Uri::parse)

@@ -64,6 +64,21 @@ object TextoAppearance {
         val backgrounds=cardColors(context).map { androidx.core.graphics.ColorUtils.compositeColors(it,window) }
         return listOf(Color.BLACK,Color.WHITE).maxByOrNull { fg -> backgrounds.minOf { androidx.core.graphics.ColorUtils.calculateContrast(fg,it) } }!!
     }
+    /** Keep icons visible even with a very pale/dark user-picked accent. */
+    fun controlColor(context: Context): Int {
+        val a=context.obtainStyledAttributes(intArrayOf(android.R.attr.windowBackground))
+        val window=a.getColor(0,Color.WHITE); a.recycle()
+        val backgrounds=cardColors(context).map { androidx.core.graphics.ColorUtils.compositeColors(it,window) }
+        val original=accent(context)
+        fun contrast(color: Int)=backgrounds.minOf { androidx.core.graphics.ColorUtils.calculateContrast(color,it) }
+        if(contrast(original)>=3.0) return original
+        val target=listOf(Color.BLACK,Color.WHITE).maxByOrNull { contrast(it) }!!
+        for(step in 1..10) {
+            val candidate=androidx.core.graphics.ColorUtils.blendARGB(original,target,step/10f)
+            if(contrast(candidate)>=3.0) return candidate
+        }
+        return target
+    }
     fun onAccent(context: Context): Int = if (androidx.core.graphics.ColorUtils.calculateLuminance(accent(context)) > .179) Color.BLACK else Color.WHITE
     fun styleConversation(binding: dev.octoshrimpy.quik.databinding.ConversationListItemBinding, count: Long, unread: Long, selected: Boolean = false) {
         val context = binding.root.context; val p = prefs(context); val d = context.resources.displayMetrics.density
@@ -116,7 +131,10 @@ object TextoAppearance {
         // MaterialButton transfers its stored support tint when a custom drawable is assigned.
         if (view is com.google.android.material.button.MaterialButton) {
             view.supportBackgroundTintList = null
-            view.iconTint = ColorStateList.valueOf(accent(view.context))
+            if(view.icon == null) view.setIconResource(dev.octoshrimpy.quik.R.drawable.ic_settings_black_24dp)
+            view.iconSize=(24*d).toInt()
+            view.iconPadding=(16*d).toInt()
+            view.iconTint = ColorStateList.valueOf(controlColor(view.context))
         }
         view.backgroundTintList = null
         val p = prefs(view.context)

@@ -195,7 +195,7 @@ class MessagesAdapter @Inject constructor(
         val previous = if (position == 0) null else getItem(position - 1)
         val next = if (position == itemCount - 1) null else getItem(position + 1)
 
-        val theme = when (message.isOutgoingMessage()) {
+        val theme = when (message.isMe()) {
             true -> colors.theme()
             false -> colors.theme(contactCache[message.address])
         }

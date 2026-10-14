@@ -26,7 +26,7 @@ class TrashActivity : AppCompatActivity() {
         val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding((24*d).toInt(), (36*d).toInt(), (24*d).toInt(), (16*d).toInt()) }
         root.addView(TextView(this).apply { text = "Recycle bin"; textSize = 32f })
         root.addView(TextView(this).apply { text = "Protected by your privacy PIN. Tap a message to restore it. SMS and MMS attachments are retained until expiry."; textSize = 15f; setPadding(0,16,0,16) })
-        root.addView(MaterialButton(this).apply { text = "Auto-delete after $days days"; setOnClickListener {
+        root.addView(MaterialButton(this).apply { text = "Auto-delete after $days days"; setIconResource(R.drawable.ic_av_timer_black_24dp); TextoAppearance.styleSettingsCard(this); setOnClickListener {
             dialog = dev.texto.privacy.TextoDialogs.builder(this@TrashActivity).setTitle("Keep deleted messages")
                 .setSingleChoiceItems(arrayOf("30 days", "60 days", "90 days"), TrashRetention.choices.indexOf(days)) { choice, index ->
                     val selected = TrashRetention.choices[index]
@@ -40,11 +40,14 @@ class TrashActivity : AppCompatActivity() {
         } })
         val entries = Realm.getDefaultInstance().use { realm -> realm.refresh(); realm.copyFromRealm(realm.where(Message::class.java).greaterThan("trashedAt", 0L).sort("trashedAt", Sort.DESCENDING).findAll()) }
         if (entries.isEmpty()) root.addView(TextView(this).apply { text = "Your recycle bin is empty"; textSize = 18f })
-        val list = ListView(this).apply { divider = null }
+        val list = ListView(this).apply { divider = android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT); dividerHeight = (8*d).toInt() }
         val date = DateFormat.getDateInstance(DateFormat.MEDIUM)
-        list.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, entries.map {
+        list.adapter = object : ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, entries.map {
             "${it.address}\n${it.getSummary().take(140)}\nExpires ${date.format(Date(TrashRetention.expiresAt(it.trashedAt, days)))}"
-        })
+        }) {
+            override fun getView(position: Int, convertView: android.view.View?, parent: android.view.ViewGroup): android.view.View =
+                super.getView(position, convertView, parent).also { TextoAppearance.styleSettingsCard(it) }
+        }
         list.setOnItemClickListener { _, _, position, _ ->
             val message = entries[position]
             dialog = dev.texto.privacy.TextoDialogs.builder(this).setTitle("Restore message?").setMessage(message.getSummary())
@@ -60,7 +63,7 @@ class TrashActivity : AppCompatActivity() {
         }
         root.addView(list, LinearLayout.LayoutParams(-1,0,1f))
         root.addView(TextView(this).apply { text = "Cleanup runs daily and when Texto opens. Android may defer it while the phone is idle. Restored private numbers remain locked."; textSize = 12f })
-        root.addView(MaterialButton(this).apply { text = "Lock and close"; setOnClickListener { PrivacyGate.session.lock(); finish() } })
+        root.addView(MaterialButton(this).apply { text = "Lock and close"; setIconResource(R.drawable.ic_texto_privacy); TextoAppearance.styleSettingsCard(this); setOnClickListener { PrivacyGate.session.lock(); finish() } })
         setContentView(root)
     }
 }

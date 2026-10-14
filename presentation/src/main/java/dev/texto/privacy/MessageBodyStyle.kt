@@ -17,6 +17,7 @@ object MessageBodyStyle {
         val spacing = when (p.getString("density", "comfortable")) { "compact" -> 5; "airy" -> 9; else -> 7 }
         val d = body.resources.displayMetrics.density
         body.setPadding(((spacing+4)*d*scale).toInt(), (spacing*d*scale).toInt(), ((spacing+4)*d*scale).toInt(), (spacing*d*scale).toInt())
+        body.typeface=android.graphics.Typeface.create(if(SkinPresets.id(body.context)=="nothing") "monospace" else "sans-serif",android.graphics.Typeface.NORMAL)
         body.setTextColor(foreground)
         // Explicitly set links too: XML ColorStateLists do not call QkTextView's Int overload.
         body.setLinkTextColor(foreground)
@@ -38,6 +39,7 @@ object MessageBodyStyle {
         val p = TextoAppearance.prefs(view.context)
         val old = view.background as? android.graphics.drawable.GradientDrawable
         val profile=SkinPresets.id(view.context)
+        val effectiveAccent=if(profile.isNotEmpty()) TextoAppearance.accent(view.context) else accent
         val radius = when (p.getString("card_shape", "soft")) { "square" -> 0; "pill" -> 48; "minimal" -> 12; "round" -> 30; else -> 16 } * view.resources.displayMetrics.density
         val corners = if (p.getString("bubbles", "fluid") == "classic" && Build.VERSION.SDK_INT >= 24)
             old?.cornerRadii?.map { if (it <= 5 * view.resources.displayMetrics.density) it else radius }?.toFloatArray() else null
@@ -46,6 +48,7 @@ object MessageBodyStyle {
         val cached=view.getTag(R.id.texto_message_surface) as? Surface
         if(cached?.key==key && view.background === cached.background) return cached.foreground
         view.backgroundTintList = null
+        (view as? androidx.appcompat.widget.AppCompatTextView)?.supportBackgroundTintList = null
         val oemBubble=SkinPresets.usesProfileSurface(view.context) && outgoing != null && !TextoAppearance.noCards(view.context)
         val dark=view.resources.configuration.uiMode and 0x30 == 0x20
         val bubbleColor=if(outgoing==true) {
@@ -58,10 +61,10 @@ object MessageBodyStyle {
             setColor(bubbleColor); cornerRadius=radius
             if(oemCorners != null) cornerRadii=oemCorners
         } else if (transparent) android.graphics.drawable.ColorDrawable(Color.TRANSPARENT)
-            else TextoAppearance.card(view.context, accentColor = accent, corners = corners)
-        val colors = (if (transparent) intArrayOf(window) else if(oemBubble) intArrayOf(bubbleColor) else TextoAppearance.cardColors(view.context, accent).map { ColorUtils.compositeColors(it, window) }.toIntArray())
+            else TextoAppearance.card(view.context, accentColor = effectiveAccent, corners = if(profile.isNotEmpty()) oemCorners ?: corners else corners)
+        val colors = (if (transparent) intArrayOf(window) else if(oemBubble) intArrayOf(bubbleColor) else TextoAppearance.cardColors(view.context, effectiveAccent).map { ColorUtils.compositeColors(it, window) }.toIntArray())
         val foreground=listOf(Color.BLACK, Color.WHITE).maxByOrNull { fg -> colors.minOf { ColorUtils.calculateContrast(fg, it) } }!!
-        selectionOverlay(view,foreground,if(oemBubble) oemCorners else corners)
+        selectionOverlay(view,foreground,if(profile.isNotEmpty()) oemCorners ?: corners else corners)
         view.setTag(R.id.texto_message_surface,Surface(key,view.background,foreground))
         return foreground
     }

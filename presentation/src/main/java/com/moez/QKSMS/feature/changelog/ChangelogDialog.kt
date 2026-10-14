@@ -28,7 +28,7 @@ import dev.octoshrimpy.quik.manager.ChangelogManager
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 
-class ChangelogDialog(private val activity: MainActivity) {
+class ChangelogDialog(private val activity: android.app.Activity) {
     val moreClicks: Subject<Unit> = PublishSubject.create()
 
     private var visibleDialog: AlertDialog? = null
@@ -42,7 +42,7 @@ class ChangelogDialog(private val activity: MainActivity) {
             orientation = android.widget.LinearLayout.VERTICAL
             setPadding((24*d).toInt(), (8*d).toInt(), (24*d).toInt(), (16*d).toInt())
         }
-        val foreground = if (activity.resources.configuration.uiMode and 0x30 == 0x20) android.graphics.Color.WHITE else 0xFF20232B.toInt()
+        val foreground = dev.texto.privacy.TextoAppearance.readableText(activity)
         listOf("Added" to changelog.added, "Improved" to changelog.improved, "Fixed" to changelog.fixed, "Removed" to changelog.removed).forEach { (title, entries) ->
             if (entries.isNotEmpty()) {
                 content.addView(android.widget.TextView(activity).apply {

@@ -97,12 +97,14 @@ class SettingsController : QkController<SettingsControllerBinding, SettingsView,
             activity?.let { it.startActivity(android.content.Intent(it, dev.texto.privacy.ProtectionActivity::class.java)) }
         }
         val dialing = com.google.android.material.button.MaterialButton(binding.root.context).apply {
+            setIconResource(R.drawable.ic_call_white_24dp)
             id = R.id.textoDialingSettings
             setText(R.string.texto_settings_dialing); isAllCaps = false
             setOnClickListener { dev.texto.privacy.PhoneDialing.settings(context) }
         }
         binding.preferences.addView(dialing, 1)
         binding.preferences.addView(com.google.android.material.button.MaterialButton(binding.root.context).apply {
+            setIconResource(R.drawable.ic_palette_black_24dp)
             id = R.id.textoNavigationSettings; text = "Bottom bar & visual styles"; isAllCaps = false
             setOnClickListener { activity?.let { it.startActivity(android.content.Intent(it, dev.texto.privacy.ThemesActivity::class.java)) } }
         })

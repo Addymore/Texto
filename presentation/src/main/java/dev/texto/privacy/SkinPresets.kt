@@ -22,7 +22,11 @@ object SkinPresets {
         return index>=0 && TextoAppearance.prefs(context).getString("card_finish","tonal")==finishes[index]
     }
     private val keys = listOf("card_shape", "card_finish", "card_size", "density", "bubbles", "oem_layout", "preview_lines", "unread_style")
-    fun id(context: Context) = TextoAppearance.prefs(context).getString("oem_layout", "") ?: ""
+    fun id(context: Context): String {
+        val p=TextoAppearance.prefs(context)
+        return p.getString("oem_layout",null)?.takeIf { it in ids }
+            ?: names.indexOf(p.getString("skin_preset",null)).takeIf { it>=0 }?.let { ids[it] }.orEmpty()
+    }
     fun apply(context: Context, index: Int) {
         require(index in names.indices)
         val prefs = TextoAppearance.prefs(context)

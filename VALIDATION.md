@@ -1,5 +1,15 @@
 # Texto validation — 14 October 2026
 
+## 1.7.2 cross-screen theme consistency — 14 October 2026
+
+- Final optimized release/debug APKs, instrumentation and common-test task passed in 7m 22s. The 19 unchanged JVM tests remain green (Gradle up-to-date reports). Both APK signatures, existing certificate identities and zip alignment passed.
+- Five emulator suites passed on Android 14: 192 OEM/custom SMS and attachment surface cases; all eight saved-profile fallbacks; Settings icons; repeated current-version About changelog; 480 custom color/link contrast cases; 108 finish/size/spacing combinations and 1,000 recycled conversations; actual message selection, search, archive and privacy utility regressions.
+- The test harness was corrected after AGP replaced the first runner registration and a theme change recreated the fixture Activity. The final test-only rebuild passed in 52s; the app APKs were unchanged. Theme rendering now uses an independent themed context.
+- The signed release upgraded 1.7.1 without clearing data, retained synthetic conversations and the SMS role, displayed 1.7.2 release notes and left an empty crash buffer. Settings and the About version changelog were opened through production navigation and visually inspected.
+- The legacy AGP 8.2.2 lint analyzer crashes while reading the newly installed SDK 37 metadata (`NumberFormatException: "37.0"`). Release lint tasks are excluded for this build; no clean lint result is claimed. Compilation, release optimization, JVM tests and emulator regression checks remain enabled.
+- QUIK master was rechecked: 02542049207bab8e467a90cc0e50d3febe2b6a8d, unchanged. The latest three PR Actions runs require approval; no unreviewed workflow artifacts were imported.
+- Physical Samsung/OnePlus, carrier SMS/MMS and biometric hardware checks remain unverified. Compile SDK 34 / target SDK 33 remain unchanged.
+
 ## 1.7.1 inline selection, OEM profiles and image memory — 14 October 2026
 
 - Final optimized release/debug builds, instrumentation build and common-test task passed in 6m 55s. The 19 unchanged JVM test reports have zero failures/errors. Both APKs passed signature, existing-certificate continuity and zip-alignment checks. The inherited non-aborting lint configuration remains; no clean full lint result is claimed.

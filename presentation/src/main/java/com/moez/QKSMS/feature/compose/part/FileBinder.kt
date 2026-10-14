@@ -82,7 +82,7 @@ class FileBinder @Inject constructor(colors: Colors, private val context: Contex
             binding.filename.text = part.getBestFilename()
         }
 
-        val foreground = dev.texto.privacy.MessageBodyStyle.surface(binding.fileBackground, theme.theme)
+        val foreground = dev.texto.privacy.MessageBodyStyle.surface(binding.fileBackground, theme.theme, outgoing = message.isMe())
         binding.icon.setTint(foreground)
         binding.filename.setTextColor(foreground)
         binding.size.setTextColor(foreground)

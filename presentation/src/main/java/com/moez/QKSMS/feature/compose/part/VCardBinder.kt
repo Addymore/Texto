@@ -73,7 +73,7 @@ class VCardBinder @Inject constructor(colors: Colors, private val context: Conte
                 }
         }
 
-        val foreground = dev.texto.privacy.MessageBodyStyle.surface(binding.vCardBackground, theme.theme)
+        val foreground = dev.texto.privacy.MessageBodyStyle.surface(binding.vCardBackground, theme.theme, outgoing = message.isMe())
         binding.vCardAvatar.setTint(foreground)
         binding.name.setTextColor(foreground)
         binding.label.setTextColor(foreground)

@@ -32,7 +32,7 @@ interface ChangelogManager {
      */
     fun didUpdate(): Boolean
 
-    suspend fun getChangelog(): CumulativeChangelog
+    suspend fun getChangelog(currentVersionOnly: Boolean = false): CumulativeChangelog
 
     fun markChangelogSeen()
 
