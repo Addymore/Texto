@@ -17,7 +17,8 @@ object MessageBodyStyle {
         val spacing = when (p.getString("density", "comfortable")) { "compact" -> 5; "airy" -> 9; else -> 7 }
         val d = body.resources.displayMetrics.density
         body.setPadding(((spacing+4)*d*scale).toInt(), (spacing*d*scale).toInt(), ((spacing+4)*d*scale).toInt(), (spacing*d*scale).toInt())
-        body.typeface=android.graphics.Typeface.create(if(SkinPresets.id(body.context)=="nothing") "monospace" else "sans-serif",android.graphics.Typeface.NORMAL)
+        val face=if(SkinPresets.id(body.context)=="nothing") android.graphics.Typeface.MONOSPACE else android.graphics.Typeface.DEFAULT
+        if(body.typeface!=face) body.typeface=face
         body.setTextColor(foreground)
         // Explicitly set links too: XML ColorStateLists do not call QkTextView's Int overload.
         body.setLinkTextColor(foreground)

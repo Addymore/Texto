@@ -58,7 +58,7 @@ open class QkTextView @JvmOverloads constructor(
         super.onAttachedToWindow()
         if (!isInEditMode && tag == "texto_section") {
             background = dev.texto.privacy.TextoAppearance.card(context)
-            setTextColor(if (resources.configuration.uiMode and 0x30 == 0x20) android.graphics.Color.WHITE else 0xFF20232B.toInt())
+            setTextColor(dev.texto.privacy.TextoAppearance.readableText(context))
         }
     }
 

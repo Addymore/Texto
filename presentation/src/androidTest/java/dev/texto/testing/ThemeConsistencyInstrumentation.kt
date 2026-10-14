@@ -83,12 +83,12 @@ class ThemeConsistencyInstrumentation : Instrumentation() {
                 main { about.findViewById<View>(R.id.version).performClick() }
                 for(attempt in 0 until 40) {
                     SystemClock.sleep(50); waitForIdleSync()
-                    if(windows().filterIsInstance<TextView>().any { it.text.toString().contains("What’s new in Texto 1.7.2") }) break
+                    if(windows().filterIsInstance<TextView>().any { it.text.toString().contains("What’s new in Texto 1.7.3") }) break
                 }
                 main {
                     val text=windows().filterIsInstance<TextView>().map { it.text.toString() }
-                    check(text.any { it.contains("What’s new in Texto 1.7.2") }) { "Version did not open current changelog" }
-                    check(text.any { it.contains("Sent-message colors") }) { "Current release details missing" }
+                    check(text.any { it.contains("What’s new in Texto 1.7.3") }) { "Version did not open current changelog" }
+                    check(text.any { it.contains("Native message text selection") }) { "Current release details missing" }
                     windows().filterIsInstance<TextView>().last { it.text.toString().equals("Got it",true) }.performClick()
                 }
                 waitForIdleSync()

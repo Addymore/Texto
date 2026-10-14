@@ -128,7 +128,7 @@
                     android:background="@drawable/message_only"
                     android:gravity="start|center_vertical"
                     android:minHeight="36dp"
-                    android:textIsSelectable="false"
+                    android:textIsSelectable="true"
                     tools:backgroundTint="@color/tools_theme"
                     tools:text="@tools:sample/lorem/random" />
 

@@ -4,11 +4,11 @@
 
 A customizable Kotlin SMS/MMS app for Android by **[Addymore](https://github.com/Addymore)**, built on [QUIK](https://github.com/quik-sms/quik) and QKSMS. Reachable navigation, consistent public and private conversations, and a theme that feels like yours.
 
-[Download 1.7.2](https://github.com/Addymore/Texto/releases/tag/v1.7.2) · [Changelog](CHANGELOG.md) · [Report a bug](https://github.com/Addymore/Texto/issues) · [Telegram](https://t.me/addymore)
+[Download 1.7.3](https://github.com/Addymore/Texto/releases/tag/v1.7.3) · [Changelog](CHANGELOG.md) · [Report a bug](https://github.com/Addymore/Texto/issues) · [Telegram](https://t.me/addymore)
 
 **Two APKs:** choose the signed release APK for normal use or to update an existing release installation; use the debug APK to update the separate development app. Neither is a Google Play publication. Android 6+; physical OnePlus 13, newer Android versions and carrier behavior still require device validation. See [validation](VALIDATION.md).
 
-See the [complete feature list](docs/FEATURES.md) and [1.7.2 changelog](CHANGELOG.md).
+See the [complete feature list](docs/FEATURES.md) and [1.7.3 changelog](CHANGELOG.md).
 
 ### Consistent themes in 1.7.2
 
@@ -41,7 +41,7 @@ See the [complete feature list](docs/FEATURES.md) and [1.7.2 changelog](CHANGELO
 
 Screenshots use synthetic messages and sample contacts. Private screens are protected from capture.
 
-- **Deliberate text selection.** A shorter long press selects the message; hold its text for three seconds to select a word inside the original bubble, then drag the handles to select a sentence or paragraph. Scrolling cancels the hold.
+- **Native text selection.** Long press message text using Android’s normal timing, as in QUIK, then drag its handles to copy a word, sentence or paragraph. Use “Select message” in the text toolbar, or hold outside the text, for whole-message actions.
 - **Message-level search.** Individual SMS/MMS previews, highlighted matches, dates and full-text previews; newest 500 matches, with protected messages excluded.
 - **Optional OEM styles.** Eight separately grouped presets coordinate the palette, heading, conversation list, navigation and sent/received bubbles. They require Apply and offer Restore. Your current theme stays unchanged until you choose one.
 - **One consistent layout.** Public and private lists share conversation cards, avatars, dates, message totals and unread badges. Private SMS/MMS opens in the same full conversation screen.
@@ -64,7 +64,7 @@ Open Backup & restore, choose a writable folder, and create a backup. Select **E
 
 ## Install
 
-1. Download `Texto-1.7.2-release.apk` for normal use or a release upgrade, or `Texto-1.7.2-debug.apk` to upgrade your development installation from the [release](https://github.com/Addymore/Texto/releases/tag/v1.7.2).
+1. Download `Texto-1.7.3-release.apk` for normal use or a release upgrade, or `Texto-1.7.3-debug.apk` to upgrade your development installation from the [release](https://github.com/Addymore/Texto/releases/tag/v1.7.3).
 2. Install it and select Texto as your default SMS app. Allow the permissions needed for messaging and contacts.
 3. Personalize it in **Themes** and configure your privacy PIN and number rules in **Settings → Privacy & protection**.
 

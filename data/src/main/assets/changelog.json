@@ -1,5 +1,21 @@
 [
   {
+    "versionCode": 2343,
+    "versionName": "1.7.3",
+    "added": [],
+    "improved": [
+      "Removed touch interception and avoidable drawing/layout work for smoother interaction."
+    ],
+    "fixed": [
+      "Native message text selection restored from QUIK: use the normal Android long press, then drag handles to copy words or paragraphs.",
+      "Contacts now refresh changed themes and respect the selected bottom-bar shortcuts and visibility.",
+      "Section text uses the shared readable theme foreground."
+    ],
+    "removed": [
+      "Custom three-second selection timer and accessibility-based activation."
+    ]
+  },
+  {
     "versionCode": 2342,
     "versionName": "1.7.2",
     "added": [],

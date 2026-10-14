@@ -1,0 +1,1 @@
+Restored QUIK-style native long-press text selection: no three-second timer. Drag Android handles to copy words or paragraphs. Whole-message actions remain in the text toolbar. Reduced avoidable drawing/layout work. Contacts now refreshes themes and honors bottom-bar settings.

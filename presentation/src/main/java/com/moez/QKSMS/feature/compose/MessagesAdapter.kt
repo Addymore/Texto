@@ -26,7 +26,7 @@ import android.text.Layout
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
-import android.text.method.LinkMovementMethod
+import android.text.method.ArrowKeyMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
 import android.text.style.URLSpan
@@ -358,7 +358,7 @@ class MessagesAdapter @Inject constructor(
             // needed by native word selection when the view becomes selectable.
             body.autoLinkMask = 0
             body.linksClickable = true
-            if(!body.isTextSelectable) body.movementMethod = LinkMovementMethod.getInstance()
+            body.movementMethod = ArrowKeyMovementMethod.getInstance()
             val mask = Linkify.PHONE_NUMBERS or if (linkMode == Preferences.MESSAGE_LINK_HANDLING_BLOCK) 0 else (Linkify.EMAIL_ADDRESSES or Linkify.WEB_URLS)
             Linkify.addLinks(linked, mask)
             for (span in linked.getSpans(0, linked.length, URLSpan::class.java)) {
@@ -380,7 +380,7 @@ class MessagesAdapter @Inject constructor(
             body.setTag(R.id.texto_message_links,LinkedBody(displayText.toString(),linkMode,subject,linked))
             linked
         }
-        if(!body.isTextSelectable) body.movementMethod = LinkMovementMethod.getInstance()
+        body.movementMethod = ArrowKeyMovementMethod.getInstance()
 
         body.apply {
             if (!android.text.TextUtils.equals(text,spanString) || cached?.linkMode != linkMode || cached?.subject != subject) text = spanString

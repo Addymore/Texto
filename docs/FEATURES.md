@@ -5,7 +5,7 @@
 - SMS and carrier MMS, group conversations and attachments.
 - Dual-SIM selection, delayed sending, scheduled messages, drafts, search, pinning, conversation renaming, reactions, speech and notification quick reply inherited from QUIK.
 - Sent, delivered (when the carrier reports delivery) and received indicators. No SMS read receipts or RCS claim.
-- Hold message text for three seconds to select a word inside the original bubble, then drag native handles to select sentences or paragraphs; a shorter long press selects the message for actions. Scrolling cancels the hold; normal link taps are preserved.
+- Use the normal Android long press on message text, as in QUIK, then drag native handles to select words or paragraphs. “Select message” in the selection toolbar and holds outside the body retain whole-message actions.
 - Phone links offer Open in dialer or Copy number, preserving the displayed number. An optional country-code setting replaces a local leading zero only when configured; international and short service numbers are preserved.
 - Conversation message totals and unread badges or dots. A reserved indicator column keeps unread, pinned and scheduled indicators clear of previews and totals, including right-to-left layouts.
 - Contact names/photos, gradient initials and geometric fallback avatars, contact profiles and contact access from Settings.
@@ -61,7 +61,7 @@ Message bubbles share card finish, shape, size and spacing with the app. File/co
 - A visual color ring, intensity and brightness controls replace numeric-only custom color entry.
 - Four additional card finishes (Pastel, Duotone, High contrast and Bold outline) and Square/Pill shapes share the app renderer.
 - Header/background artwork supports drag-and-pinch cropping and preserves image proportions.
-- Three-second text selection tolerates small finger movements. Full-text search previews also offer a separate read-only native text selector.
+- Native Android text selection replaces the custom three-second gesture in 1.7.3. Full-text search previews also offer a separate read-only native text selector.
 - Reviewed QUIK changes through 02542049 and removed the unused billing version declaration; overlapping upstream premium-removal work is documented separately.
 
 ## 1.7.0 additions
@@ -76,7 +76,7 @@ Current themes are kept on upgrade. Optional OEM presets require Apply and offer
 
 ### Inline selection and complete visual profiles (1.7.1)
 
-Hold a message body for three seconds to select the word under your finger in the original bubble. Drag native handles and use Copy for longer passages. Shorter holds select the whole message; its highlight follows the bubble shape.
+In 1.7.3, use the standard Android long press to select the word under your finger, then drag native handles and use Copy for longer passages. Whole-message actions remain available from the selection toolbar and outside the text; their highlight follows the bubble shape.
 
 Optional OEM-inspired profiles now coordinate accent palettes, header scale/alignment/typography, conversation-list surfaces, preview density, navigation and distinct incoming/outgoing bubbles. Apply is explicit; Restore returns the previous theme, including its accent and dynamic-color setting. Custom header text, images, privacy and navigation choices remain yours. These are Texto visual interpretations, not OEM applications or manufacturer integrations.
 

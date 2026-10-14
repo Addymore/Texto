@@ -36,15 +36,21 @@ class ContactDirectoryActivity : AppCompatActivity() {
     private lateinit var status: TextView
     private val settings by lazy { TextoPolicy(this).preferences }
     private var showPhotos = true
+    private var appearanceKey = ""
     private val dark get() = resources.configuration.uiMode and 0x30 == 0x20
     private fun dp(n: Int) = (n * resources.displayMetrics.density).toInt()
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.TextoTheme); TextoTheme.apply(this); super.onCreate(savedInstanceState)
+        appearanceKey = TextoTheme.appearanceKey(this) + BottomNavigation.enabled(this) + BottomNavigation.items(this)
         showPhotos = settings.getBoolean("contact_photos", true)
         render()
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_CONTACTS), 7)
         else load()
+    }
+    override fun onResume() {
+        super.onResume()
+        if (appearanceKey != TextoTheme.appearanceKey(this) + BottomNavigation.enabled(this) + BottomNavigation.items(this)) recreate()
     }
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -69,17 +75,14 @@ class ContactDirectoryActivity : AppCompatActivity() {
         // The title contracts as the list scrolls, bringing more contacts into view.
         list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
-                if (dy != 0) header.layoutParams = header.layoutParams.apply { height = (height - dy).coerceIn(dp(80), headerHeight.coerceAtLeast(dp(80))) }
+                val height=(header.height-dy).coerceIn(dp(80),headerHeight.coerceAtLeast(dp(80)))
+                if(dy!=0 && height!=header.height) header.layoutParams=header.layoutParams.apply { this.height=height }
             }
         })
         root.addView(list, LinearLayout.LayoutParams(-1, 0, 1f))
-        root.addView(TextoTabBar(this).apply { select(-1); onTabSelected = { tab ->
-            when (tab) {
-                0 -> { startActivity(Intent(this@ContactDirectoryActivity, dev.octoshrimpy.quik.feature.main.MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)); finish() }
-                1 -> startActivity(Intent(this@ContactDirectoryActivity, ThemesActivity::class.java))
-                2 -> startActivity(Intent(this@ContactDirectoryActivity, dev.octoshrimpy.quik.feature.settings.SettingsActivity::class.java))
-            }
-        } }, LinearLayout.LayoutParams(-1, dp(66)))
+        if (BottomNavigation.enabled(this)) root.addView(TextoTabBar(this).apply {
+            select(2); onTabSelected = { tab -> if(tab!=2) { BottomNavigation.open(this@ContactDirectoryActivity,tab); finish() } }
+        }, LinearLayout.LayoutParams(-1,dp(66)))
         setContentView(root)
         search.doAfterTextChanged { filter(it.toString()) }
     }

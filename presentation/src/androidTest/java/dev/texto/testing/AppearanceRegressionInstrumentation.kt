@@ -146,26 +146,31 @@ class AppearanceRegressionInstrumentation : Instrumentation() {
             } }
             check(dialMonitor.hits==1) { "Confirmed message phone link did not open the dialer" }
             removeMonitor(dialMonitor)
-            stage("Three-second selection")
+            stage("QUIK native selection")
             val now=SystemClock.uptimeMillis()
+            var touchX=0f; var touchY=0f
             main {
-                val x=body.totalPaddingLeft+body.layout.getPrimaryHorizontal(9)
-                val y=body.totalPaddingTop+body.layout.getLineBottom(0)/2f
-                val down=MotionEvent.obtain(now,now,MotionEvent.ACTION_DOWN,x,y,0)
-                body.dispatchTouchEvent(down); down.recycle()
+                check(body.isTextSelectable) { "Message text must stay natively selectable" }
+                val location=IntArray(2); body.getLocationOnScreen(location)
+                touchX=location[0]+body.totalPaddingLeft+body.layout.getPrimaryHorizontal(9)
+                touchY=location[1]+body.totalPaddingTop+body.layout.getLineBottom(0)/2f
             }
-            SystemClock.sleep(1600)
-            main { check(!body.isTextSelectable) { "Selection started too early" } }
-            SystemClock.sleep(1800); waitForIdleSync()
+            fun nativeTouch(action: Int) {
+                val pointer=MotionEvent.PointerProperties().apply { id=0; toolType=MotionEvent.TOOL_TYPE_FINGER }
+                val coords=MotionEvent.PointerCoords().apply { x=touchX; y=touchY; pressure=1f; size=1f }
+                val event=MotionEvent.obtain(now,SystemClock.uptimeMillis(),action,1,arrayOf(pointer),arrayOf(coords),0,0,1f,1f,0,0,android.view.InputDevice.SOURCE_TOUCHSCREEN,0)
+                check(uiAutomation.injectInputEvent(event,true)); event.recycle()
+            }
+            nativeTouch(MotionEvent.ACTION_DOWN)
+            SystemClock.sleep(android.view.ViewConfiguration.getLongPressTimeout().toLong()+350)
+            nativeTouch(MotionEvent.ACTION_UP)
+            waitForIdleSync()
             lateinit var selectedField: TextView
             main {
-                selectedField = body
-                check(body.isTextSelectable) { "Message body did not become selectable inline" }
-                check(selectedField.selectionStart >= 0 && selectedField.selectionEnd > selectedField.selectionStart)
-                check(selectedField.selectionEnd - selectedField.selectionStart < selectedField.text.length)
+                selectedField=body
+                check(selectedField.selectionStart>=0 && selectedField.selectionEnd>selectedField.selectionStart) { "Native hold did not select a word" }
+                check(selectedField.selectionEnd-selectedField.selectionStart<selectedField.text.length)
                 check(selectedField !is android.widget.EditText)
-                val up=MotionEvent.obtain(now,SystemClock.uptimeMillis(),MotionEvent.ACTION_UP,0f,0f,0)
-                body.dispatchTouchEvent(up); up.recycle()
             }
             waitForIdleSync()
             SystemClock.sleep(500)
@@ -231,7 +236,7 @@ class AppearanceRegressionInstrumentation : Instrumentation() {
                 check(windows().filterIsInstance<android.widget.EditText>().none { it.isShown && it.text.toString() == "Protected selection fixture" }) { "Protected selection dialog remained visible after its screen paused" }
                 screen.finish(); next.finish()
             }
-            result.putString("result","PASS: individual SMS/MMS search results exclude locked, blocked and trashed messages; persistent archive survives automatic receive/send unarchive, explicit unarchive works and locked rules remain protected; real message adapter, TightTextView and RecyclerView select and copy an individual word only after three seconds; displayed phone numbers and optional country code; no-card settings and message bubbles; all new card finishes; secure selection dialog closes when its Activity pauses")
+            result.putString("result","PASS: individual SMS/MMS search results exclude locked, blocked and trashed messages; persistent archive survives automatic receive/send unarchive, explicit unarchive works and locked rules remain protected; real message adapter, TightTextView and RecyclerView select and copy an individual word using system-injected native long press; displayed phone numbers and optional country code; no-card settings and message bubbles; all new card finishes; secure selection dialog closes when its Activity pauses")
         } catch(e: Throwable) { result.putString("error",e.stackTraceToString()) }
         finally {
             main { adapter?.updateData(null); realm?.close(); activity?.finish() }

@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.7.3 — 14 October 2026
+
+- Restored QUIK-style native selectable message text and normal Android long-press timing. Removed the custom three-second timer, touch interception and accessibility-based activation.
+- Android supplies word selection, handles and Copy. Whole-message actions remain available from “Select message” in the text toolbar and by holding outside the text body.
+- Removed avoidable typeface assignments and drawing allocations; Contacts no longer relayouts its header once the scroll limit is reached.
+- Contacts refreshes changed themes and respects configured bottom-bar visibility, selection and shortcuts. Section foregrounds use the shared readable theme color.
+- Reviewed current QUIK master; it remains 02542049 with no newer master fixes to import.
+
 ## 1.7.2 — 14 October 2026
 
 - OEM themes now apply consistently to sent and received SMS bubbles and MMS file, contact and audio surfaces, including custom card finishes and older saved presets.

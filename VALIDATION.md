@@ -1,5 +1,17 @@
 # Texto validation — 14 October 2026
 
+## 1.7.3 native selection and interaction — 14 October 2026
+
+- Optimized release/debug APKs, instrumentation and common-test tasks passed in 8m 22s. The 19 unchanged JVM tests remain green. Both APKs passed signature, existing-certificate continuity and zip-alignment checks. The legacy SDK 37 metadata lint crash described below remains; release lint was excluded, and no clean lint result is claimed.
+- Six Android 14 emulator suites passed: native word selection and Copy in the real MessagesAdapter/TightTextView, short link taps and swipe scrolling, 108 compact-layout combinations and 1,000 recycled conversations, 480 contrast cases, 192 OEM/custom SMS/MMS surfaces, current-version changelog, icons, search, archive and protected utility behavior.
+- Physical Samsung A57 (SM-A576B), Android 17/API 37: a separate debug-only synthetic screen passed an injected native finger long press, visible native handles and Copy toolbar, a real tap on Copy with matching clipboard contents, short link taps and message-body swipe scrolling. The test used the production TightTextView, selection helper and bubble renderer, but did not read real messages or exercise carrier delivery. Production Texto 1.7.2, its SMS role and SMS/contact permissions remained unchanged; the clipboard was restored.
+- Early physical attempts ran before the test window received input focus. The final harness waits for focus, identifies finger input explicitly and taps the Samsung Copy label rather than assuming that the label itself owns the click listener. Test-only rebuilds passed; the final application APKs were unchanged.
+- The signed release upgraded 1.7.2 without clearing data, retained synthetic messages and the SMS role, displayed the 1.7.3 changelog and left an empty crash buffer.
+- The custom three-second timer and accessibility-based selection activation were removed. Native selectable TextViews use Android's range-capable movement method; short link taps are dispatched without consuming the native long press or drag gesture. Text selection retains the rounded highlight, while whole-message actions remain available separately.
+- Avoidable typeface assignments, per-draw corner-effect allocations and redundant Contacts header layouts were removed. Contacts now refreshes its theme on return and honors configured bottom navigation; section headings use the shared readable foreground. These changes are not a measured frame-rate guarantee.
+- QUIK master was fetched and remains 02542049207bab8e467a90cc0e50d3febe2b6a8d. No newer master fixes were available to import.
+- Carrier SMS/MMS delivery, OnePlus hardware and biometric behavior were not exercised. Compile SDK 34 / target SDK 33 remain unchanged.
+
 ## 1.7.2 cross-screen theme consistency — 14 October 2026
 
 - Final optimized release/debug APKs, instrumentation and common-test task passed in 7m 22s. The 19 unchanged JVM tests remain green (Gradle up-to-date reports). Both APK signatures, existing certificate identities and zip alignment passed.

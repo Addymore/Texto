@@ -115,46 +115,14 @@ class UtilityAccessInstrumentation : Instrumentation() {
                 val event=android.view.MotionEvent.obtain(whenMs,whenMs,kind,x,45f,0)
                 gestureBody.dispatchTouchEvent(event); event.recycle()
             } }
-            var now=android.os.SystemClock.uptimeMillis()
-            touch(android.view.MotionEvent.ACTION_DOWN,now)
-            touch(android.view.MotionEvent.ACTION_UP,now+700)
-            main { check(selectedMessages==1 && !gestureBody.isTextSelectable) { "Normal hold must select message only" } }
-            now=android.os.SystemClock.uptimeMillis()
-            touch(android.view.MotionEvent.ACTION_DOWN,now)
-            android.os.SystemClock.sleep(1500)
-            main { check(!gestureBody.isTextSelectable) { "Text selection opened before three seconds" } }
-            android.os.SystemClock.sleep(1800)
-            waitForIdleSync()
-            var fallback=false
             main {
-                fallback=!gestureBody.isTextSelectable
-                if(!fallback) check(gestureBody.selectionStart>=0 && gestureBody.selectionEnd>gestureBody.selectionStart)
+                check(gestureBody.isTextSelectable) { "QUIK native selection must be enabled before touch" }
+                gestureRow.performLongClick()
+                check(selectedMessages==1) { "Whole-message action was lost" }
+                dev.texto.privacy.MessageSelectionGesture.bind(gestureBody,2L)
+                check(gestureBody.isTextSelectable && gestureBody.selectionStart== -1) { "Recycled row retained a text range" }
+                (gestureRow.parent as ViewGroup).removeView(gestureRow)
             }
-            if(fallback) {
-                // The floating selection toolbar may temporarily have no accessibility
-                // root. Inspect the app's actual windows instead of racing that bridge.
-                main {
-                    val windowViews = android.view.inspector.WindowInspector.getGlobalWindowViews().flatMap(::views)
-                    check(windowViews.filterIsInstance<TextView>().any { it.text.toString() == "Select message text" }) { "Neither inline selection nor selection sheet opened" }
-                    val field = windowViews.filterIsInstance<android.widget.EditText>().single { it.text.toString() == "Select these words inside the message" }
-                    field.performAccessibilityAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_SET_SELECTION,Bundle().apply {
-                        putInt(android.view.accessibility.AccessibilityNodeInfo.ACTION_ARGUMENT_SELECTION_START_INT,0)
-                        putInt(android.view.accessibility.AccessibilityNodeInfo.ACTION_ARGUMENT_SELECTION_END_INT,6)
-                    })
-                    check(field.selectionStart == 0 && field.selectionEnd == 6) { "Native selection range was not applied" }
-                    check(field.performAccessibilityAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_COPY,null))
-                    check((home.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager).primaryClip?.getItemAt(0)?.text.toString()=="Select")
-                    windowViews.filterIsInstance<TextView>().single { it.text.toString() == "Done" }.performClick()
-                }
-            } else touch(android.view.MotionEvent.ACTION_UP,android.os.SystemClock.uptimeMillis())
-            waitForIdleSync()
-            uiAutomation.takeScreenshot()?.let { image -> java.io.File(targetContext.getExternalFilesDir(null),"text-selection-160.png").outputStream().use { image.compress(android.graphics.Bitmap.CompressFormat.PNG,100,it) }; image.recycle() }
-            main { dev.texto.privacy.MessageSelectionGesture.bind(gestureBody,2L); check(!gestureBody.isTextSelectable) }
-            now=android.os.SystemClock.uptimeMillis()
-            touch(android.view.MotionEvent.ACTION_DOWN,now)
-            touch(android.view.MotionEvent.ACTION_MOVE,now+100,200f)
-            android.os.SystemClock.sleep(3200)
-            main { check(!gestureBody.isTextSelectable) { "Scrolling should cancel text selection" }; (gestureRow.parent as ViewGroup).removeView(gestureRow) }
             for (name in listOf("backup.BackupActivity", "messageutils.MessageUtilsActivity", "scheduled.ScheduledActivity")) {
                 val intent = Intent().setClassName(targetContext, "dev.octoshrimpy.quik.feature.$name").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 main { PrivacyGate.session.lock() }
@@ -199,7 +167,7 @@ class UtilityAccessInstrumentation : Instrumentation() {
             waitForIdleSync()
             main { check(canceled.isFinishing); check(!PrivacyGate.unlocked); home.finish() }
             removeMonitor(monitor)
-            result.putString("result", "PASS: three-second native text selection, shorter message hold and scroll cancellation; protected-number scope, mixed groups, archived/locked threads, custom title/motto, loaded background/header artwork, card size and no cards; ordinary Backup, Message management and Scheduled open without PIN; protected tools remain hidden until PIN verification; cancellation closes protected utility")
+            result.putString("result", "PASS: native selectable text, whole-message actions and recycled selection cleanup; protected-number scope, mixed groups, archived/locked threads, custom title/motto, loaded background/header artwork, card size and no cards; ordinary Backup, Message management and Scheduled open without PIN; protected tools remain hidden until PIN verification; cancellation closes protected utility")
             finish(0, result)
         } catch (error: Throwable) {
             result.putString("error", error.stackTraceToString()); finish(1, result)
