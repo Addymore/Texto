@@ -4,18 +4,22 @@
 
 A customizable Kotlin SMS/MMS app for Android by **[Addymore](https://github.com/Addymore)**, built on [QUIK](https://github.com/quik-sms/quik) and QKSMS. Reachable navigation, consistent public and private conversations, and a theme that feels like yours.
 
-[Download 1.7.0](https://github.com/Addymore/Texto/releases/tag/v1.7.0) · [Changelog](CHANGELOG.md) · [Report a bug](https://github.com/Addymore/Texto/issues) · [Telegram](https://t.me/addymore)
+[Download 1.7.1](https://github.com/Addymore/Texto/releases/tag/v1.7.1) · [Changelog](CHANGELOG.md) · [Report a bug](https://github.com/Addymore/Texto/issues) · [Telegram](https://t.me/addymore)
 
 **Two APKs:** choose the signed release APK for normal use or to update an existing release installation; use the debug APK to update the separate development app. Neither is a Google Play publication. Android 6+; physical OnePlus 13, newer Android versions and carrier behavior still require device validation. See [validation](VALIDATION.md).
 
-See the [complete feature list](docs/FEATURES.md) and [1.7.0 changelog](CHANGELOG.md).
+See the [complete feature list](docs/FEATURES.md) and [1.7.1 changelog](CHANGELOG.md).
 
 ## A look of your own
 
-<table><tr><td><img src="docs/images/inbox-compact-1.7.0.png" width="260" alt="Texto 1.7.0 compact conversation cards with custom header artwork" /></td><td><img src="docs/images/message-search-1.7.0.png" width="260" alt="Individual message search results with bottom navigation hidden" /></td><td><img src="docs/images/text-selection-1.7.0.png" width="260" alt="Native selection handles and Copy menu for words and passages" /></td></tr></table>
+<table><tr><td><img src="docs/images/inbox-compact-1.7.1.png" width="260" alt="Texto 1.7.1 compact conversation cards with custom header artwork" /></td><td><img src="docs/images/message-search-1.7.0.png" width="260" alt="Individual message search results with bottom navigation hidden" /></td><td><img src="docs/images/text-selection-1.7.1.png" width="260" alt="Native selection handles and Copy menu inside the original message bubble" /></td></tr></table>
 
 <details>
 <summary>More customization examples</summary>
+
+<table><tr><td><img src="docs/images/oem-samsung-1.7.1.png" width="280" alt="Optional Samsung-inspired centered header and flat navigation" /></td><td><img src="docs/images/oem-coloros-1.7.1.png" width="280" alt="Optional ColorOS-inspired compact cards and green palette" /></td></tr></table>
+
+<table><tr><td><img src="docs/images/paragraph-selection-1.7.1.png" width="280" alt="Dragging a native handle to select multiple lines inside a message" /></td><td><img src="docs/images/message-selection-1.7.1.png" width="280" alt="Whole-message selection follows the rounded bubble shape" /></td></tr></table>
 
 <table><tr><td><img src="docs/images/color-wheel-1.6.3.png" width="280" alt="Texto 1.6.3 visual color ring with intensity and brightness" /></td><td><img src="docs/images/artwork-crop-1.6.3.png" width="280" alt="Drag and pinch artwork crop with preserved proportions" /></td></tr></table>
 
@@ -33,11 +37,12 @@ See the [complete feature list](docs/FEATURES.md) and [1.7.0 changelog](CHANGELO
 
 Screenshots use synthetic messages and sample contacts. Private screens are protected from capture.
 
-- **Deliberate text selection.** A shorter long press selects the message; hold its text for three seconds to open a native selection window for words or paragraphs. Scrolling cancels the hold.
+- **Deliberate text selection.** A shorter long press selects the message; hold its text for three seconds to select a word inside the original bubble, then drag the handles to select a sentence or paragraph. Scrolling cancels the hold.
 - **Message-level search.** Individual SMS/MMS previews, highlighted matches, dates and full-text previews; newest 500 matches, with protected messages excluded.
-- **Optional OEM styles.** Eight separately grouped presets require Apply and offer Restore. Your current theme stays unchanged until you choose one.
+- **Optional OEM styles.** Eight separately grouped presets coordinate the palette, heading, conversation list, navigation and sent/received bubbles. They require Apply and offer Restore. Your current theme stays unchanged until you choose one.
 - **One consistent layout.** Public and private lists share conversation cards, avatars, dates, message totals and unread badges. Private SMS/MMS opens in the same full conversation screen.
 - **Your header and artwork.** Custom inbox title and motto, separate background and header images, local image storage access and a readability overlay.
+- **Clear unread indicators.** Badges and pinned/scheduled icons occupy their own column, clear of previews and message totals.
 - **Compact layouts.** Tighter conversation cards, message bubbles and settings rows. Settings groups keep inbox/contact and SMS/MMS controls easy to find.
 - **Flexible cards.** Small, medium or large cards, five shapes and twelve finishes, including a No cards option throughout the app.
 - **Scoped message tools.** Ordinary tools open without authentication. Privacy holds PIN/fingerprint-protected tools for locked, archived and selected numbers; public cleanup and exports exclude those numbers.
@@ -55,11 +60,11 @@ Open Backup & restore, choose a writable folder, and create a backup. Select **E
 
 ## Install
 
-1. Download `Texto-1.7.0-release.apk` for normal use or a release upgrade, or `Texto-1.7.0-debug.apk` to upgrade your development installation from the [release](https://github.com/Addymore/Texto/releases/tag/v1.7.0).
+1. Download `Texto-1.7.1-release.apk` for normal use or a release upgrade, or `Texto-1.7.1-debug.apk` to upgrade your development installation from the [release](https://github.com/Addymore/Texto/releases/tag/v1.7.1).
 2. Install it and select Texto as your default SMS app. Allow the permissions needed for messaging and contacts.
 3. Personalize it in **Themes** and configure your privacy PIN and number rules in **Settings → Privacy & protection**.
 
-The signed release uses `app.texto.sms` and its own signing certificate. It installs separately from debug builds; configure the default-SMS role, PIN, privacy rules and themes again. The F-Droid build uses the same production package name but will have F-Droid's signature, so it cannot directly upgrade this GitHub-signed APK.
+The signed release uses `app.texto.sms` and its own signing certificate. It installs separately from debug builds; configure the default-SMS role, PIN, privacy rules and themes again. The F-Droid build uses `app.texto.sms.fdroid` and F-Droid's signing identity; it is a separate installation.
 
 The development app ID is `app.texto.sms.debug`, so it can coexist with QUIK. An upgrade from an earlier Texto development build must use the same signing certificate. Keep a verified backup before replacing your primary SMS workflow.
 

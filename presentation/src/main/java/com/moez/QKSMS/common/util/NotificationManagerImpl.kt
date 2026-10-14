@@ -54,10 +54,9 @@ import dev.octoshrimpy.quik.receiver.SpeakThreadsReceiver
 import dev.octoshrimpy.quik.repository.ContactRepository
 import dev.octoshrimpy.quik.repository.ConversationRepository
 import dev.octoshrimpy.quik.repository.MessageRepository
-import dev.octoshrimpy.quik.util.GlideApp
+import dev.texto.privacy.SystemAvatar
 import dev.octoshrimpy.quik.util.PhoneNumberUtils
 import dev.octoshrimpy.quik.util.Preferences
-import dev.octoshrimpy.quik.util.tryOrNull
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -248,13 +247,8 @@ class NotificationManagerImpl @Inject constructor(
         val avatar = conversation.recipients.takeIf { it.size == 1 }
                 ?.first()?.contact?.photoUri
                 ?.let { photoUri ->
-                    GlideApp.with(context)
-                            .asBitmap()
-                            .circleCrop()
-                            .load(photoUri)
-                            .submit(64.dpToPx(context), 64.dpToPx(context))
+                    SystemAvatar.load(context, photoUri, 64.dpToPx(context), 64.dpToPx(context))
                 }
-                ?.let { futureGet -> tryOrNull(false) { futureGet.get() } }
 
         // Bind the notification contents based on the notification preview mode
         when (prefs.notificationPreviews(threadId).get()) {

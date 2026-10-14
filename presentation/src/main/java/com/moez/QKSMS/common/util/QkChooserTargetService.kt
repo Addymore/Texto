@@ -29,8 +29,7 @@ import dev.octoshrimpy.quik.feature.compose.ComposeActivity
 import dev.octoshrimpy.quik.injection.appComponent
 import dev.octoshrimpy.quik.model.Conversation
 import dev.octoshrimpy.quik.repository.ConversationRepository
-import dev.octoshrimpy.quik.util.GlideApp
-import dev.octoshrimpy.quik.util.tryOrNull
+import dev.texto.privacy.SystemAvatar
 import javax.inject.Inject
 
 class QkChooserTargetService : ChooserTargetService() {
@@ -53,12 +52,8 @@ class QkChooserTargetService : ChooserTargetService() {
         val icon = when (conversation.recipients.size) {
             1 -> {
                 val photoUri = conversation.recipients.first()?.contact?.photoUri
-                val request = GlideApp.with(this)
-                        .asBitmap()
-                        .circleCrop()
-                        .load(photoUri)
-                        .submit()
-                val bitmap = tryOrNull(false) { request.get() }
+                val size = (64 * resources.displayMetrics.density).toInt()
+                val bitmap = SystemAvatar.load(this, photoUri, size, size)
 
                 if (bitmap != null) Icon.createWithBitmap(bitmap)
                 else Icon.createWithResource(this, R.mipmap.ic_shortcut_person)

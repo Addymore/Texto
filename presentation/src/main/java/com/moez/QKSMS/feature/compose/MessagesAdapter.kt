@@ -401,6 +401,8 @@ class MessagesAdapter @Inject constructor(
         val hasAttachments = message.parts.any { !it.isSmil() && !it.isText() }
         parts.visibility = if (hasAttachments) View.VISIBLE else View.GONE
         if (hasAttachments) {
+            dev.texto.privacy.MessageBodyStyle.selectionOverlay(parts,dev.texto.privacy.TextoAppearance.accent(context))
+            parts.isActivated=holder.itemView.isActivated
             val attachmentAdapter = (parts.adapter as? PartsAdapter) ?: partsAdapterProvider.get().also {
                 parts.adapter = it
                 parts.itemAnimator = null

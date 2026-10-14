@@ -155,14 +155,15 @@ class AppearanceRegressionInstrumentation : Instrumentation() {
                 body.dispatchTouchEvent(down); down.recycle()
             }
             SystemClock.sleep(1600)
-            main { check(windows().filterIsInstance<android.widget.EditText>().none { it.text.toString().startsWith("Select these") }) { "Selection started too early" } }
+            main { check(!body.isTextSelectable) { "Selection started too early" } }
             SystemClock.sleep(1800); waitForIdleSync()
-            lateinit var selectedField: android.widget.EditText
+            lateinit var selectedField: TextView
             main {
-                selectedField = windows().filterIsInstance<android.widget.EditText>().first { it.text.toString().startsWith("Select these") }
+                selectedField = body
+                check(body.isTextSelectable) { "Message body did not become selectable inline" }
                 check(selectedField.selectionStart >= 0 && selectedField.selectionEnd > selectedField.selectionStart)
                 check(selectedField.selectionEnd - selectedField.selectionStart < selectedField.text.length)
-                check(selectedField.keyListener == null && !selectedField.showSoftInputOnFocus)
+                check(selectedField !is android.widget.EditText)
                 val up=MotionEvent.obtain(now,SystemClock.uptimeMillis(),MotionEvent.ACTION_UP,0f,0f,0)
                 body.dispatchTouchEvent(up); up.recycle()
             }
@@ -179,10 +180,10 @@ class AppearanceRegressionInstrumentation : Instrumentation() {
                 check(selectedField.onTextContextMenuItem(android.R.id.copy))
                 val clip=screen.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
                 check(clip.primaryClip?.getItemAt(0)?.text.toString()==selected)
-                selectedField.setSelection(0, 36)
+                android.text.Selection.setSelection(selectedField.text as android.text.Spannable,0,36)
                 check(selectedField.onTextContextMenuItem(android.R.id.copy))
                 check(clip.primaryClip?.getItemAt(0)?.text.toString() == selectedField.text.substring(0,36))
-                windows().filterIsInstance<TextView>().first { it.text.toString() == "Done" }.performClick()
+                selectedField.clearFocus()
             }
             waitForIdleSync()
             stage("Recycled links and surfaces")

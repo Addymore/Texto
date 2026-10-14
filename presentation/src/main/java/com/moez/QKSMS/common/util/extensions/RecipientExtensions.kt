@@ -22,7 +22,7 @@ import dev.octoshrimpy.quik.R
 import dev.octoshrimpy.quik.common.util.Colors
 import dev.octoshrimpy.quik.common.widget.QkTextView
 import dev.octoshrimpy.quik.model.Recipient
-import dev.octoshrimpy.quik.util.GlideApp
+import dev.texto.privacy.SystemAvatar
 import dev.octoshrimpy.quik.util.tryOrNull
 import timber.log.Timber
 
@@ -31,17 +31,7 @@ fun Recipient.getThemedIcon(context: Context, theme: Colors.Theme, width: Int, h
     var icon : IconCompat? = null
     val photoUri = contact?.photoUri
     if (photoUri != null) {
-        val req = GlideApp.with(context)
-            .asBitmap()
-            .circleCrop()
-            .load(photoUri)
-            .submit(width, height)
-
-        val bitmap = tryOrNull { req.get() }
-        if (bitmap == null)
-            icon = null
-        else
-            icon = IconCompat.createWithBitmap(bitmap)
+        icon = SystemAvatar.load(context, photoUri, width, height)?.let(IconCompat::createWithBitmap)
     }
     if (icon == null) {
         // If there is no contact or no photo, create the default icon using the avatar_view layout

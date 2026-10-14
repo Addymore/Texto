@@ -39,9 +39,8 @@ import dev.octoshrimpy.quik.model.Conversation
 import dev.octoshrimpy.quik.model.PhoneNumber
 import dev.octoshrimpy.quik.receiver.StartActivityFromWidgetReceiver
 import dev.octoshrimpy.quik.repository.ConversationRepository
-import dev.octoshrimpy.quik.util.GlideApp
+import dev.texto.privacy.SystemAvatar
 import dev.octoshrimpy.quik.util.Preferences
-import dev.octoshrimpy.quik.util.tryOrNull
 import javax.inject.Inject
 
 class WidgetAdapter(intent: Intent) : RemoteViewsService.RemoteViewsFactory {
@@ -133,11 +132,8 @@ class WidgetAdapter(intent: Intent) : RemoteViewsService.RemoteViewsFactory {
         }
 
         remoteViews.setImageViewBitmap(R.id.photo, null)
-        val futureGet = GlideApp.with(context)
-                .asBitmap()
-                .load(contact?.photoUri)
-                .submit(48.dpToPx(context), 48.dpToPx(context))
-        tryOrNull(false) { remoteViews.setImageViewBitmap(R.id.photo, futureGet.get()) }
+        remoteViews.setImageViewBitmap(R.id.photo, SystemAvatar.load(context,
+            contact?.photoUri, 48.dpToPx(context), 48.dpToPx(context), circular = false))
 
         // Name
         remoteViews.setTextColor(R.id.name, textPrimary)

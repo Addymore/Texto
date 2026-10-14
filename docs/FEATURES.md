@@ -5,9 +5,9 @@
 - SMS and carrier MMS, group conversations and attachments.
 - Dual-SIM selection, delayed sending, scheduled messages, drafts, search, pinning, conversation renaming, reactions, speech and notification quick reply inherited from QUIK.
 - Sent, delivered (when the carrier reports delivery) and received indicators. No SMS read receipts or RCS claim.
-- Hold message text for three seconds to open a native selection window for words or paragraphs; a shorter long press selects the message for actions. Scrolling cancels the hold; normal link taps are preserved.
+- Hold message text for three seconds to select a word inside the original bubble, then drag native handles to select sentences or paragraphs; a shorter long press selects the message for actions. Scrolling cancels the hold; normal link taps are preserved.
 - Phone links offer Open in dialer or Copy number, preserving the displayed number. An optional country-code setting replaces a local leading zero only when configured; international and short service numbers are preserved.
-- Conversation message totals and unread badges or dots.
+- Conversation message totals and unread badges or dots. A reserved indicator column keeps unread, pinned and scheduled indicators clear of previews and totals, including right-to-left layouts.
 - Contact names/photos, gradient initials and geometric fallback avatars, contact profiles and contact access from Settings.
 
 ## Layout and themes
@@ -61,15 +61,27 @@ Message bubbles share card finish, shape, size and spacing with the app. File/co
 - A visual color ring, intensity and brightness controls replace numeric-only custom color entry.
 - Four additional card finishes (Pastel, Duotone, High contrast and Bold outline) and Square/Pill shapes share the app renderer.
 - Header/background artwork supports drag-and-pinch cropping and preserves image proportions.
-- Three-second text selection tolerates small finger movements, with a native read-only selection sheet when an OEM refuses inline selection.
+- Three-second text selection tolerates small finger movements. Full-text search previews also offer a separate read-only native text selector.
 - Reviewed QUIK changes through 02542049 and removed the unused billing version declaration; overlapping upstream premium-removal work is documented separately.
 
 ## 1.7.0 additions
 
-- Native message text-selection window after a three-second hold, with selectable words and paragraphs.
+- Native message selection controls; 1.7.1 moves the three-second gesture directly into the original bubble.
 - Phone-number actions: open the dialer or copy the number.
 - Individual SMS/MMS search cards with highlighted snippets, dates, full preview and text selection; newest 500 matches.
 - Hide the bottom bar or choose up to five of Messages, Themes, Contacts, Scheduled, Settings and Backup. Search always hides the bar.
 - Eight optional visual presets across the shared card and message renderer. Presets are inspired styling, not OEM system features.
 
 Current themes are kept on upgrade. Optional OEM presets require Apply and offer Restore my previous theme. Conversation padding, avatars and row gaps are smaller, with unchanged font sizes and preview settings. Unchanged text avoids repeated layout, and returning to the inbox no longer forces a full redraw.
+
+### Inline selection and complete visual profiles (1.7.1)
+
+Hold a message body for three seconds to select the word under your finger in the original bubble. Drag native handles and use Copy for longer passages. Shorter holds select the whole message; its highlight follows the bubble shape.
+
+Optional OEM-inspired profiles now coordinate accent palettes, header scale/alignment/typography, conversation-list surfaces, preview density, navigation and distinct incoming/outgoing bubbles. Apply is explicit; Restore returns the previous theme, including its accent and dynamic-color setting. Custom header text, images, privacy and navigation choices remain yours. These are Texto visual interpretations, not OEM applications or manufacturer integrations.
+
+### Android compatibility and image memory (1.7.1)
+
+- Bounded notification, widget and sharing-shortcut avatars now release image requests and retain safe bitmap copies, reducing retained image resources on Android 15–17 and older supported versions. Full API 37 migration and physical-device certification remain pending.
+
+See [Android 15–17 compatibility](ANDROID_17.md) for platform scope and outstanding physical-device checks.

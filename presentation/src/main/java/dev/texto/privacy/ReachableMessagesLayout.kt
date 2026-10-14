@@ -72,7 +72,11 @@ class ReachableMessagesLayout @JvmOverloads constructor(context: Context, attrs:
     override fun onDetachedFromWindow() { settle?.cancel(); super.onDetachedFromWindow() }
     private var initialLayout = true
     private val slop = ViewConfiguration.get(context).scaledTouchSlop
-    private val restingHeight get() = (height * 0.30f).toInt().coerceIn(dp(160), dp(280))
+    private val restingHeight get() = when(SkinPresets.id(context)) {
+        "pixel","motorola" -> dp(104)
+        "oppo","xiaomi","vivo","nothing" -> dp(152)
+        else -> (height * 0.30f).toInt().coerceIn(dp(160), dp(280))
+    }
     private val header get() = findViewById<View>(R.id.textoHeader)
     override fun onFinishInflate() {
         super.onFinishInflate()

@@ -46,6 +46,18 @@ object InboxArtwork {
         val motto=p.getString("inbox_motto","Messages, comfortably within reach").orEmpty()
         subtitle.text=motto
         (root as? ReachableMessagesLayout)?.restingSubtitle=motto
+        val profile=SkinPresets.id(activity)
+        if(profile.isNotEmpty()) {
+            val centered=profile in listOf("samsung","honor")
+            title.gravity=if(centered) android.view.Gravity.CENTER else android.view.Gravity.START
+            subtitle.gravity=title.gravity
+            title.textSize=when(profile) { "samsung" -> 38f; "pixel","motorola" -> 28f; "nothing" -> 34f; else -> 36f }
+            title.typeface=android.graphics.Typeface.create(if(profile=="nothing") "monospace" else "sans-serif",if(profile in listOf("oppo","xiaomi","vivo")) 1 else 0)
+            root.findViewById<View>(dev.octoshrimpy.quik.R.id.toolbarSearch)?.let { search ->
+                search.backgroundTintList=null
+                search.background=TextoAppearance.card(activity)
+            }
+        }
         background(root,"background_image"); background(header,"header_image")
     }
 }

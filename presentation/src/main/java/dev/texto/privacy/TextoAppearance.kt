@@ -22,7 +22,7 @@ object TextoAppearance {
     fun card(context: Context, selected: Boolean = false, accentColor: Int = accent(context), corners: FloatArray? = null): android.graphics.drawable.Drawable {
         val p = prefs(context); val dark = context.resources.configuration.uiMode and 0x30 == 0x20
         val radius = when(p.getString("card_shape", "soft")) { "square" -> 0; "pill" -> 48; "minimal" -> 12; "round" -> 30; else -> 16 }
-        val base = if(dark) 0xFF23262D.toInt() else 0xFFF3F5F9.toInt()
+        val base = if(dark) 0xFF23262D.toInt() else if(SkinPresets.id(context) in listOf("samsung","oppo","xiaomi","vivo")) Color.WHITE else 0xFFF3F5F9.toInt()
         val finish = p.getString("card_finish","tonal")
         if (finish == "none") {
             val content = android.graphics.drawable.StateListDrawable().apply {
@@ -44,7 +44,7 @@ object TextoAppearance {
     }
     fun cardColors(context: Context, accentColor: Int = accent(context)): IntArray {
         val dark = context.resources.configuration.uiMode and 0x30 == 0x20
-        val base = if(dark) 0xFF23262D.toInt() else 0xFFF3F5F9.toInt()
+        val base = if(dark) 0xFF23262D.toInt() else if(SkinPresets.id(context) in listOf("samsung","oppo","xiaomi","vivo")) Color.WHITE else 0xFFF3F5F9.toInt()
         fun blend(color: Int, amount: Float) = androidx.core.graphics.ColorUtils.blendARGB(base, color, amount)
         return when(prefs(context).getString("card_finish", "tonal")) {
             "none" -> intArrayOf(Color.TRANSPARENT)
@@ -69,7 +69,7 @@ object TextoAppearance {
         val context = binding.root.context; val p = prefs(context); val d = context.resources.displayMetrics.density
         // Keep a style snapshot on the holder, not a global cache of views or message data.
         // Counts/selection still update on every bind; unchanged styles do not request layout.
-        val style = listOf(p.getString("density","comfortable"), p.getString("card_size","medium"),
+        val style = listOf(SkinPresets.id(context),p.getString("density","comfortable"), p.getString("card_size","medium"),
             p.getString("card_shape","soft"), p.getString("card_finish","tonal"), accent(context),
             context.resources.configuration.uiMode, d, binding.unread.textSize, selected, p.getBoolean("list_avatars",true),
             p.getString("preview_lines","2"), p.getBoolean("message_counts",true), p.getString("unread_style","count"))
@@ -80,7 +80,13 @@ object TextoAppearance {
             val scale = when(p.getString("card_size","medium")) { "small" -> .85f; "large" -> 1.15f; else -> 1f }
             binding.root.setPadding((12*d*scale).toInt(),(spacing*d*scale).toInt(),(12*d*scale).toInt(),(spacing*d*scale).toInt())
             binding.root.minimumHeight = (60*d*scale).toInt().coerceAtLeast((48*d).toInt())
-            binding.root.background = card(context,selected)
+            val profile=SkinPresets.id(context)
+            binding.root.background = if(SkinPresets.usesProfileSurface(context) && profile in listOf("samsung","pixel","xiaomi","motorola"))
+                android.graphics.drawable.GradientDrawable().apply { cornerRadius=16*d; setColor(if(selected) androidx.core.graphics.ColorUtils.setAlphaComponent(accent(context),40) else Color.TRANSPARENT) }
+                else card(context,selected)
+            if(profile.isNotEmpty()) {
+                binding.title.typeface=android.graphics.Typeface.create(if(profile=="nothing") "monospace" else "sans-serif-medium",0)
+            }
             binding.avatars.visibility = if(p.getBoolean("list_avatars",true)) View.VISIBLE else View.GONE
             val avatarSize = (40*d*scale).toInt()
             if (binding.avatars.layoutParams.width != avatarSize) binding.avatars.layoutParams = binding.avatars.layoutParams.apply { width=avatarSize; height=avatarSize }

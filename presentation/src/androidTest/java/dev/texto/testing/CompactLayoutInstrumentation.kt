@@ -31,12 +31,31 @@ class CompactLayoutInstrumentation : Instrumentation() {
         val result=Bundle()
         val prefs=TextoAppearance.prefs(targetContext)
         val keys=listOf("card_finish","card_shape","card_size","density","preview_lines","unread_style")
+        val previousCounts=prefs.getBoolean("message_counts",true)
+        val countsPresent=prefs.contains("message_counts")
         val previous=keys.associateWith { prefs.getString(it,null) }
         var activity: android.app.Activity?=null
         var realm: Realm?=null
         var adapter: dev.octoshrimpy.quik.feature.conversations.ConversationsAdapter?=null
         try {
             check(android.os.Build.MODEL.contains("sdk",true)) { "Emulator only" }
+            // RemoteViews/notification images must survive releasing Glide's request and bitmap pool.
+            val avatarFile=java.io.File(targetContext.cacheDir,"system-avatar-test.png")
+            try {
+                val input=android.graphics.Bitmap.createBitmap(1024,768,android.graphics.Bitmap.Config.ARGB_8888)
+                input.eraseColor(android.graphics.Color.MAGENTA)
+                avatarFile.outputStream().use { input.compress(android.graphics.Bitmap.CompressFormat.PNG,100,it) }
+                input.recycle()
+                for(circular in listOf(false,true)) {
+                    val image=requireNotNull(SystemAvatar.load(targetContext,avatarFile,64,64,circular))
+                    main { dev.octoshrimpy.quik.util.GlideApp.get(targetContext).clearMemory() }
+                    check(!image.isRecycled && image.width <= 64 && image.height <= 64)
+                    check(image.getPixel(image.width/2,image.height/2)==android.graphics.Color.MAGENTA)
+                    image.recycle()
+                }
+                check(SystemAvatar.load(targetContext,null,64,64)==null)
+                check(SystemAvatar.load(targetContext,java.io.File(targetContext.cacheDir,"missing-avatar.png"),64,64)==null)
+            } finally { avatarFile.delete() }
             val source=startActivitySync(Intent(targetContext,MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) as MainActivity
             adapter=source.conversationsAdapter
             main { source.finish() }; waitForIdleSync()
@@ -86,29 +105,25 @@ class CompactLayoutInstrumentation : Instrumentation() {
                 MessageBodyStyle.apply(body,false,0xFF007E70.toInt(),false)
                 check(body.background !== first)
                 prefs.edit().putString("card_finish","tonal").commit()
-                val optionalKeys = listOf("card_shape", "card_finish", "card_size", "density", "bubbles", "skin_preset", "before_oem_preset", "bottom_bar_items")
-                val savedOptional = optionalKeys.associateWith { prefs.getString(it, null) }
-                try {
-                    prefs.edit().remove("before_oem_preset").putString("card_shape", "square").putString("card_finish", "none").putString("bottom_bar_items", "0,1,2,3,4,5,99,0").commit()
-                    check(BottomNavigation.items(screen) == listOf(0,1,2,3,4))
-                    val bar = TextoTabBar(screen)
-                    check(bar.childCount == 5)
-                    val firstButton = bar.getChildAt(0)
-                    bar.rebuild()
-                    check(bar.getChildAt(0) === firstButton) { "Unchanged navigation was reinflated" }
-                    bar.select(3)
-                    check((0 until bar.childCount).count { bar.getChildAt(it).isSelected } == 1)
-                    val before = listOf("card_shape", "card_finish", "card_size", "density", "bubbles").associateWith { prefs.getString(it,null) }
-                    SkinPresets.apply(screen, 1)
-                    check(prefs.getString("card_finish", "") == "glass")
-                    SkinPresets.apply(screen, 2)
-                    SkinPresets.restore(screen)
-                    check(before.all { (key,value) -> prefs.getString(key,null) == value }) { "Preset restore lost the user's original settings" }
-                } finally {
-                    val restore = prefs.edit()
-                    savedOptional.forEach { (key,value) -> if(value==null) restore.remove(key) else restore.putString(key,value) }
-                    restore.commit()
+                // Narrow screens, long previews, maximum badge, both status icons, and RTL.
+                row.snippet.text="A longer preview that wraps across several words without touching unread or status indicators."
+                row.pinned.visibility=View.VISIBLE; row.scheduled.visibility=View.VISIBLE
+                for(direction in listOf(View.LAYOUT_DIRECTION_LTR,View.LAYOUT_DIRECTION_RTL)) {
+                    row.root.layoutDirection=direction
+                    for(lines in listOf("0","1","2","3")) for(dot in listOf("dot","count")) for(counts in listOf(false,true)) {
+                        prefs.edit().putString("preview_lines",lines).putString("unread_style",dot).putBoolean("message_counts",counts).commit()
+                        TextoAppearance.styleConversation(row,123456,999)
+                        row.unread.textSize=18f
+                        row.root.measure(View.MeasureSpec.makeMeasureSpec((320*d).toInt(),View.MeasureSpec.EXACTLY),View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED))
+                        row.root.layout(0,0,row.root.measuredWidth,row.root.measuredHeight)
+                        val rail=row.conversationIndicators
+                        check(rail.top>=row.title.bottom && rail.bottom<=row.root.height-row.root.paddingBottom) { "Status column exceeds row bounds" }
+                        val snippet=row.snippet
+                        if(snippet.visibility==View.VISIBLE) check(if(direction==View.LAYOUT_DIRECTION_LTR) snippet.right<=rail.left else snippet.left>=rail.right) { "Unread indicator overlaps preview" }
+                    }
                 }
+                row.root.layoutDirection=View.LAYOUT_DIRECTION_LTR
+                prefs.edit().putBoolean("message_counts",previousCounts).commit()
                 val settings=SettingsControllerBinding.inflate(screen.layoutInflater)
                 val dialing=com.google.android.material.button.MaterialButton(screen).apply { id=R.id.textoDialingSettings }
                 settings.preferences.addView(dialing)
@@ -144,11 +159,51 @@ class CompactLayoutInstrumentation : Instrumentation() {
             waitForIdleSync()
             main { check(list.findViewHolderForAdapterPosition(999)!=null); list.scrollToPosition(0) }
             waitForIdleSync()
+            main {
+                val optionalKeys = listOf("card_shape", "card_finish", "card_size", "density", "bubbles", "skin_preset", "oem_layout", "preview_lines", "unread_style", "before_oem_preset", "bottom_bar_items")
+                val savedOptional = optionalKeys.associateWith { prefs.getString(it, null) }
+                try {
+                    prefs.edit().remove("before_oem_preset").putString("card_shape", "square").putString("card_finish", "none").putString("bottom_bar_items", "0,1,2,3,4,5,99,0").commit()
+                    check(BottomNavigation.items(screen) == listOf(0,1,2,3,4))
+                    val bar = TextoTabBar(screen)
+                    check(bar.childCount == 5)
+                    val firstButton = bar.getChildAt(0)
+                    bar.rebuild()
+                    check(bar.getChildAt(0) === firstButton) { "Unchanged navigation was reinflated" }
+                    bar.select(3)
+                    check((0 until bar.childCount).count { bar.getChildAt(it).isSelected } == 1)
+                    val before = listOf("card_shape", "card_finish", "card_size", "density", "bubbles").associateWith { prefs.getString(it,null) }
+                    SkinPresets.apply(screen, 1)
+                    check(prefs.getString("card_finish", "") == "glass")
+                    val palette=TextoAppearance.accent(screen)
+                    val incoming=TextView(screen); val outgoing=TextView(screen)
+                    MessageBodyStyle.apply(incoming,false,palette,false)
+                    MessageBodyStyle.apply(outgoing,true,palette,false)
+                    fun fill(v: View): Int {
+                        val bitmap=android.graphics.Bitmap.createBitmap(100,60,android.graphics.Bitmap.Config.ARGB_8888)
+                        v.background.setBounds(0,0,100,60); v.background.draw(android.graphics.Canvas(bitmap))
+                        return bitmap.getPixel(50,30).also { bitmap.recycle() }
+                    }
+                    check(fill(incoming)!=fill(outgoing)) { "OEM sent and received bubbles are identical" }
+                    for(index in SkinPresets.names.indices) {
+                        SkinPresets.apply(screen,index)
+                        check(SkinPresets.id(screen)==SkinPresets.ids[index])
+                        MessageBodyStyle.apply(outgoing,true,TextoAppearance.accent(screen),false)
+                        check(androidx.core.graphics.ColorUtils.calculateContrast(outgoing.currentTextColor,fill(outgoing))>=4.5)
+                    }
+                    SkinPresets.restore(screen)
+                    check(before.all { (key,value) -> prefs.getString(key,null) == value }) { "Preset restore lost the user's original settings" }
+                } finally {
+                    val restore = prefs.edit()
+                    savedOptional.forEach { (key,value) -> if(value==null) restore.remove(key) else restore.putString(key,value) }
+                    restore.commit()
+                }
+            }
             result.putString("result","PASS: 108 finish/size/spacing combinations; default row ${standardHeight}dp; unchanged binds reuse backgrounds without layout; live counters/selection; larger text; five settings groups retain every row and click; 1000 synthetic conversations scroll and recycle")
         } catch(e: Throwable) { result.putString("error",e.stackTraceToString()) }
         finally {
             main { adapter?.updateData(null); realm?.close(); activity?.finish() }
-            prefs.edit().apply { previous.forEach { (key,value) -> if(value==null) remove(key) else putString(key,value) } }.commit()
+            prefs.edit().apply { if(countsPresent) putBoolean("message_counts",previousCounts) else remove("message_counts"); previous.forEach { (key,value) -> if(value==null) remove(key) else putString(key,value) } }.commit()
         }
         finish(if(result.containsKey("error")) 1 else 0,result)
     }

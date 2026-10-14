@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.7.1 — 14 October 2026
+
+- Bounded notification, widget and sharing-shortcut avatars now release image requests and retain safe bitmap copies, reducing retained image resources on Android 15–17 and older supported versions. Full API 37 migration and physical-device certification remain pending.
+- Unread badges, pinned and scheduled indicators have a reserved end column; previews and message totals cannot draw beneath them, including narrow screens and right-to-left layouts.
+- A three-second hold selects a word directly inside the original message bubble. Native handles extend the selection for copying sentences or paragraphs; shorter holds retain message actions.
+- Whole-message selection follows the bubble shape, including asymmetric OEM corners. Text-range highlights have softer corners.
+- Expanded optional OEM profiles: coordinated palettes, header size/alignment/type, flat or floating conversation lists and navigation, preview density and distinct sent/received bubbles. Your existing theme remains the default; Apply and Restore preserve the previous appearance and palette.
+- Rechecked QUIK master and Actions: no new reviewed master changes available.
+
 ## 1.7.0 — 14 October 2026
 
 - Further reduced card padding, avatar size and vertical gaps without reducing fonts or preview lines. Read/unread rows share a recycling pool; unchanged text avoids repeat layout and returning to the inbox no longer forces a full redraw.

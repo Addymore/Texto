@@ -27,6 +27,28 @@ class TightTextView @JvmOverloads constructor(
     attrs: AttributeSet? = null
 ) : QkTextView(context, attrs) {
 
+    var selectionHighlight = android.graphics.Color.TRANSPARENT
+    private val selectionPath = android.graphics.Path()
+    private val selectionPaint = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG)
+    override fun onDraw(canvas: android.graphics.Canvas) {
+        val textLayout=layout
+        val start=minOf(selectionStart,selectionEnd)
+        val end=maxOf(selectionStart,selectionEnd)
+        if(isTextSelectable && textLayout != null && start>=0 && end>start) {
+            selectionPaint.color=selectionHighlight
+            val save=canvas.save()
+            canvas.translate(totalPaddingLeft.toFloat()-scrollX,totalPaddingTop.toFloat()-scrollY)
+            val radius=4*resources.displayMetrics.density
+            // Layout's selection path handles bidi text and multi-line paragraphs correctly.
+            selectionPath.reset()
+            textLayout.getSelectionPath(start,end,selectionPath)
+            selectionPaint.pathEffect=android.graphics.CornerPathEffect(radius)
+            canvas.drawPath(selectionPath,selectionPaint)
+            canvas.restoreToCount(save)
+            super.onDraw(canvas)
+        } else super.onDraw(canvas)
+    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 

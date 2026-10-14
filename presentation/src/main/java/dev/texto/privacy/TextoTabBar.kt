@@ -23,16 +23,29 @@ class TextoTabBar @JvmOverloads constructor(context: Context, attrs: AttributeSe
         if (TextoAppearance.noCards(context)) { background = null; elevation = 0f }
         rebuild()
     }
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        if(SkinPresets.usesProfileSurface(context) && SkinPresets.id(context) in listOf("samsung","pixel","motorola","xiaomi")) {
+            (layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.let { params ->
+                params.marginStart=0; params.marginEnd=0; params.bottomMargin=0; layoutParams=params
+            }
+        }
+    }
     fun rebuild() {
         val key = BottomNavigation.items(context) to TextoTheme.appearanceKey(context)
         if (configuration == key) return
         configuration = key
+        val profile=SkinPresets.id(context)
+        val flat=SkinPresets.usesProfileSurface(context) && profile in listOf("samsung","pixel","motorola","xiaomi")
+        background=if(flat) android.graphics.drawable.ColorDrawable(if(dark) 0xFF17181C.toInt() else 0xFFF6F7FA.toInt()) else TextoAppearance.card(context)
+        elevation=if(flat || TextoAppearance.noCards(context)) 0f else dp(8).toFloat()
+        if(TextoAppearance.noCards(context)) background=null
         removeAllViews(); tabs.clear()
         BottomNavigation.items(context).forEach { i ->
             val label = BottomNavigation.labels[i]
             val button = MaterialButton(context, null, com.google.android.material.R.attr.materialButtonStyle).apply {
                 text = label; textSize = 11f; isAllCaps = false; minWidth = 0; minimumWidth = 0
-                insetTop = 0; insetBottom = 0; cornerRadius = dp(28); strokeWidth = 0
+                insetTop = 0; insetBottom = 0; cornerRadius = dp(if(profile=="nothing") 8 else if(profile=="samsung") 16 else 28); strokeWidth = 0
                 setPadding(dp(4), dp(4), dp(4), dp(4)); iconSize = dp(21); iconPadding = dp(2)
                 tag = i; setIconResource(BottomNavigation.icons[i]); iconGravity = MaterialButton.ICON_GRAVITY_TEXT_TOP
                 setOnClickListener { onTabSelected?.invoke(i) }
@@ -47,10 +60,11 @@ class TextoTabBar @JvmOverloads constructor(context: Context, attrs: AttributeSe
             button.isSelected = selected
             button.contentDescription = "${button.text}${if (selected) ", selected" else ""}"
             val accent = TextoAppearance.accent(context)
+            val flat=SkinPresets.usesProfileSurface(context) && SkinPresets.id(context) in listOf("samsung","xiaomi")
             val foreground = if (selected && !TextoAppearance.noCards(context)) (if (dark) androidx.core.graphics.ColorUtils.blendARGB(accent, Color.WHITE, 0.45f) else if(androidx.core.graphics.ColorUtils.calculateContrast(accent,Color.WHITE) < 4.5) androidx.core.graphics.ColorUtils.blendARGB(accent,Color.BLACK,.6f) else accent) else (if (dark) 0xFFC8CBD4.toInt() else 0xFF686E7A.toInt())
             button.setTextColor(foreground); button.iconTint = ColorStateList.valueOf(foreground)
-            button.backgroundTintList = ColorStateList.valueOf(if (selected && !TextoAppearance.noCards(context)) (if (dark) androidx.core.graphics.ColorUtils.blendARGB(0xFF23262D.toInt(), accent, .2f) else Color.WHITE) else Color.TRANSPARENT)
-            button.elevation = if (selected && !TextoAppearance.noCards(context)) dp(1).toFloat() else 0f
+            button.backgroundTintList = ColorStateList.valueOf(if (selected && !flat && !TextoAppearance.noCards(context)) (if (dark) androidx.core.graphics.ColorUtils.blendARGB(0xFF23262D.toInt(), accent, .2f) else Color.WHITE) else Color.TRANSPARENT)
+            button.elevation = if (selected && !flat && !TextoAppearance.noCards(context)) dp(1).toFloat() else 0f
         }
     }
     private fun dp(value: Int) = (value * resources.displayMetrics.density).toInt()

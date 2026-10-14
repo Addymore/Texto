@@ -150,12 +150,12 @@ class ThemesActivity : QkThemedActivity() {
         label("Changes apply to public and private conversations. Your phone controls the available refresh rate.",13f)
         row("Fonts, scheduled dark mode & more","") { startActivity(Intent(this,dev.octoshrimpy.quik.feature.settings.SettingsActivity::class.java)) }
         label("OEM-inspired presets · optional",22f)
-        label("Your current Texto theme stays unchanged. Browse a preset, then choose Apply to use it. Colors, images and privacy settings are kept.",13f)
+        label("Your current Texto theme stays unchanged. Browse a preset, then choose Apply to use it. Presets include their own palette, heading, conversation list, bubbles and navigation. Your previous theme can be restored; images and privacy settings are kept.",13f)
         row("Browse OEM presets", appearance.getString("skin_preset", "Current Texto theme").orEmpty()) {
             dialog = TextoDialogs.builder(this).setTitle("OEM-inspired presets")
                 .setItems(SkinPresets.names) { _, i ->
                     dialog = TextoDialogs.builder(this).setTitle(SkinPresets.names[i])
-                        .setMessage("Apply this preset's card finish and shape, compact spacing, small cards and fluid bubbles? You can restore your previous card settings here afterward.")
+                        .setMessage(SkinPresets.descriptions[i] + "\n\nApply this complete visual style? You can restore your previous theme here afterward.")
                         .setNegativeButton("Cancel", null)
                         .setPositiveButton("Apply") { _, _ -> SkinPresets.apply(this, i); render() }.show()
                 }.setNegativeButton("Close", null).show()
@@ -166,7 +166,7 @@ class ThemesActivity : QkThemedActivity() {
             dialog=dev.texto.privacy.TextoDialogs.builder(this).setTitle("Reset appearance?").setMessage("Restore default colors, cards and motion settings. Messages and privacy settings are kept.")
                 .setNegativeButton("Cancel",null).setPositiveButton("Reset") { _,_ ->
                     val edit=appearance.edit()
-                    listOf("bottom_bar_visible","bottom_bar_items","skin_preset","before_oem_preset","card_shape","card_finish","density","preview_lines","unread_style","list_avatars","message_counts","bubbles","high_refresh","reduce_motion","dynamic_colors","card_size","inbox_title","inbox_motto","background_image","header_image").forEach { edit.remove(it) }; edit.apply()
+                    listOf("bottom_bar_visible","bottom_bar_items","skin_preset","oem_layout","before_oem_preset","card_shape","card_finish","density","preview_lines","unread_style","list_avatars","message_counts","bubbles","high_refresh","reduce_motion","dynamic_colors","card_size","inbox_title","inbox_motto","background_image","header_image").forEach { edit.remove(it) }; edit.apply()
                     prefs.theme().set(0xFF375BCD.toInt()); prefs.autoColor.set(false); prefs.black.set(false); prefs.textSize.set(1)
                     nightModeManager.updateNightMode(0); render()
                 }.show()

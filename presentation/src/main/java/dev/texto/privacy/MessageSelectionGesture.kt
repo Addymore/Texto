@@ -12,19 +12,31 @@ class MessageSelectionGesture(private val body: TextView, private val row: View,
     private var id=Long.MIN_VALUE
     private var x=0f; private var y=0f; private var down=0L
     private var held=false; private var canceled=false
+    private var selecting=false
+    private var consumeRelease=false
+    private var actionMode: ActionMode? = null
     private val slop=ViewConfiguration.get(body.context).scaledTouchSlop * 2
     private val selectText=Runnable { if(held && !canceled && body.isShown && body.hasWindowFocus() && !selectionActive()) beginTextSelection() }
     init {
         body.setTextIsSelectable(false)
         body.setOnTouchListener(this)
-        body.setOnLongClickListener { row.performLongClick() }
+        body.setOnLongClickListener { if(!selecting) { beginTextSelection(); true } else false }
+        body.customSelectionActionModeCallback = object : ActionMode.Callback {
+            override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean { actionMode=mode; return true }
+            override fun onPrepareActionMode(mode: ActionMode, menu: Menu) = false
+            override fun onActionItemClicked(mode: ActionMode, item: MenuItem) = false
+            override fun onDestroyActionMode(mode: ActionMode) {
+                actionMode=null
+                body.post { if (actionMode == null) endSelection() }
+            }
+        }
         body.addOnAttachStateChangeListener(object: View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(v: View) {}
-            override fun onViewDetachedFromWindow(v: View) { reset() }
+            override fun onViewDetachedFromWindow(v: View) { reset(); endSelection() }
         })
 
     }
-    fun bind(messageId: Long) { if(id != messageId) { reset(); id=messageId } }
+    fun bind(messageId: Long) { if(id != messageId) { reset(); endSelection(); id=messageId } }
     private fun reset() {
         held=false; canceled=true; body.removeCallbacks(selectText)
         body.parent?.requestDisallowInterceptTouchEvent(false)
@@ -34,9 +46,41 @@ class MessageSelectionGesture(private val body: TextView, private val row: View,
         val offset = body.getOffsetForPosition(x, y).coerceIn(0, text.length)
         reset()
         body.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-        SelectMessageText.show(body.context, text, offset)
+        if (text.isEmpty()) return
+        selecting=true; consumeRelease=true
+        body.setTextIsSelectable(true)
+        body.requestFocus()
+        var start=offset.coerceAtMost(text.lastIndex); var end=start
+        while(start>0 && !text[start-1].isWhitespace()) start--
+        while(end<text.length && !text[end].isWhitespace()) end++
+        val selection=android.os.Bundle().apply {
+            putInt(android.view.accessibility.AccessibilityNodeInfo.ACTION_ARGUMENT_SELECTION_START_INT,start)
+            putInt(android.view.accessibility.AccessibilityNodeInfo.ACTION_ARGUMENT_SELECTION_END_INT,end)
+        }
+        // Let TextView create its editor/layout before asking Android for native handles.
+        body.post {
+            if(selecting && body.isAttachedToWindow && body.hasWindowFocus()) {
+                body.performAccessibilityAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_SET_SELECTION,selection)
+            }
+        }
+    }
+    private fun endSelection() {
+        if (!selecting) return
+        selecting=false; consumeRelease=false
+        actionMode?.finish(); actionMode=null
+        body.setTextIsSelectable(false)
+        body.clearFocus()
+        body.movementMethod=android.text.method.LinkMovementMethod.getInstance()
     }
     override fun onTouch(v: View, e: MotionEvent): Boolean {
+        if (selecting) {
+            // The original finger-up must not collapse the newly selected word.
+            if (consumeRelease) {
+                if(e.actionMasked == MotionEvent.ACTION_UP || e.actionMasked == MotionEvent.ACTION_CANCEL) consumeRelease=false
+                return true
+            }
+            return false // Android owns subsequent handle drags and the Copy action.
+        }
         when(e.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 x=e.x; y=e.y; down=e.eventTime; held=true; canceled=false

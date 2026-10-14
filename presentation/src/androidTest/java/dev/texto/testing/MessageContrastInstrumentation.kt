@@ -27,8 +27,12 @@ class MessageContrastInstrumentation : Instrumentation() {
             var cases = 0
             val appearance = dev.texto.privacy.TextoAppearance.prefs(targetContext)
             val previousFinish = appearance.getString("card_finish", null)
+            val previousProfile = appearance.getString("oem_layout", null)
             try {
                 check(android.os.Build.MODEL.contains("sdk",true)) { "Synthetic emulator only" }
+                // These cases exercise custom finishes. CompactLayoutInstrumentation separately
+                // applies every OEM profile and checks its actual rendered bubble colors.
+                appearance.edit().remove("oem_layout").commit()
                 for (finish in listOf("tonal","neutral","tinted","outlined","gradient","glass","amoled","pastel","duotone","bold","contrast","none")) {
                     appearance.edit().putString("card_finish",finish).commit()
                     for (night in listOf(false, true)) for (black in listOf(false, true)) {
@@ -95,6 +99,7 @@ class MessageContrastInstrumentation : Instrumentation() {
                 }
             } finally {
                 if(previousFinish == null) appearance.edit().remove("card_finish").commit() else appearance.edit().putString("card_finish",previousFinish).commit()
+                if(previousProfile == null) appearance.edit().remove("oem_layout").commit() else appearance.edit().putString("oem_layout",previousProfile).commit()
             }
             check(cases==480)
             result.putString("result", "PASS: $cases message contrast cases across all twelve finishes; phone/web and confirmation links, light/dark/AMOLED, incoming/outgoing, custom accents and recycled views; shared palette, Settings cards and scheduled date picker")

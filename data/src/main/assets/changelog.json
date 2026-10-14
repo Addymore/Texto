@@ -1,5 +1,19 @@
 [
   {
+    "versionCode": 2341,
+    "versionName": "1.7.1",
+    "added": [],
+    "improved": [
+      "Optional OEM profiles now change headings, conversation lists, navigation, palettes and sent/received bubble treatments. Apply explicitly; restore your prior theme at any time."
+    ],
+    "fixed": [
+      "Hold a message body for three seconds to select a word inside the original bubble; drag native handles to copy longer passages.",
+      "Whole-message selection follows the bubble shape, with softly rounded word-selection highlights.",
+      "Unread badges and status icons have their own space, preventing overlap with message previews."
+    ],
+    "removed": []
+  },
+  {
     "versionCode": 2340,
     "versionName": "1.7.0",
     "added": [

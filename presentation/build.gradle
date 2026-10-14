@@ -29,8 +29,8 @@ android {
         resValue 'string', 'application_id', 'app.texto.sms'
         minSdkVersion 23
         targetSdkVersion 33
-        versionCode 2340
-        versionName '1.7.0'
+        versionCode 2341
+        versionName '1.7.1'
         setProperty("archivesBaseName", "Texto-v${versionName}")
         testInstrumentationRunner project.findProperty("textoTestRunner") ?: "androidx.test.runner.AndroidJUnitRunner"
     }
