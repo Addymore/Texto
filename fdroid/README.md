@@ -21,7 +21,7 @@ The recipe in `metadata/app.texto.sms.yml` uses the normal release variant. The 
 
 Texto 1.8.0 release/debug builds, 19 common JVM tests and seven Android 14 emulator suites passed. The final icon-picker layout rebuild and targeted checks also passed. The signed 1.7.3-to-1.8.0 upgrade retained synthetic conversations and the SMS role. See [VALIDATION.md](../VALIDATION.md) for exact scope, the legacy lint limitation and untested physical/carrier behavior.
 
-The recipe pins the exact 1.8.0 application source, `074203507e6374e60ed9aa12b383891328aa7acc`. F-Droid metadata lint/source scanning is being rerun for this update. The previous GitLab pipeline was blocked by account identity verification before jobs started; official F-Droid inclusion remains pending.
+The recipe pins the exact 1.8.0 application source, `074203507e6374e60ed9aa12b383891328aa7acc`. F-Droid metadata lint and source scanning passed on 20 October 2026: https://github.com/Addymore/Texto/actions/runs/39499964975/job/118894653884 . GitLab submission commit `eb5ef94a1d27a6ae8c4ebccc25774bdba25c508f` updates existing MR !50918. Pipeline https://gitlab.com/addymore/fdroiddata/-/pipelines/2969480396 created zero jobs and requests identity verification; official F-Droid inclusion remains pending.
 
 ## Listing and scope
 
@@ -39,4 +39,4 @@ RCS is not implemented. Carrier behavior and physical OnePlus frame pacing need 
 
 ## Submission
 
-Recipe validation runs in GitHub Actions with fdroidserver 2.4.5. The official process is documented at https://f-droid.org/docs/Submitting_to_F-Droid_Quick_Start_Guide/ . The review request is open. GitLab blocked fork CI before any jobs started because the submitting account is not identity-verified; the request asks F-Droid maintainers to trigger CI, following their contribution guidance. The updated 1.6.0 recipe passed GitHub metadata lint/source scanning; official F-Droid CI and review remain pending. Submission background is in `SUBMISSION.md`; publication must not be claimed until an official listing exists.
+Recipe validation runs in GitHub Actions with fdroidserver 2.4.5. The official process is documented at https://f-droid.org/docs/Submitting_to_F-Droid_Quick_Start_Guide/ . The review request is open. GitLab blocked fork CI before any jobs started because the submitting account is not identity-verified; the request asks F-Droid maintainers to trigger CI, following their contribution guidance. The updated 1.8.0 recipe passed GitHub metadata lint/source scanning; official F-Droid CI and review remain pending. Submission background is in `SUBMISSION.md`; publication must not be claimed until an official listing exists.

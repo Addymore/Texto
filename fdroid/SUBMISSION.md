@@ -25,7 +25,7 @@ The fork has a distinct application ID, name and icon. It adds shared public/pri
 
 Texto 1.8.0 release/debug builds, 19 common JVM tests and seven Android 14 emulator suites passed. The final icon-picker layout rebuild and targeted checks also passed. The signed 1.7.3-to-1.8.0 upgrade retained synthetic conversations and the SMS role. See [VALIDATION.md](../VALIDATION.md) for exact scope, the legacy lint limitation and untested physical/carrier behavior.
 
-The recipe pins the exact 1.8.0 application source, `074203507e6374e60ed9aa12b383891328aa7acc`. F-Droid metadata lint/source scanning is being rerun for this update. The previous GitLab pipeline was blocked by account identity verification before jobs started; official F-Droid inclusion remains pending.
+The recipe pins the exact 1.8.0 application source, `074203507e6374e60ed9aa12b383891328aa7acc`. F-Droid metadata lint and source scanning passed on 20 October 2026: https://github.com/Addymore/Texto/actions/runs/39499964975/job/118894653884 . GitLab submission commit `eb5ef94a1d27a6ae8c4ebccc25774bdba25c508f` updates existing MR !50918. Pipeline https://gitlab.com/addymore/fdroiddata/-/pipelines/2969480396 created zero jobs and requests identity verification; official F-Droid inclusion remains pending.
 
 ## Review notes
 
