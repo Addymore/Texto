@@ -4,7 +4,7 @@ Submitted on 2 October 2026: [F-Droid merge request !50918](https://gitlab.com/f
 
 ## Build
 
-The proposed package is `app.texto.sms`, version 1.6.3 (2320), source tag `v1.6.3-fdroid1`. The tag pins the same application source as the GitHub 1.6.3 release (application commit 81a6e8c66227a1da33f0c99096735d27dc324d1c).
+The proposed package is `app.texto.sms`, version 1.8.0 (2344), source tag `v1.8.0-fdroid1`. The tag pins the same application source as the GitHub 1.8.0 release (application commit 074203507e6374e60ed9aa12b383891328aa7acc).
 
 Use OpenJDK 17, Android SDK platform 34 and build tools 34.0.0:
 
@@ -12,16 +12,16 @@ Use OpenJDK 17, Android SDK platform 34 and build tools 34.0.0:
 ./gradlew :presentation:assembleRelease :common:testDebugUnitTest --no-daemon
 ```
 
-Output: `presentation/build/outputs/apk/release/Texto-v1.6.3-release-unsigned.apk`.
+Output: `presentation/build/outputs/apk/release/Texto-v1.8.0-release-unsigned.apk`.
 Release builds are unsigned by default. No private key, account, API key or proprietary service plugin is required. The optional `-PtextoSignRelease` enables locally configured signing for maintainers only; F-Droid must not use it.
 
 The recipe in `metadata/app.texto.sms.yml` uses the normal release variant. The inherited custom `fdroid` build type is not used for the official submission. Dedicated `vX.Y.Z-fdroidN` tags select reviewed source revisions for F-Droid updates. Increase versionCode for each future app update.
 
 ## Validation
 
-Version 1.6.3 debug/instrumentation builds passed locally; the 19 unchanged JVM tests remain passing (up-to-date). Final Android 14 emulator regressions passed individual-word selection/Copy, persistent archiving, ordinary/protected utility access, PIN/cancel checks, crop proportions, hue selection and 480 contrast cases. Metadata lint and source scanning passed with fdroidserver 2.4.5 on 10 October 2026: https://github.com/Addymore/Texto/actions/runs/38085383901/job/114310686687. See VALIDATION.md for release build and APK checks.
+Texto 1.8.0 release/debug builds, 19 common JVM tests and seven Android 14 emulator suites passed. The final icon-picker layout rebuild and targeted checks also passed. The signed 1.7.3-to-1.8.0 upgrade retained synthetic conversations and the SMS role. See [VALIDATION.md](../VALIDATION.md) for exact scope, the legacy lint limitation and untested physical/carrier behavior.
 
-The submission recipe was updated in GitLab commit 5e544c18650402f9a71e68470b66b681560ef9c2. GitLab pipeline 2934603858 created zero jobs and requests identity verification; this is not a completed F-Droid build. Maintainer-triggered CI is still needed. The inherited non-aborting lint configuration and translation issues remain; a clean full Android lint result is not claimed. Physical-device, carrier, real email and full backup/restore round-trip validation remain outstanding.
+The recipe pins the exact 1.8.0 application source, `074203507e6374e60ed9aa12b383891328aa7acc`. F-Droid metadata lint/source scanning is being rerun for this update. The previous GitLab pipeline was blocked by account identity verification before jobs started; official F-Droid inclusion remains pending.
 
 ## Listing and scope
 
@@ -40,5 +40,3 @@ RCS is not implemented. Carrier behavior and physical OnePlus frame pacing need 
 ## Submission
 
 Recipe validation runs in GitHub Actions with fdroidserver 2.4.5. The official process is documented at https://f-droid.org/docs/Submitting_to_F-Droid_Quick_Start_Guide/ . The review request is open. GitLab blocked fork CI before any jobs started because the submitting account is not identity-verified; the request asks F-Droid maintainers to trigger CI, following their contribution guidance. The updated 1.6.0 recipe passed GitHub metadata lint/source scanning; official F-Droid CI and review remain pending. Submission background is in `SUBMISSION.md`; publication must not be claimed until an official listing exists.
-
-Updated the existing MR to 1.6.0 (2290) on 4 October 2026; submission commit `da08f871b434b43c14a475e32daa299e7051ced8` pins the exact GitHub release source. Official inclusion remains pending.
