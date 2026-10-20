@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.8.0 — 20 October 2026
+
+- Added 13 OEM-inspired launcher icons plus the original Texto icon: Samsung, Pixel/Google, OPPO, OnePlus, realme, Xiaomi, Huawei, HONOR, vivo, Motorola, Nothing, Sony and ASUS. Adaptive and Android themed-icon variants are included. These are independently drawn interpretations, not stock OEM assets.
+- Added separate sent/received bubble colors, automatic readable text/link colors, message font and line spacing, card border thickness and gradient direction.
+- Settings buttons and preference rows now share 24 dp icons and aligned text columns, including right-to-left layouts. Text can wrap without squeezing its icon.
+- New controls update the preview and shared rendering. No-card mode takes priority; OEM presets save/restore the custom controls. Existing themes and the original icon stay unchanged until you choose otherwise.
+- Rechecked QUIK master: no newer master fixes were available.
+
+Both APK variants retain their existing signing identities. Choose release for normal use, or debug only to update a debug installation. Launcher icon refresh timing depends on your launcher. See VALIDATION.md for checks and limitations.
+
+
 ## 1.7.3 — 14 October 2026
 
 - Restored QUIK-style native selectable message text and normal Android long-press timing. Removed the custom three-second timer, touch interception and accessibility-based activation.

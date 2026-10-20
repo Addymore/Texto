@@ -34,9 +34,10 @@ object TextoAppearance {
         val fills = cardColors(context, accentColor)
         val shape = GradientDrawable().apply {
             cornerRadius = radius * context.resources.displayMetrics.density
-            if (fills.size > 1) { orientation = GradientDrawable.Orientation.TL_BR; colors = fills }
+            if (fills.size > 1) { orientation = when(p.getString("gradient_direction","diagonal")) { "vertical" -> GradientDrawable.Orientation.TOP_BOTTOM; "horizontal" -> GradientDrawable.Orientation.LEFT_RIGHT; else -> GradientDrawable.Orientation.TL_BR }; colors = fills }
             else setColor(ColorStateList(arrayOf(intArrayOf(android.R.attr.state_activated), intArrayOf()), intArrayOf(androidx.core.graphics.ColorUtils.blendARGB(base,accentColor,.24f), if(selected) androidx.core.graphics.ColorUtils.blendARGB(base,accentColor,.24f) else fills[0])))
             if (finish in listOf("outlined", "tonal", "glass", "amoled", "bold")) setStroke((context.resources.displayMetrics.density * if(finish == "bold") 2 else 1).toInt().coerceAtLeast(1), androidx.core.graphics.ColorUtils.blendARGB(base, accentColor, if(finish == "tonal") .18f else .4f))
+            p.getString("border_width","auto")?.toFloatOrNull()?.let { width -> setStroke((width.coerceIn(0f,3f)*context.resources.displayMetrics.density).toInt(),controlColor(context)) }
         }
         if (corners != null) shape.cornerRadii = corners
         if (selected && finish in listOf("gradient", "glass", "amoled")) shape.setStroke((2*context.resources.displayMetrics.density).toInt(), accentColor)
@@ -85,7 +86,7 @@ object TextoAppearance {
         // Keep a style snapshot on the holder, not a global cache of views or message data.
         // Counts/selection still update on every bind; unchanged styles do not request layout.
         val style = listOf(SkinPresets.id(context),p.getString("density","comfortable"), p.getString("card_size","medium"),
-            p.getString("card_shape","soft"), p.getString("card_finish","tonal"), accent(context),
+            p.getString("card_shape","soft"), p.getString("card_finish","tonal"), p.getString("border_width","auto"), p.getString("gradient_direction","diagonal"), accent(context),
             context.resources.configuration.uiMode, d, binding.unread.textSize, selected, p.getBoolean("list_avatars",true),
             p.getString("preview_lines","2"), p.getBoolean("message_counts",true), p.getString("unread_style","count"))
         val dot = p.getString("unread_style","count") == "dot"
@@ -135,6 +136,9 @@ object TextoAppearance {
             view.iconSize=(24*d).toInt()
             view.iconPadding=(16*d).toInt()
             view.iconTint = ColorStateList.valueOf(controlColor(view.context))
+            view.iconGravity = com.google.android.material.button.MaterialButton.ICON_GRAVITY_START
+            view.insetTop=0; view.insetBottom=0
+            view.isAllCaps=false
         }
         view.backgroundTintList = null
         val p = prefs(view.context)
@@ -143,12 +147,13 @@ object TextoAppearance {
         view.minimumHeight = (56*d*scale).toInt().coerceAtLeast((48*d).toInt())
         (view.layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.let {
             it.setMargins(((if(view.tag == "texto_submenu") 36 else 16)*d).toInt(),(4*d).toInt(),(16*d).toInt(),(4*d).toInt())
+            it.marginStart=((if(view.tag == "texto_submenu") 36 else 16)*d).toInt(); it.marginEnd=(16*d).toInt()
             view.layoutParams = it
         }
         if (view is android.widget.TextView) {
             view.setTextColor(readableText(view.context))
             view.gravity = android.view.Gravity.START or android.view.Gravity.CENTER_VERTICAL
-            view.setPadding((20*d*scale).toInt(),(spacing*d*scale).toInt(),(20*d*scale).toInt(),(spacing*d*scale).toInt())
+            view.setPaddingRelative((20*d).toInt(),(spacing*d*scale).toInt(),(20*d).toInt(),(spacing*d*scale).toInt())
         }
     }
     fun smooth(list: RecyclerView) {

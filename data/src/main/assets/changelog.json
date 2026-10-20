@@ -1,5 +1,21 @@
 [
   {
+    "versionCode": 2344,
+    "versionName": "1.8.0",
+    "added": [
+      "OEM-inspired launcher icons: thirteen choices plus the original Texto icon, with adaptive and monochrome variants.",
+      "Separate sent and received bubble colors, message fonts and line spacing.",
+      "Card border thickness and gradient direction controls."
+    ],
+    "improved": [
+      "Theme previews and contrast follow custom message colors. OEM presets save and restore the new controls."
+    ],
+    "fixed": [
+      "Settings icons and text share aligned columns, including right-to-left layouts and compact cards."
+    ],
+    "removed": []
+  },
+  {
     "versionCode": 2343,
     "versionName": "1.7.3",
     "added": [],

@@ -67,16 +67,67 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:windowSoftInputMode="stateAlwaysHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.APP_MESSAGING" />
-            </intent-filter>
+
             <meta-data
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
+        <activity-alias android:name="dev.texto.launcher.default" android:targetActivity=".feature.main.MainActivity" android:enabled="true" android:exported="true" android:icon="@drawable/texto_icon" android:label="@string/app_name">
+            <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/><category android:name="android.intent.category.DEFAULT"/><category android:name="android.intent.category.APP_MESSAGING"/></intent-filter>
+            <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts"/>
+        </activity-alias>
+        <activity-alias android:name="dev.texto.launcher.samsung" android:targetActivity=".feature.main.MainActivity" android:enabled="false" android:exported="true" android:icon="@mipmap/icon_samsung" android:label="@string/app_name">
+            <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/><category android:name="android.intent.category.DEFAULT"/><category android:name="android.intent.category.APP_MESSAGING"/></intent-filter>
+            <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts"/>
+        </activity-alias>
+        <activity-alias android:name="dev.texto.launcher.pixel" android:targetActivity=".feature.main.MainActivity" android:enabled="false" android:exported="true" android:icon="@mipmap/icon_pixel" android:label="@string/app_name">
+            <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/><category android:name="android.intent.category.DEFAULT"/><category android:name="android.intent.category.APP_MESSAGING"/></intent-filter>
+            <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts"/>
+        </activity-alias>
+        <activity-alias android:name="dev.texto.launcher.oppo" android:targetActivity=".feature.main.MainActivity" android:enabled="false" android:exported="true" android:icon="@mipmap/icon_oppo" android:label="@string/app_name">
+            <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/><category android:name="android.intent.category.DEFAULT"/><category android:name="android.intent.category.APP_MESSAGING"/></intent-filter>
+            <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts"/>
+        </activity-alias>
+        <activity-alias android:name="dev.texto.launcher.oneplus" android:targetActivity=".feature.main.MainActivity" android:enabled="false" android:exported="true" android:icon="@mipmap/icon_oneplus" android:label="@string/app_name">
+            <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/><category android:name="android.intent.category.DEFAULT"/><category android:name="android.intent.category.APP_MESSAGING"/></intent-filter>
+            <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts"/>
+        </activity-alias>
+        <activity-alias android:name="dev.texto.launcher.realme" android:targetActivity=".feature.main.MainActivity" android:enabled="false" android:exported="true" android:icon="@mipmap/icon_realme" android:label="@string/app_name">
+            <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/><category android:name="android.intent.category.DEFAULT"/><category android:name="android.intent.category.APP_MESSAGING"/></intent-filter>
+            <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts"/>
+        </activity-alias>
+        <activity-alias android:name="dev.texto.launcher.xiaomi" android:targetActivity=".feature.main.MainActivity" android:enabled="false" android:exported="true" android:icon="@mipmap/icon_xiaomi" android:label="@string/app_name">
+            <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/><category android:name="android.intent.category.DEFAULT"/><category android:name="android.intent.category.APP_MESSAGING"/></intent-filter>
+            <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts"/>
+        </activity-alias>
+        <activity-alias android:name="dev.texto.launcher.huawei" android:targetActivity=".feature.main.MainActivity" android:enabled="false" android:exported="true" android:icon="@mipmap/icon_huawei" android:label="@string/app_name">
+            <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/><category android:name="android.intent.category.DEFAULT"/><category android:name="android.intent.category.APP_MESSAGING"/></intent-filter>
+            <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts"/>
+        </activity-alias>
+        <activity-alias android:name="dev.texto.launcher.honor" android:targetActivity=".feature.main.MainActivity" android:enabled="false" android:exported="true" android:icon="@mipmap/icon_honor" android:label="@string/app_name">
+            <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/><category android:name="android.intent.category.DEFAULT"/><category android:name="android.intent.category.APP_MESSAGING"/></intent-filter>
+            <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts"/>
+        </activity-alias>
+        <activity-alias android:name="dev.texto.launcher.vivo" android:targetActivity=".feature.main.MainActivity" android:enabled="false" android:exported="true" android:icon="@mipmap/icon_vivo" android:label="@string/app_name">
+            <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/><category android:name="android.intent.category.DEFAULT"/><category android:name="android.intent.category.APP_MESSAGING"/></intent-filter>
+            <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts"/>
+        </activity-alias>
+        <activity-alias android:name="dev.texto.launcher.motorola" android:targetActivity=".feature.main.MainActivity" android:enabled="false" android:exported="true" android:icon="@mipmap/icon_motorola" android:label="@string/app_name">
+            <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/><category android:name="android.intent.category.DEFAULT"/><category android:name="android.intent.category.APP_MESSAGING"/></intent-filter>
+            <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts"/>
+        </activity-alias>
+        <activity-alias android:name="dev.texto.launcher.nothing" android:targetActivity=".feature.main.MainActivity" android:enabled="false" android:exported="true" android:icon="@mipmap/icon_nothing" android:label="@string/app_name">
+            <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/><category android:name="android.intent.category.DEFAULT"/><category android:name="android.intent.category.APP_MESSAGING"/></intent-filter>
+            <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts"/>
+        </activity-alias>
+        <activity-alias android:name="dev.texto.launcher.sony" android:targetActivity=".feature.main.MainActivity" android:enabled="false" android:exported="true" android:icon="@mipmap/icon_sony" android:label="@string/app_name">
+            <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/><category android:name="android.intent.category.DEFAULT"/><category android:name="android.intent.category.APP_MESSAGING"/></intent-filter>
+            <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts"/>
+        </activity-alias>
+        <activity-alias android:name="dev.texto.launcher.asus" android:targetActivity=".feature.main.MainActivity" android:enabled="false" android:exported="true" android:icon="@mipmap/icon_asus" android:label="@string/app_name">
+            <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/><category android:name="android.intent.category.DEFAULT"/><category android:name="android.intent.category.APP_MESSAGING"/></intent-filter>
+            <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts"/>
+        </activity-alias>
         <activity
             android:name=".feature.compose.ComposeActivity"
             android:exported="true"

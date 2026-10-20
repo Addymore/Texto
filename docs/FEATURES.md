@@ -61,7 +61,7 @@ Message bubbles share card finish, shape, size and spacing with the app. File/co
 - A visual color ring, intensity and brightness controls replace numeric-only custom color entry.
 - Four additional card finishes (Pastel, Duotone, High contrast and Bold outline) and Square/Pill shapes share the app renderer.
 - Header/background artwork supports drag-and-pinch cropping and preserves image proportions.
-- Native Android text selection replaces the custom three-second gesture in 1.7.3. Full-text search previews also offer a separate read-only native text selector.
+- Native Android text selection replaces the custom three-second gesture in 1.8.0. Full-text search previews also offer a separate read-only native text selector.
 - Reviewed QUIK changes through 02542049 and removed the unused billing version declaration; overlapping upstream premium-removal work is documented separately.
 
 ## 1.7.0 additions
@@ -89,3 +89,12 @@ See [Android 15–17 compatibility](ANDROID_17.md) for platform scope and outsta
 ### Theme consistency (1.7.2)
 
 OEM palettes and custom finishes carry through SMS bodies and MMS attachment surfaces. Older saved OEM presets remain recognized. Blocked, scheduled, contact and recycle-bin lists share theme surfaces and readable foregrounds; settings and About include icons. The About version row reopens the installed release changelog.
+
+## Personalization added in 1.8.0
+
+- 14 launcher choices: Texto original and 13 OEM-inspired interpretations, with adaptive and Android themed-icon variants. Icon selection is independent of visual presets and leaves the real SMS activity enabled.
+- Separate sent/received text-bubble colors with automatic readable text and link contrast. No-card mode takes priority.
+- Theme, sans-serif, serif and monospace message fonts; normal, relaxed and spacious line spacing.
+- Automatic, none, fine, medium or bold card borders; diagonal, vertical or horizontal gradients.
+- Aligned Settings icon/text columns in left-to-right and right-to-left layouts.
+- Live previews and reversible OEM presets retain the new options.

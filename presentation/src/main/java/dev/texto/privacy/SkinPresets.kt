@@ -22,6 +22,7 @@ object SkinPresets {
         return index>=0 && TextoAppearance.prefs(context).getString("card_finish","tonal")==finishes[index]
     }
     private val keys = listOf("card_shape", "card_finish", "card_size", "density", "bubbles", "oem_layout", "preview_lines", "unread_style")
+    private val customKeys = listOf("sent_color","received_color","message_font","message_line_height","border_width","gradient_direction")
     fun id(context: Context): String {
         val p=TextoAppearance.prefs(context)
         return p.getString("oem_layout",null)?.takeIf { it in ids }
@@ -35,6 +36,7 @@ object SkinPresets {
         val original=JSONObject(prefs.getString("before_oem_preset",null) ?: "{}")
         // Extend a 1.7.0 snapshot without losing its original five saved values.
         keys.forEach { if(!original.has(it)) original.put(it,prefs.getString(it,null) ?: JSONObject.NULL) }
+        customKeys.forEach { if(!original.has(it)) original.put(it,prefs.all[it] ?: JSONObject.NULL); edit.remove(it) }
         if(!original.has("theme")) original.put("theme",if(defaults.contains("theme")) defaults.getInt("theme",0) else JSONObject.NULL)
         if(!original.has("dynamic_colors")) original.put("dynamic_colors",if(prefs.contains("dynamic_colors")) prefs.getBoolean("dynamic_colors",false) else JSONObject.NULL)
         edit.putString("before_oem_preset",original.toString())
@@ -54,6 +56,11 @@ object SkinPresets {
         val original = JSONObject(saved)
         val edit = prefs.edit()
         keys.forEach { if(original.isNull(it)) edit.remove(it) else edit.putString(it, original.getString(it)) }
+        customKeys.forEach { key ->
+            if(original.isNull(key)) edit.remove(key)
+            else if(key.endsWith("_color")) edit.putInt(key,original.getInt(key))
+            else edit.putString(key,original.getString(key))
+        }
         if(original.has("dynamic_colors")) {
             if(original.isNull("dynamic_colors")) edit.remove("dynamic_colors") else edit.putBoolean("dynamic_colors",original.getBoolean("dynamic_colors"))
         }

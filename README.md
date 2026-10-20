@@ -4,15 +4,21 @@
 
 A customizable Kotlin SMS/MMS app for Android by **[Addymore](https://github.com/Addymore)**, built on [QUIK](https://github.com/quik-sms/quik) and QKSMS. Reachable navigation, consistent public and private conversations, and a theme that feels like yours.
 
-[Download 1.7.3](https://github.com/Addymore/Texto/releases/tag/v1.7.3) · [Changelog](CHANGELOG.md) · [Report a bug](https://github.com/Addymore/Texto/issues) · [Telegram](https://t.me/addymore)
+[Download 1.8.0](https://github.com/Addymore/Texto/releases/tag/v1.8.0) · [Changelog](CHANGELOG.md) · [Report a bug](https://github.com/Addymore/Texto/issues) · [Telegram](https://t.me/addymore)
 
 **Two APKs:** choose the signed release APK for normal use or to update an existing release installation; use the debug APK to update the separate development app. Neither is a Google Play publication. Android 6+; physical OnePlus 13, newer Android versions and carrier behavior still require device validation. See [validation](VALIDATION.md).
 
-See the [complete feature list](docs/FEATURES.md) and [1.7.3 changelog](CHANGELOG.md).
+See the [complete feature list](docs/FEATURES.md) and [1.8.0 changelog](CHANGELOG.md).
 
 ### Consistent themes in 1.7.2
 
-<table><tr><td><img src="docs/images/settings-1.7.2.png" width="260" alt="Themed settings cards with restored contact and dialing icons" /></td><td><img src="docs/images/about-changelog-1.7.2.png" width="260" alt="The current release changelog reopened from the About version row" /></td></tr></table>
+<table><tr><td><img src="docs/images/icons-1.8.0.png" width="280" alt="OEM-inspired launcher icon picker with centered icons and labels" /></td></tr></table>
+
+<table><tr><td><img src="docs/images/settings-1.8.0.png" width="260" alt="Themed settings cards with restored contact and dialing icons" /></td><td><img src="docs/images/about-changelog-1.7.2.png" width="260" alt="The current release changelog reopened from the About version row" /></td></tr></table>
+
+## New in 1.8.0
+
+Choose from 14 launcher icons, customize sent and received bubble colors, message fonts and line spacing, borders and gradients. Settings icons and labels share aligned columns. Find these controls in **Themes**; original defaults stay unchanged.
 
 ## A look of your own
 
@@ -64,7 +70,7 @@ Open Backup & restore, choose a writable folder, and create a backup. Select **E
 
 ## Install
 
-1. Download `Texto-1.7.3-release.apk` for normal use or a release upgrade, or `Texto-1.7.3-debug.apk` to upgrade your development installation from the [release](https://github.com/Addymore/Texto/releases/tag/v1.7.3).
+1. Download `Texto-1.8.0-release.apk` for normal use or a release upgrade, or `Texto-1.8.0-debug.apk` to upgrade your development installation from the [release](https://github.com/Addymore/Texto/releases/tag/v1.8.0).
 2. Install it and select Texto as your default SMS app. Allow the permissions needed for messaging and contacts.
 3. Personalize it in **Themes** and configure your privacy PIN and number rules in **Settings → Privacy & protection**.
 

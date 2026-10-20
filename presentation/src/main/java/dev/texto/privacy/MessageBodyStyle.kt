@@ -17,8 +17,10 @@ object MessageBodyStyle {
         val spacing = when (p.getString("density", "comfortable")) { "compact" -> 5; "airy" -> 9; else -> 7 }
         val d = body.resources.displayMetrics.density
         body.setPadding(((spacing+4)*d*scale).toInt(), (spacing*d*scale).toInt(), ((spacing+4)*d*scale).toInt(), (spacing*d*scale).toInt())
-        val face=if(SkinPresets.id(body.context)=="nothing") android.graphics.Typeface.MONOSPACE else android.graphics.Typeface.DEFAULT
+        val face=when(p.getString("message_font","theme")) { "serif" -> android.graphics.Typeface.SERIF; "mono" -> android.graphics.Typeface.MONOSPACE; "sans" -> android.graphics.Typeface.SANS_SERIF; else -> if(SkinPresets.id(body.context)=="nothing") android.graphics.Typeface.MONOSPACE else android.graphics.Typeface.DEFAULT }
         if(body.typeface!=face) body.typeface=face
+        val lineHeight=when(p.getString("message_line_height","normal")) { "relaxed" -> 1.15f; "spacious" -> 1.3f; else -> 1f }
+        if(body.lineSpacingMultiplier!=lineHeight) body.setLineSpacing(0f,lineHeight)
         body.setTextColor(foreground)
         // Explicitly set links too: XML ColorStateLists do not call QkTextView's Int overload.
         body.setLinkTextColor(foreground)
@@ -45,14 +47,16 @@ object MessageBodyStyle {
         val corners = if (p.getString("bubbles", "fluid") == "classic" && Build.VERSION.SDK_INT >= 24)
             old?.cornerRadii?.map { if (it <= 5 * view.resources.displayMetrics.density) it else radius }?.toFloatArray() else null
         val key=listOf(profile,outgoing,TextoAppearance.accent(view.context),accent,transparent,window,view.resources.configuration.uiMode,radius,
-            p.getString("card_finish","tonal"),corners?.toList())
+            p.getString("card_finish","tonal"),p.getString("gradient_direction","diagonal"),p.getString("border_width","auto"),if(p.contains("sent_color")) p.getInt("sent_color",0) else null,if(p.contains("received_color")) p.getInt("received_color",0) else null,corners?.toList())
         val cached=view.getTag(R.id.texto_message_surface) as? Surface
         if(cached?.key==key && view.background === cached.background) return cached.foreground
         view.backgroundTintList = null
         (view as? androidx.appcompat.widget.AppCompatTextView)?.supportBackgroundTintList = null
-        val oemBubble=SkinPresets.usesProfileSurface(view.context) && outgoing != null && !TextoAppearance.noCards(view.context)
+        val colorKey=if(outgoing==true) "sent_color" else "received_color"
+        val customBubble=outgoing!=null && p.contains(colorKey) && !TextoAppearance.noCards(view.context)
+        val oemBubble=(SkinPresets.usesProfileSurface(view.context) && outgoing != null || customBubble) && !TextoAppearance.noCards(view.context)
         val dark=view.resources.configuration.uiMode and 0x30 == 0x20
-        val bubbleColor=if(outgoing==true) {
+        val bubbleColor=if(customBubble) p.getInt(colorKey,accent) or 0xFF000000.toInt() else if(outgoing==true) {
             if(profile=="nothing") (if(dark) 0xFFEEEEEE.toInt() else 0xFF252525.toInt()) else TextoAppearance.accent(view.context)
         } else if(dark) 0xFF2C2D31.toInt() else 0xFFECEEF2.toInt()
         val oemCorners=if(profile in listOf("xiaomi","samsung")) floatArrayOf(radius,radius,radius,radius,
@@ -61,6 +65,7 @@ object MessageBodyStyle {
         view.background = if(oemBubble && !transparent) android.graphics.drawable.GradientDrawable().apply {
             setColor(bubbleColor); cornerRadius=radius
             if(oemCorners != null) cornerRadii=oemCorners
+            p.getString("border_width","auto")?.toFloatOrNull()?.let { setStroke((it.coerceIn(0f,3f)*view.resources.displayMetrics.density).toInt(),TextoAppearance.controlColor(view.context)) }
         } else if (transparent) android.graphics.drawable.ColorDrawable(Color.TRANSPARENT)
             else TextoAppearance.card(view.context, accentColor = effectiveAccent, corners = if(profile.isNotEmpty()) oemCorners ?: corners else corners)
         val colors = (if (transparent) intArrayOf(window) else if(oemBubble) intArrayOf(bubbleColor) else TextoAppearance.cardColors(view.context, effectiveAccent).map { ColorUtils.compositeColors(it, window) }.toIntArray())

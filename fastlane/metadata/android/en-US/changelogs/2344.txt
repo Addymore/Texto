@@ -1,0 +1,1 @@
+13 OEM-inspired icons plus Texto original. Custom sent/received colors, fonts, line spacing, borders and gradients. Aligned Settings icons/text, including RTL. Existing defaults stay unchanged.

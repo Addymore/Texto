@@ -1,4 +1,14 @@
-# Texto validation — 14 October 2026
+# Texto validation — 20 October 2026
+
+## 1.8.0 personalization and launcher icons — 20 October 2026
+
+- Optimized release/debug APKs and instrumentation built successfully in 6m 6s. The 19 unchanged common JVM tests have zero failures/errors. Both APKs passed signature, existing-certificate continuity and zip-alignment checks.
+- Seven Android 14/API 34 emulator suites passed: all 14 launcher aliases resolve exactly one entry while retaining the real SMS activity; Settings icon/text columns align in LTR/RTL; separate bubble colors and readable text/links, font and line spacing, preset save/restore, no-cards override, three gradient directions and five border choices.
+- Existing regressions passed: 108 compact-layout combinations and 1,000 recycled conversations; 480 contrast cases; 192 OEM/custom surfaces; native word selection and Copy through injected touch; message search, persistent archives and protected utilities.
+- Signed 1.7.3 to 1.8.0 upgrade retained synthetic conversations and the SMS role, displayed the current changelog and left an empty crash buffer.
+- Visual review confirmed aligned settings columns and found inconsistent icon-tile positioning for wrapped labels. The picker was changed to explicit image-above-label tiles; the final rebuild passed in 9m 13s and the customization instrumentation passed again. The first manual-navigation attempt encountered the expected upgrade changelog; it was dismissed before retrying. Final visual inspection confirmed centered image-above-label tiles, and selecting Samsung through the picker resolved the Samsung launcher alias.
+- QUIK master was fetched and remains 02542049207bab8e467a90cc0e50d3febe2b6a8d; no newer master fixes were available.
+- Physical phones, carrier SMS/MMS delivery and OEM launcher refresh timing were not tested for 1.8.0. The earlier Samsung results below apply to 1.7.3 only. Compile SDK 34 / target SDK 33 remain unchanged. Legacy AGP lint still crashes on installed SDK 37 metadata, so release lint was excluded; no clean lint result is claimed.
 
 ## 1.7.3 native selection and interaction — 14 October 2026
 

@@ -78,11 +78,7 @@ class PreferenceView @JvmOverloads constructor(
             val foreground = dev.texto.privacy.TextoAppearance.readableText(context)
             layout.titleView.setTextColor(foreground)
             layout.summaryView.setTextColor(foreground)
-            layout.icon.background = android.graphics.drawable.GradientDrawable().apply {
-                cornerRadius = 12 * resources.displayMetrics.density
-                setColor(androidx.core.graphics.ColorUtils.setAlphaComponent(dev.texto.privacy.TextoAppearance.accent(context), 28))
-            }
-            if (dev.texto.privacy.TextoAppearance.noCards(context)) layout.icon.background = null
+            layout.icon.background = null
             layout.icon.imageTintList = android.content.res.ColorStateList.valueOf(dev.texto.privacy.TextoAppearance.controlColor(context))
         }
     }

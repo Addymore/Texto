@@ -20,6 +20,6 @@ object TextoTheme {
     }
     fun appearanceKey(context: Context): String {
         val keys = setOf("skin_preset", "oem_layout", "card_shape", "card_finish", "density", "dynamic_colors", "list_avatars", "preview_lines", "message_counts", "unread_style", "bubbles", "card_size", "inbox_title", "inbox_motto", "background_image", "header_image")
-        return TextoAppearance.accent(context).toString() + TextoAppearance.prefs(context).all.filterKeys { it in keys }.toSortedMap().toString()
+        return TextoAppearance.accent(context).toString() + TextoAppearance.prefs(context).all.filterKeys { it in keys || it in setOf("sent_color","received_color","message_font","message_line_height","border_width","gradient_direction") }.toSortedMap().toString()
     }
 }

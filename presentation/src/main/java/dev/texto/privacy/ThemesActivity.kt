@@ -121,6 +121,8 @@ class ThemesActivity : QkThemedActivity() {
         choice("Card finish","card_finish",arrayOf("Tonal cards","Neutral","Accent tint","Outlined","Aurora gradient","Frosted glass","AMOLED outline","Pastel","Two-tone gradient","Bold outline","High contrast","No cards — everywhere"),arrayOf("tonal","neutral","tinted","outlined","gradient","glass","amoled","pastel","duotone","bold","contrast","none"),"tonal")
         label("Card finish, shape, size and spacing also apply to messages inside conversations.",13f)
         choice("Card size","card_size",arrayOf("Small","Medium","Large"),arrayOf("small","medium","large"),"medium")
+        choice("Card border","border_width",arrayOf("Follow finish","None","Fine","Medium","Bold"),arrayOf("auto","0","1","2","3"),"auto")
+        choice("Gradient direction","gradient_direction",arrayOf("Diagonal","Top to bottom","Left to right"),arrayOf("diagonal","vertical","horizontal"),"diagonal")
         choice("Spacing","density",arrayOf("Compact","Comfortable","Airy"),arrayOf("compact","comfortable","airy"),"comfortable")
         choice("Message preview","preview_lines",arrayOf("Hidden","One line","Two lines","Three lines"),arrayOf("0","1","2","3"),"2")
         choice("Unread indicator","unread_style",arrayOf("Number badge","Dot"),arrayOf("count","dot"),"count")
@@ -141,6 +143,17 @@ class ThemesActivity : QkThemedActivity() {
         row("Remove header artwork","") { appearance.edit().remove("header_image").apply(); render() }
         label("Images remain on your device. A readability overlay keeps messages legible. Long press your header title for Archive.",13f)
         label("Messages & motion",22f)
+        fun messageColor(title: String,key: String) {
+            row(title,if(appearance.contains(key)) "Custom" else "Follow theme") {
+                dialog=ColorRing.show(this,appearance.getInt(key,accent)) { color -> appearance.edit().putInt(key,color).apply(); render() }
+            }
+        }
+        messageColor("Sent bubble color","sent_color")
+        messageColor("Received bubble color","received_color")
+        row("Use theme bubble colors","") { appearance.edit().remove("sent_color").remove("received_color").apply(); render() }
+        label("Custom bubble colors keep text and links readable. No cards still hides bubble surfaces.",13f)
+        choice("Message font","message_font",arrayOf("Follow theme","Sans serif","Serif","Monospace"),arrayOf("theme","sans","serif","mono"),"theme")
+        choice("Message line spacing","message_line_height",arrayOf("Normal","Relaxed","Spacious"),arrayOf("normal","relaxed","spacious"),"normal")
         choice("Message bubbles","bubbles",arrayOf("Fluid rounded","Classic grouped"),arrayOf("fluid","classic"),"fluid")
         val sizes=arrayOf("Small","Normal","Large","Larger","Largest")
         row("Text size",sizes[prefs.textSize.get().coerceIn(0,4)]) {
@@ -151,6 +164,7 @@ class ThemesActivity : QkThemedActivity() {
         label("Changes apply to public and private conversations. Your phone controls the available refresh rate.",13f)
         row("Fonts, scheduled dark mode & more","") { startActivity(Intent(this,dev.octoshrimpy.quik.feature.settings.SettingsActivity::class.java)) }
         label("OEM-inspired presets · optional",22f)
+        row("App icon",LauncherIcons.names[LauncherIcons.ids.indexOf(LauncherIcons.selected(this))]) { iconPicker() }
         label("Your current Texto theme stays unchanged. Browse a preset, then choose Apply to use it. Presets include their own palette, heading, conversation list, bubbles and navigation. Your previous theme can be restored; images and privacy settings are kept.",13f)
         row("Browse OEM presets", appearance.getString("skin_preset", "Current Texto theme").orEmpty()) {
             dialog = TextoDialogs.builder(this).setTitle("OEM-inspired presets")
@@ -167,7 +181,7 @@ class ThemesActivity : QkThemedActivity() {
             dialog=dev.texto.privacy.TextoDialogs.builder(this).setTitle("Reset appearance?").setMessage("Restore default colors, cards and motion settings. Messages and privacy settings are kept.")
                 .setNegativeButton("Cancel",null).setPositiveButton("Reset") { _,_ ->
                     val edit=appearance.edit()
-                    listOf("bottom_bar_visible","bottom_bar_items","skin_preset","oem_layout","before_oem_preset","card_shape","card_finish","density","preview_lines","unread_style","list_avatars","message_counts","bubbles","high_refresh","reduce_motion","dynamic_colors","card_size","inbox_title","inbox_motto","background_image","header_image").forEach { edit.remove(it) }; edit.apply()
+                    listOf("sent_color","received_color","message_font","message_line_height","border_width","gradient_direction","bottom_bar_visible","bottom_bar_items","skin_preset","oem_layout","before_oem_preset","card_shape","card_finish","density","preview_lines","unread_style","list_avatars","message_counts","bubbles","high_refresh","reduce_motion","dynamic_colors","card_size","inbox_title","inbox_motto","background_image","header_image").forEach { edit.remove(it) }; edit.apply()
                     prefs.theme().set(0xFF375BCD.toInt()); prefs.autoColor.set(false); prefs.black.set(false); prefs.textSize.set(1)
                     nightModeManager.updateNightMode(0); render()
                 }.show()
@@ -187,4 +201,34 @@ class ThemesActivity : QkThemedActivity() {
         prefs.theme().set(color); prefs.autoColor.set(false); render()
     }
     private fun customAccent() { dialog=ColorRing.show(this,TextoAppearance.accent(this),::saveAccent) }
+    private fun iconPicker() {
+        val content=LinearLayout(this).apply { orientation=LinearLayout.VERTICAL; setPadding(dp(12),dp(8),dp(12),dp(8)) }
+        val selected=LauncherIcons.selected(this)
+        LauncherIcons.ids.indices.chunked(2).forEach { indices ->
+            val row=LinearLayout(this)
+            indices.forEach { i -> row.addView(LinearLayout(this).apply {
+                orientation=LinearLayout.VERTICAL; gravity=Gravity.CENTER
+                TextoAppearance.styleSettingsCard(this)
+                minimumHeight=dp(148); setPadding(dp(8),dp(12),dp(8),dp(12))
+                val label=(if(selected==LauncherIcons.ids[i]) "✓ " else "")+LauncherIcons.names[i]
+                contentDescription=label; isFocusable=true; isClickable=true
+                addView(ImageView(this@ThemesActivity).apply {
+                    setImageResource(LauncherIcons.previews[i]); importantForAccessibility=android.view.View.IMPORTANT_FOR_ACCESSIBILITY_NO
+                },LinearLayout.LayoutParams(dp(56),dp(56)))
+                addView(TextView(this@ThemesActivity).apply {
+                    text=label; textSize=13f; gravity=Gravity.CENTER; setTextColor(TextoAppearance.readableText(context))
+                    importantForAccessibility=android.view.View.IMPORTANT_FOR_ACCESSIBILITY_NO
+                },LinearLayout.LayoutParams(-1,-2).apply { topMargin=dp(8) })
+                setOnClickListener {
+                    try {
+                        LauncherIcons.apply(this@ThemesActivity,LauncherIcons.ids[i]); dialog?.dismiss(); render()
+                        Toast.makeText(this@ThemesActivity,"App icon updated. Your launcher may take a moment to refresh.",Toast.LENGTH_LONG).show()
+                    } catch(e: RuntimeException) { Toast.makeText(this@ThemesActivity,"Could not change the launcher icon. Please try again.",Toast.LENGTH_LONG).show() }
+                }
+            },LinearLayout.LayoutParams(0,-2,1f).apply { setMargins(dp(4),dp(4),dp(4),dp(4)) }) }
+            content.addView(row)
+        }
+        dialog=TextoDialogs.builder(this).setTitle("App icon · OEM inspired")
+            .setView(ScrollView(this).apply { addView(content) }).setNegativeButton("Close",null).show()
+    }
 }
