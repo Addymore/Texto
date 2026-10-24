@@ -1,4 +1,15 @@
-# Texto validation — 20 October 2026
+# Texto validation — 24 October 2026
+
+## 1.8.1 shared message surfaces and drawer alignment — 24 October 2026
+
+- Optimized release/debug APKs and instrumentation built and passed in 13m 10s (`build181.log`). The 19 unchanged common JVM tests have zero failures/errors. Both APKs passed signature, existing-certificate continuity and zip-alignment checks.
+- Seven Android 14/API 34 emulator suites passed (`CustomizationInstrumentation`, `CompactLayoutInstrumentation`, `AppearanceRegressionInstrumentation`, `MessageContrastInstrumentation`, `UtilityAccessInstrumentation`, `ThemeConsistencyInstrumentation`, `NativeSelectionInstrumentation`):
+  - Rendered-pixel parity checks confirmed that incoming and outgoing message bubbles and MMS surfaces match shared cards across OEM presets and custom finishes, including borders, gradients, shapes and no-cards mode, and that unchanged binds reuse message backgrounds and cached classic grouping masks.
+  - Navigation drawer regression confirmed that the Privacy entry matches the Settings row height and icon/label column alignment in both LTR and RTL layouts.
+  - All 14 launcher aliases, 108 compact-layout combinations, 1,000 recycled conversations, 480 contrast cases, 192 OEM/custom surface cases, native word selection/Copy, search/archive rules and PIN-gated utility round trips passed (`testbuild181-3.log` rebuilt the test APK after restoring the manifest runner property and ensuring utility teardown/resume readiness before PIN submission; app APKs were unchanged).
+- Visual inspection on the Android 14 emulator confirmed aligned drawer entries and red outlined message bubbles under the Nothing preset (`drawer181-dark.png`, `messages181-dark.png`).
+- Signed 1.8.0 to 1.8.1 upgrade retained synthetic conversations and the default SMS role, displayed the 1.8.1 changelog and left an empty crash buffer (`release181-changelog.png`, `release181-inbox.png`).
+- Physical phones, carrier SMS/MMS delivery and OEM launcher refresh timing were not re-tested for 1.8.1. Compile SDK 34 / target SDK 33 remain unchanged, and release lint remains excluded due to the legacy AGP SDK 37 metadata crash.
 
 ## 1.8.0 personalization and launcher icons — 20 October 2026
 

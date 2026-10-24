@@ -65,6 +65,17 @@ class ThemeConsistencyInstrumentation : Instrumentation() {
                             val body=android.view.LayoutInflater.from(renderContext).inflate(if(outgoing) R.layout.message_list_item_out else R.layout.message_list_item_in,null).findViewById<TextView>(R.id.body)
                             MessageBodyStyle.apply(body,outgoing,android.graphics.Color.RED,false)
                             val first=fill(body)
+                            val reference=View(renderContext).apply { background=TextoAppearance.card(renderContext) }
+                            val pixels=Bitmap.createBitmap(120,80,Bitmap.Config.ARGB_8888)
+                            val expected=Bitmap.createBitmap(120,80,Bitmap.Config.ARGB_8888)
+                            body.background.setBounds(0,0,120,80); body.background.draw(Canvas(pixels))
+                            reference.background.setBounds(0,0,120,80); reference.background.draw(Canvas(expected))
+                            check(pixels.sameAs(expected)) { "Message discarded shared card finish/border/shape: $profile/$finish/$outgoing" }
+                            pixels.recycle(); expected.recycle()
+                            val original=body.background
+                            MessageBodyStyle.apply(body,outgoing,android.graphics.Color.RED,false)
+                            check(body.background===original) { "Unchanged bind rebuilt message surface" }
+
                             MessageBodyStyle.apply(body,outgoing,android.graphics.Color.BLUE,false)
                             check(first==fill(body)) { "Legacy contact accent replaced OEM finish: $profile/$finish" }
                             val attachment=View(renderContext)
@@ -83,12 +94,12 @@ class ThemeConsistencyInstrumentation : Instrumentation() {
                 main { about.findViewById<View>(R.id.version).performClick() }
                 for(attempt in 0 until 40) {
                     SystemClock.sleep(50); waitForIdleSync()
-                    if(windows().filterIsInstance<TextView>().any { it.text.toString().contains("What’s new in Texto 1.8.0") }) break
+                    if(windows().filterIsInstance<TextView>().any { it.text.toString().contains("What’s new in Texto 1.8.1") }) break
                 }
                 main {
                     val text=windows().filterIsInstance<TextView>().map { it.text.toString() }
-                    check(text.any { it.contains("What’s new in Texto 1.8.0") }) { "Version did not open current changelog" }
-                    check(text.any { it.contains("OEM-inspired launcher icons") }) { "Current release details missing" }
+                    check(text.any { it.contains("What’s new in Texto 1.8.1") }) { "Version did not open current changelog" }
+                    check(text.any { it.contains("shared card renderer") }) { "Current release details missing" }
                     windows().filterIsInstance<TextView>().last { it.text.toString().equals("Got it",true) }.performClick()
                 }
                 waitForIdleSync()

@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.8.1 — 24 October 2026
+
+- Fixed message bubbles bypassing the chosen card finish under OEM presets. SMS and MMS surfaces now use the same renderer as other cards, including outlines, gradients, shapes and no-card mode.
+- Custom sent/received colors remain available and now retain the selected finish and borders.
+- Fixed the Privacy navigation row using different icon/text spacing and height from other drawer entries.
+- Reduced repeated padding/color changes and reused classic grouping masks without replacing the background on every bind.
+- Added rendered-pixel parity checks against shared cards and drawer alignment regression coverage.
+
 ## 1.8.0 — 20 October 2026
 
 - Added 13 OEM-inspired launcher icons plus the original Texto icon: Samsung, Pixel/Google, OPPO, OnePlus, realme, Xiaomi, Huawei, HONOR, vivo, Motorola, Nothing, Sony and ASUS. Adaptive and Android themed-icon variants are included. These are independently drawn interpretations, not stock OEM assets.

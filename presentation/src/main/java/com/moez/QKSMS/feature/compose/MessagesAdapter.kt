@@ -386,16 +386,13 @@ class MessagesAdapter @Inject constructor(
             if (!android.text.TextUtils.equals(text,spanString) || cached?.linkMode != linkMode || cached?.subject != subject) text = spanString
             setVisible(message.isSms() || spanString.isNotBlank())
 
-            // The shared fluid surface can be reused. Classic grouping supplies its corner mask.
-            if (dev.texto.privacy.TextoAppearance.prefs(context).getString("bubbles", "fluid") == "classic") {
-                setBackgroundResource(getBubble(emojiOnly = emojiOnly,
-                    canGroupWithPrevious = canGroup(message, previous) || message.parts.any { !it.isSmil() && !it.isText() },
-                    canGroupWithNext = canGroup(message, next), isMe = message.isMe()))
-            }
         }
-
-        // Apply after the drawable and spans: recycled rows and links share bubble contrast.
-        dev.texto.privacy.MessageBodyStyle.apply(body, isOutgoing, theme.theme, emojiOnly)
+        val classicBubble = if (dev.texto.privacy.TextoAppearance.prefs(context).getString("bubbles", "fluid") == "classic")
+            getBubble(emojiOnly = emojiOnly,
+                canGroupWithPrevious = canGroup(message, previous) || message.parts.any { !it.isSmil() && !it.isText() },
+                canGroupWithNext = canGroup(message, next), isMe = message.isMe()) else null
+        // Keep the shared drawable on recycled rows; grouping changes only the cached corner mask.
+        dev.texto.privacy.MessageBodyStyle.apply(body, isOutgoing, theme.theme, emojiOnly, classicBubble)
 
         // SMS rows need no attachment adapter. MMS rows reuse their adapter and click stream.
         val hasAttachments = message.parts.any { !it.isSmil() && !it.isText() }

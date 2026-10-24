@@ -49,6 +49,15 @@ class CustomizationInstrumentation : Instrumentation() {
                 }
             }
             main {
+                val drawer=android.view.LayoutInflater.from(host).inflate(R.layout.drawer_view,null)
+                for(direction in listOf(View.LAYOUT_DIRECTION_LTR,View.LAYOUT_DIRECTION_RTL)) {
+                    drawer.layoutDirection=direction
+                    drawer.measure(View.MeasureSpec.makeMeasureSpec(900,View.MeasureSpec.EXACTLY),View.MeasureSpec.makeMeasureSpec(3000,View.MeasureSpec.AT_MOST))
+                    drawer.layout(0,0,drawer.measuredWidth,drawer.measuredHeight)
+                    val privacy=drawer.findViewById<android.widget.LinearLayout>(R.id.privacy)
+                    val settings=drawer.findViewById<android.widget.LinearLayout>(R.id.settings)
+                    check(privacy.height==settings.height && privacy.getChildAt(1).left==settings.getChildAt(1).left && privacy.getChildAt(0).left==settings.getChildAt(0).left) { "Privacy drawer spacing differs from Settings" }
+                }
                 val body=TextView(host)
                 p.edit().putString("card_finish","tonal").putInt("sent_color",Color.BLACK).putInt("received_color",Color.WHITE).putString("message_font","serif").putString("message_line_height","spacious").commit()
                 MessageBodyStyle.apply(body,true,Color.BLUE,false)

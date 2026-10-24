@@ -1,5 +1,18 @@
 [
   {
+    "versionCode": 2345,
+    "versionName": "1.8.1",
+    "added": [],
+    "improved": [
+      "Reuse message surfaces and classic grouping masks during scrolling."
+    ],
+    "fixed": [
+      "OEM and custom message bubbles now use the shared card renderer, including finishes, borders, gradients and shapes.",
+      "Privacy drawer icon, label and row height now match the other navigation entries."
+    ],
+    "removed": []
+  },
+  {
     "versionCode": 2344,
     "versionName": "1.8.0",
     "added": [

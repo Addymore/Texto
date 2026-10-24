@@ -177,6 +177,18 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/privacy"
+            style="@style/DrawerRow">
+            <ImageView
+                style="@style/DrawerIcon"
+                android:src="@drawable/ic_texto_privacy"
+                app:tint="?android:attr/textColorSecondary" />
+            <dev.octoshrimpy.quik.common.widget.QkTextView
+                style="@style/DrawerText"
+                android:text="Privacy" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/about"
             style="@style/DrawerRow">
 

@@ -19,7 +19,7 @@ object TextoAppearance {
         return android.preference.PreferenceManager.getDefaultSharedPreferences(context).getInt("theme", 0xFF375BCD.toInt())
     }
     fun noCards(context: Context) = prefs(context).getString("card_finish", "tonal") == "none"
-    fun card(context: Context, selected: Boolean = false, accentColor: Int = accent(context), corners: FloatArray? = null): android.graphics.drawable.Drawable {
+    fun card(context: Context, selected: Boolean = false, accentColor: Int = accent(context), corners: FloatArray? = null, fillColor: Int? = null): android.graphics.drawable.Drawable {
         val p = prefs(context); val dark = context.resources.configuration.uiMode and 0x30 == 0x20
         val radius = when(p.getString("card_shape", "soft")) { "square" -> 0; "pill" -> 48; "minimal" -> 12; "round" -> 30; else -> 16 }
         val base = if(dark) 0xFF23262D.toInt() else if(SkinPresets.id(context) in listOf("samsung","oppo","xiaomi","vivo")) Color.WHITE else 0xFFF3F5F9.toInt()
@@ -31,7 +31,7 @@ object TextoAppearance {
             }
             return RippleDrawable(ColorStateList.valueOf(accentColor and 0x00FFFFFF or 0x22000000), content, null)
         }
-        val fills = cardColors(context, accentColor)
+        val fills = cardColors(context, accentColor, fillColor)
         val shape = GradientDrawable().apply {
             cornerRadius = radius * context.resources.displayMetrics.density
             if (fills.size > 1) { orientation = when(p.getString("gradient_direction","diagonal")) { "vertical" -> GradientDrawable.Orientation.TOP_BOTTOM; "horizontal" -> GradientDrawable.Orientation.LEFT_RIGHT; else -> GradientDrawable.Orientation.TL_BR }; colors = fills }
@@ -43,10 +43,15 @@ object TextoAppearance {
         if (selected && finish in listOf("gradient", "glass", "amoled")) shape.setStroke((2*context.resources.displayMetrics.density).toInt(), accentColor)
         return RippleDrawable(ColorStateList.valueOf(accentColor and 0x00FFFFFF or 0x22000000),shape,null)
     }
-    fun cardColors(context: Context, accentColor: Int = accent(context)): IntArray {
+    fun cardColors(context: Context, accentColor: Int = accent(context), fillColor: Int? = null): IntArray {
         val dark = context.resources.configuration.uiMode and 0x30 == 0x20
         val base = if(dark) 0xFF23262D.toInt() else if(SkinPresets.id(context) in listOf("samsung","oppo","xiaomi","vivo")) Color.WHITE else 0xFFF3F5F9.toInt()
-        fun blend(color: Int, amount: Float) = androidx.core.graphics.ColorUtils.blendARGB(base, color, amount)
+        val surfaceBase = fillColor ?: base
+        fun blend(color: Int, amount: Float) = androidx.core.graphics.ColorUtils.blendARGB(surfaceBase, color, amount)
+        if (fillColor != null && !noCards(context)) return when(prefs(context).getString("card_finish","tonal")) {
+            "gradient", "duotone" -> intArrayOf(fillColor, androidx.core.graphics.ColorUtils.blendARGB(fillColor,base,.25f))
+            else -> intArrayOf(fillColor)
+        }
         return when(prefs(context).getString("card_finish", "tonal")) {
             "none" -> intArrayOf(Color.TRANSPARENT)
             "gradient" -> intArrayOf(blend(accentColor, .28f), base)

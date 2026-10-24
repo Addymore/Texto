@@ -98,3 +98,7 @@ OEM palettes and custom finishes carry through SMS bodies and MMS attachment sur
 - Automatic, none, fine, medium or bold card borders; diagonal, vertical or horizontal gradients.
 - Aligned Settings icon/text columns in left-to-right and right-to-left layouts.
 - Live previews and reversible OEM presets retain the new options.
+
+## Shared message surfaces (1.8.1)
+
+OEM and custom card finishes use one renderer for message bubbles, MMS cards and other card surfaces. Message colors can be customized without losing borders or gradient direction. Classic grouping keeps its corner mask and reuses backgrounds during unchanged binds. The Privacy drawer entry uses the same icon/text layout as the other entries. Regression tests compare complete rendered message backgrounds against shared cards, including borders and corners.

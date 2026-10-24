@@ -184,7 +184,8 @@ class CompactLayoutInstrumentation : Instrumentation() {
                         v.background.setBounds(0,0,100,60); v.background.draw(android.graphics.Canvas(bitmap))
                         return bitmap.getPixel(50,30).also { bitmap.recycle() }
                     }
-                    check(fill(incoming)!=fill(outgoing)) { "OEM sent and received bubbles are identical" }
+                    val shared=View(screen).apply { background=TextoAppearance.card(screen) }
+                    check(fill(incoming)==fill(shared) && fill(outgoing)==fill(shared)) { "OEM bubbles bypassed the selected shared finish" }
                     for(index in SkinPresets.names.indices) {
                         SkinPresets.apply(screen,index)
                         check(SkinPresets.id(screen)==SkinPresets.ids[index])

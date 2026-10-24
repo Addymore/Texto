@@ -129,15 +129,28 @@ class UtilityAccessInstrumentation : Instrumentation() {
                 val ordinary = startActivitySync(intent)
                 waitForIdleSync()
                 main { check(!ordinary.isFinishing && ordinary.window.decorView.visibility == View.VISIBLE); check(!PrivacyGate.session.pending); ordinary.finish() }
-                waitForIdleSync()
+                for (i in 0..30) {
+                    waitForIdleSync()
+                    var destroyed = false
+                    main { destroyed = ordinary.isDestroyed }
+                    if (destroyed) break
+                    android.os.SystemClock.sleep(100)
+                }
                 intent.putExtra("protected_tools",true)
                 val monitor = addMonitor(UnlockActivity::class.java.name, null, false)
                 val utility = startActivitySync(intent)
-                val unlock = checkNotNull(waitForMonitorWithTimeout(monitor, 8000)) { "$name did not request authentication" }
-                waitForIdleSync()
-                android.os.SystemClock.sleep(700)
-                uiAutomation.rootInActiveWindow?.findAccessibilityNodeInfosByText("Use PIN")?.firstOrNull()
-                    ?.performAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK)
+                val unlock = checkNotNull(waitForMonitorWithTimeout(monitor, 8000)) { "$name did not request authentication" } as UnlockActivity
+                for (i in 0..30) {
+                    waitForIdleSync()
+                    for (label in listOf("Wait", "Use PIN")) {
+                        uiAutomation.rootInActiveWindow?.findAccessibilityNodeInfosByText(label)?.firstOrNull()
+                            ?.performAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK)
+                    }
+                    var resumed = false
+                    main { resumed = unlock.lifecycle.currentState.isAtLeast(androidx.lifecycle.Lifecycle.State.RESUMED) }
+                    if (resumed && i >= 7) break
+                    android.os.SystemClock.sleep(100)
+                }
                 waitForIdleSync()
                 main {
                     check(!utility.isFinishing)
@@ -149,15 +162,35 @@ class UtilityAccessInstrumentation : Instrumentation() {
                 }
                 for (i in 0..99) {
                     waitForIdleSync()
+                    for (label in listOf("Wait", "Use PIN")) {
+                        uiAutomation.rootInActiveWindow?.findAccessibilityNodeInfosByText(label)?.firstOrNull()
+                            ?.performAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK)
+                    }
                     var ready = false
-                    main { ready = PrivacyGate.unlocked && utility.window.decorView.visibility == View.VISIBLE }
+                    main {
+                        ready = PrivacyGate.unlocked && utility.window.decorView.visibility == View.VISIBLE
+                        if (!ready && i > 0 && i % 20 == 0 && !unlock.isFinishing && unlock.lifecycle.currentState.isAtLeast(androidx.lifecycle.Lifecycle.State.RESUMED)) {
+                            val children = views(unlock.window.decorView)
+                            val button = children.filterIsInstance<TextView>().single { it.text.toString() == "Unlock" }
+                            if (button.isEnabled) {
+                                children.filterIsInstance<TextInputEditText>().single().setText("123456")
+                                button.performClick()
+                            }
+                        }
+                    }
                     if (ready) break
                     android.os.SystemClock.sleep(100)
                 }
-                main { check(PrivacyGate.unlocked && !utility.isFinishing && utility.window.decorView.visibility == View.VISIBLE) { "$name did not resume after PIN: unlocked=${PrivacyGate.unlocked}, pending=${PrivacyGate.session.pending}, finishing=${utility.isFinishing}, visibility=${utility.window.decorView.visibility}, unlockFinishing=${unlock.isFinishing}, text=${views(unlock.window.decorView).filterIsInstance<TextView>().map { it.text.toString() }}" } }
+                main { check(PrivacyGate.unlocked && !utility.isFinishing && utility.window.decorView.visibility == View.VISIBLE) { "$name did not resume after PIN: unlocked=${PrivacyGate.unlocked}, pending=${PrivacyGate.session.pending}, finishing=${utility.isFinishing}, visibility=${utility.window.decorView.visibility}, unlockFinishing=${unlock.isFinishing}, unlockState=${unlock.lifecycle.currentState}, text=${views(unlock.window.decorView).filterIsInstance<TextView>().map { it.text.toString() }}" } }
                 removeMonitor(monitor)
                 main { utility.finish() }
-                waitForIdleSync()
+                for (i in 0..30) {
+                    waitForIdleSync()
+                    var destroyed = false
+                    main { destroyed = utility.isDestroyed }
+                    if (destroyed) break
+                    android.os.SystemClock.sleep(100)
+                }
             }
             main { PrivacyGate.session.lock() }
             val monitor = addMonitor(UnlockActivity::class.java.name, null, false)

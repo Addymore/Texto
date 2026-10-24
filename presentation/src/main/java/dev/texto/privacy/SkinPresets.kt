@@ -8,14 +8,14 @@ object SkinPresets {
     val names = arrayOf("Samsung One UI inspired", "ColorOS / OxygenOS inspired", "Pixel inspired", "Xiaomi HyperOS inspired", "Nothing inspired", "Motorola inspired", "Honor inspired", "vivo inspired")
     val ids = arrayOf("samsung", "oppo", "pixel", "xiaomi", "nothing", "motorola", "honor", "vivo")
     val descriptions = arrayOf(
-        "Large centered, reachable heading; clean conversation list; blue sent bubbles; rounded white settings and a flat navigation bar.",
-        "Left-aligned bold heading; soft floating surfaces; green sent bubbles; compact previews and translucent-looking navigation.",
+        "Large centered, reachable heading; clean conversation list; blue accents; rounded neutral surfaces and a flat navigation bar.",
+        "Left-aligned bold heading; soft floating surfaces; green accents and shared glass-style message cards; compact previews and translucent-looking navigation.",
         "Compact heading; clean avatar-led list; pill bubbles; blue tonal surfaces and Material-style navigation.",
-        "Large left heading; compact list; blue sent bubbles with asymmetric corners; rounded grouped settings.",
+        "Large left heading; compact list; blue accents and pastel message cards; rounded grouped settings.",
         "Monospaced headings; monochrome surfaces; red controls; outlined settings and squared navigation.",
-        "Compact heading; teal sent bubbles; clean conversation list and rounded Material surfaces.",
-        "Centered heading; soft blue bubbles; generous rounded surfaces and floating navigation.",
-        "Bold left heading; purple sent bubbles; soft rounded surfaces and compact navigation.")
+        "Compact heading; teal tinted message cards; clean conversation list and rounded Material surfaces.",
+        "Centered heading; soft blue duotone message cards; generous rounded surfaces and floating navigation.",
+        "Bold left heading; purple gradient message cards; soft rounded surfaces and compact navigation.")
     private val finishes = arrayOf("neutral", "glass", "tonal", "pastel", "outlined", "tinted", "duotone", "gradient")
     fun usesProfileSurface(context: Context): Boolean {
         val index=ids.indexOf(id(context))

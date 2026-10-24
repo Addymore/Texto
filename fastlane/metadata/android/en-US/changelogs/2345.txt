@@ -1,0 +1,1 @@
+Message bubbles now follow shared OEM/custom card finishes, borders, gradients and shapes. Fixed Privacy drawer icon/text spacing and row height. Reduced repeated message layout and classic bubble allocations.
