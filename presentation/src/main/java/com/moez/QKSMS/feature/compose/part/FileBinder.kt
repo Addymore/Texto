@@ -44,6 +44,7 @@ class FileBinder @Inject constructor(colors: Colors, private val context: Contex
 
     override val partLayout = R.layout.mms_file_list_item
     override var theme = colors.theme()
+    private val sizeCache = java.util.concurrent.ConcurrentHashMap<Long, String>()
 
     // This is the last binder we check. If we're here, we can bind the part
     override fun canBindPart(part: MmsPart) = true
@@ -60,25 +61,36 @@ class FileBinder @Inject constructor(colors: Colors, private val context: Contex
         BubbleUtils.getBubble(false, canGroupWithPrevious, canGroupWithNext, message.isMe())
                 .let(binding.fileBackground::setBackgroundResource)
 
+        binding.size.tag = part.id
+        val cachedSize = sizeCache[part.id]
+        if (cachedSize != null) {
+            binding.size.text = cachedSize
+        } else {
+            binding.size.text = ""
+            tryOrNull(true) {
+                Observable.just(part.getUri())
+                    .mapNotNull { uri ->
+                        tryOrNull(true) {
+                            context.contentResolver.openInputStream(uri)?.use { it.available() }
+                        }
+                    }
+                    .map { bytes ->
+                        when (bytes) {
+                            in 0..999 -> "$bytes B"
+                            in 1000..999999 -> "${"%.1f".format(bytes / 1000f)} KB"
+                            in 1000000..9999999 -> "${"%.1f".format(bytes / 1000000f)} MB"
+                            else -> "${"%.1f".format(bytes / 1000000000f)} GB"
+                        }
+                    }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe { size ->
+                        sizeCache[part.id] = size
+                        if (binding.size.tag == part.id) binding.size.text = size
+                    }
+            }
+        }
         tryOrNull(true) {
-            Observable.just(part.getUri())
-                .mapNotNull { uri ->
-                    tryOrNull(true) {
-                        context.contentResolver.openInputStream(uri)?.use { it.available() }
-                    }
-                }
-                .map { bytes ->
-                    when (bytes) {
-                        in 0..999 -> "$bytes B"
-                        in 1000..999999 -> "${"%.1f".format(bytes / 1000f)} KB"
-                        in 1000000..9999999 -> "${"%.1f".format(bytes / 1000000f)} MB"
-                        else -> "${"%.1f".format(bytes / 1000000000f)} GB"
-                    }
-                }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { size -> binding.size.text = size }
-
             binding.filename.text = part.getBestFilename()
         }
 

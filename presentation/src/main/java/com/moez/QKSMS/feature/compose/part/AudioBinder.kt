@@ -233,61 +233,76 @@ class AudioBinder @Inject constructor(colors: Colors, private val context: Conte
             setBackgroundTint(primaryColor)
         }
 
-        MediaMetadataRetriever().apply {
-            try {
-                if (part.getUri().resourceExists(context))
-                    setDataSource(context, part.getUri())
+        binding.thumbnail.bubbleStyle = when {
+            !canGroupWithPrevious && canGroupWithNext ->
+                if (message.isMe()) BubbleImageView.Style.OUT_FIRST else BubbleImageView.Style.IN_FIRST
+            canGroupWithPrevious && canGroupWithNext ->
+                if (message.isMe()) BubbleImageView.Style.OUT_MIDDLE else BubbleImageView.Style.IN_MIDDLE
+            canGroupWithPrevious && !canGroupWithNext ->
+                if (message.isMe()) BubbleImageView.Style.OUT_LAST else BubbleImageView.Style.IN_LAST
+            else -> BubbleImageView.Style.ONLY
+        }
 
-                // metadata title
-                binding.metadataTitle.apply {
-                    text = extractMetadata(METADATA_KEY_TITLE)
-
-                    if (text.isEmpty())
-                        visibility = View.GONE
-                    else {
-                        visibility = View.VISIBLE
-                        setTextColor(primaryColor)
-                        setBackgroundTint((if(primaryColor == android.graphics.Color.WHITE) android.graphics.Color.BLACK else android.graphics.Color.WHITE).withAlpha(0xcc))    // hex value is alpha
-                    }
+        fun applyMeta(meta: AudioMeta) {
+            binding.metadataTitle.apply {
+                text = meta.title
+                if (text.isEmpty()) {
+                    visibility = View.GONE
+                } else {
+                    visibility = View.VISIBLE
+                    setTextColor(primaryColor)
+                    setBackgroundTint((if (primaryColor == android.graphics.Color.WHITE) android.graphics.Color.BLACK else android.graphics.Color.WHITE).withAlpha(0xcc))
                 }
-
-                // bubble / embedded image
-                binding.thumbnail.apply {
-                    bubbleStyle = when {
-                        !canGroupWithPrevious && canGroupWithNext ->
-                            if (message.isMe()) BubbleImageView.Style.OUT_FIRST else BubbleImageView.Style.IN_FIRST
-
-                        canGroupWithPrevious && canGroupWithNext ->
-                            if (message.isMe()) BubbleImageView.Style.OUT_MIDDLE else BubbleImageView.Style.IN_MIDDLE
-
-                        canGroupWithPrevious && !canGroupWithNext ->
-                            if (message.isMe()) BubbleImageView.Style.OUT_LAST else BubbleImageView.Style.IN_LAST
-
-                        else -> BubbleImageView.Style.ONLY
-                    }
-
-                    val embeddedPicture = embeddedPicture
-                    if (embeddedPicture == null) {
-                        binding.frame.layoutParams.height = (binding.frame.layoutParams.width / 2)
-                        setTint(null)
-                        setImageDrawable(null)
-                    } else {
-                        binding.frame.layoutParams.height = binding.frame.layoutParams.width
-                        setTint(null)
-                        GlideApp.with(context)
-                            .asBitmap()
-                            .load(embeddedPicture)
-                            .override(
-                                binding.frame.layoutParams.width,
-                                binding.frame.layoutParams.height
-                            )
-                            .into(this)
-                    }
+            }
+            binding.thumbnail.apply {
+                val embeddedPicture = meta.picture
+                if (embeddedPicture == null) {
+                    binding.frame.layoutParams.height = (binding.frame.layoutParams.width / 2)
+                    setTint(null)
+                    setImageDrawable(null)
+                } else {
+                    binding.frame.layoutParams.height = binding.frame.layoutParams.width
+                    setTint(null)
+                    GlideApp.with(context)
+                        .asBitmap()
+                        .load(embeddedPicture)
+                        .override(
+                            binding.frame.layoutParams.width,
+                            binding.frame.layoutParams.height
+                        )
+                        .into(this)
                 }
-            } catch (e: Exception) { /* nothing */ }
-            finally {
-                release()
             }
         }
+
+        binding.frame.tag = part.id
+        val cached = metaCache.get(part.id)
+        if (cached != null) {
+            applyMeta(cached)
+        } else {
+            applyMeta(AudioMeta("", null))
+            val uri = part.getUri()
+            val partId = part.id
+            io.reactivex.Single.fromCallable {
+                val retriever = MediaMetadataRetriever()
+                try {
+                    if (uri.resourceExists(context)) retriever.setDataSource(context, uri)
+                    AudioMeta(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE).orEmpty(), retriever.embeddedPicture)
+                } catch (_: Exception) {
+                    AudioMeta("", null)
+                } finally {
+                    runCatching { retriever.release() }
+                }
+            }
+                .subscribeOn(io.reactivex.schedulers.Schedulers.io())
+                .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
+                .subscribe({ meta ->
+                    metaCache.put(partId, meta)
+                    if (binding.frame.tag == partId) applyMeta(meta)
+                }, {})
+        }
     }
+
+    private data class AudioMeta(val title: String, val picture: ByteArray?)
+    private val metaCache = android.util.LruCache<Long, AudioMeta>(32)
 }

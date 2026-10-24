@@ -18,12 +18,14 @@ class ContactProfileActivity : AppCompatActivity() {
         TextoTheme.apply(this)
         super.onCreate(savedInstanceState)
         val id = intent.getLongExtra("threadId", 0)
+        if (!PrivacyGate.guardConversation(this, id)) return
         val conversation = Realm.getDefaultInstance().use { realm ->
             realm.where(Conversation::class.java).equalTo("id", id).findFirst()?.let { realm.copyFromRealm(it) }
         }
         if (conversation == null) { finish(); return }
+        val ink = TextoAppearance.readableText(this)
         val panel = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(48, 56, 48, 32) }
-        fun label(value: String, size: Float) { panel.addView(TextView(this).apply { text = value; textSize = size; setPadding(0, 16, 0, 16) }) }
+        fun label(value: String, size: Float) { panel.addView(TextView(this).apply { text = value; textSize = size; setTextColor(ink); setPadding(0, 16, 0, 16) }) }
         fun button(value: String, action: () -> Unit) { panel.addView(MaterialButton(this).apply { text = value; isAllCaps = false; setOnClickListener { action() }; TextoAppearance.styleSettingsCard(this) }) }
         label(conversation.getTitle().take(1).uppercase(), 64f)
         label(conversation.getTitle(), 30f)

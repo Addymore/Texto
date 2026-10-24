@@ -71,12 +71,17 @@ class SearchAdapter @Inject constructor(
         holder.binding.snippet.maxLines = 4
 
         val query = result.query
+        val strippedQuery = query.removeAccents()
         val title = SpannableString(result.conversation.getTitle())
-        var index = title.removeAccents().indexOf(query, ignoreCase = true)
+        val strippedTitle = title.removeAccents()
+        var index = strippedTitle.indexOf(strippedQuery, ignoreCase = true)
 
-        while (query.isNotEmpty() && index >= 0) {
-            title.setSpan(BackgroundColorSpan(highlightColor), index, index + query.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            index = title.indexOf(query, index + query.length, true)
+        while (strippedQuery.isNotEmpty() && index >= 0) {
+            val end = (index + strippedQuery.length).coerceAtMost(title.length)
+            if (index < end) {
+                title.setSpan(BackgroundColorSpan(highlightColor), index, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+            index = strippedTitle.indexOf(strippedQuery, index + strippedQuery.length, true)
         }
         holder.binding.title.text = title
 

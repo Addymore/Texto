@@ -15,8 +15,14 @@ import dev.octoshrimpy.quik.R
 
 class UnlockActivity : AppCompatActivity() {
     private var autoPrompt: (() -> Unit)? = null
+    private var pendingComplete = false
     override fun onPostResume() {
         super.onPostResume()
+        if (pendingComplete) {
+            pendingComplete = false
+            complete()
+            return
+        }
         autoPrompt?.also { autoPrompt = null; it() }
     }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,11 +32,12 @@ class UnlockActivity : AppCompatActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
         if (!PrivacyGate.session.pending) { finish(); return }
         val policy = TextoPolicy(this)
+        val ink = TextoAppearance.readableText(this)
         val box = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(48, 100, 48, 48) }
-        val title = TextView(this).apply { text = if (intent.getBooleanExtra("utility", false)) "Confirm access" else if (intent.getBooleanExtra("bin", false)) "Recycle bin" else "Private messages"; textSize = 32f }
-        val note = TextView(this).apply { text = "Use fingerprint or your PIN to continue."; textSize = 16f }
-        val pin = TextInputEditText(this).apply { hint = "6–12 digit PIN"; inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD }
-        val error = TextView(this)
+        val title = TextView(this).apply { text = if (intent.getBooleanExtra("utility", false)) "Confirm access" else if (intent.getBooleanExtra("bin", false)) "Recycle bin" else "Private messages"; textSize = 32f; setTextColor(ink) }
+        val note = TextView(this).apply { text = "Use fingerprint or your PIN to continue."; textSize = 16f; setTextColor(ink) }
+        val pin = TextInputEditText(this).apply { hint = "6–12 digit PIN"; setTextColor(ink); inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD }
+        val error = TextView(this).apply { setTextColor(ink) }
         box.addView(title); box.addView(note); box.addView(pin); box.addView(error)
         box.addView(MaterialButton(this).apply {
             text = "Unlock"
@@ -80,7 +87,11 @@ class UnlockActivity : AppCompatActivity() {
         setContentView(box)
     }
     private fun complete() {
-        if (!lifecycle.currentState.isAtLeast(androidx.lifecycle.Lifecycle.State.RESUMED)) return
+        if (!lifecycle.currentState.isAtLeast(androidx.lifecycle.Lifecycle.State.RESUMED)) {
+            pendingComplete = true
+            return
+        }
+        pendingComplete = false
         if (!PrivacyGate.session.authenticate()) { finish(); return }
         if (intent.getBooleanExtra("utility", false)) setResult(RESULT_OK)
         else startActivity(android.content.Intent(this, if (intent.getBooleanExtra("bin", false)) TrashActivity::class.java else VaultActivity::class.java))

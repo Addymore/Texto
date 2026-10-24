@@ -60,12 +60,14 @@ class SwipeActionsController : QkController<SwipeActionsControllerBinding, Swipe
     }
 
     override fun onViewCreated() {
-        colors.theme().let { theme ->
-            binding.rightIcon.setBackgroundTint(theme.theme)
-            binding.rightIcon.setTint(theme.textPrimary)
-            binding.leftIcon.setBackgroundTint(theme.theme)
-            binding.leftIcon.setTint(theme.textPrimary)
-        }
+        val accent = dev.texto.privacy.TextoAppearance.accent(binding.root.context)
+        val onAccent = dev.texto.privacy.TextoAppearance.onAccent(binding.root.context)
+        binding.rightIcon.setBackgroundTint(accent)
+        binding.rightIcon.setTint(onAccent)
+        binding.leftIcon.setBackgroundTint(accent)
+        binding.leftIcon.setTint(onAccent)
+        dev.texto.privacy.TextoAppearance.styleSettingsCard(binding.right)
+        dev.texto.privacy.TextoAppearance.styleSettingsCard(binding.left)
 
         binding.right.postDelayed({ binding.right.animateLayoutChanges = true }, 100)
         binding.left.postDelayed({ binding.left.animateLayoutChanges = true }, 100)

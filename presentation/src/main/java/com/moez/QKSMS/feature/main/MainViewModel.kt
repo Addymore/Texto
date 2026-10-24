@@ -179,7 +179,7 @@ class MainViewModel @Inject constructor(
                     }
                 else if (state.page is Archived)
                     newState {
-                        copy(page = Inbox(data = conversationRepo.getConversations(prefs.unreadAtTop.get(), true)))
+                        copy(page = Archived(data = conversationRepo.getConversations(prefs.unreadAtTop.get(), true)))
                     }
             }
             .autoDisposable(view.scope())

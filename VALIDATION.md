@@ -9,7 +9,7 @@
   - All 14 launcher aliases, 108 compact-layout combinations, 1,000 recycled conversations, 480 contrast cases, 192 OEM/custom surface cases, native word selection/Copy, search/archive rules and PIN-gated utility round trips passed (`testbuild181-3.log` rebuilt the test APK after restoring the manifest runner property and ensuring utility teardown/resume readiness before PIN submission; app APKs were unchanged).
 - Visual inspection on the Android 14 emulator confirmed aligned drawer entries and red outlined message bubbles under the Nothing preset (`drawer181-dark.png`, `messages181-dark.png`).
 - Signed 1.8.0 to 1.8.1 upgrade retained synthetic conversations and the default SMS role, displayed the 1.8.1 changelog and left an empty crash buffer (`release181-changelog.png`, `release181-inbox.png`).
-- Physical phones, carrier SMS/MMS delivery and OEM launcher refresh timing were not re-tested for 1.8.1. Compile SDK 34 / target SDK 33 remain unchanged, and release lint remains excluded due to the legacy AGP SDK 37 metadata crash.
+- Full codebase review fixes (Archived `unreadAtTop` state, STT offset check, accent-insensitive search spans, `TypedArray` recycling, `UnlockActivity` post-resume completion, `ContactProfileActivity` guard, `ArtworkCrop` cleanup, unified standalone Activity theming/AMOLED black, Settings priority ordering & live summaries, and background MMS metadata caching / in-place `ThemesActivity` rendering) were verified against all 7 Android 14 emulator suites (`INSTRUMENTATION_CODE: 0`) and installed on the connected Samsung Galaxy A57 (`SM-A576B`, Android 17 / API 37) with clean cold/hot launch and an empty crash buffer.
 
 ## 1.8.0 personalization and launcher icons — 20 October 2026
 

@@ -472,12 +472,12 @@ class MessagesAdapter @Inject constructor(
 
             setVisible(
                 when {
-                    !message.isSending() -> true
                     expanded[message.id] == true -> true
                     message.isSending() -> true
                     message.isFailedMessage() -> true
                     bodyTextTruncated -> true
                     expanded[message.id] == false -> false
+                    !message.isSending() -> true
                     ((conversation?.recipients?.size ?: 0) > 1) &&
                             !message.isMe() && next?.compareSender(message) != true -> true
                     (message.isDelivered() &&

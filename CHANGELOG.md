@@ -4,8 +4,11 @@
 
 - Fixed message bubbles bypassing the chosen card finish under OEM presets. SMS and MMS surfaces now use the same renderer as other cards, including outlines, gradients, shapes and no-card mode.
 - Custom sent/received colors remain available and now retain the selected finish and borders.
-- Fixed the Privacy navigation row using different icon/text spacing and height from other drawer entries.
-- Reduced repeated padding/color changes and reused classic grouping masks without replacing the background on every bind.
+- Fixed the Privacy navigation row using different icon/text spacing and height from other drawer entries, and applied contrast-safe icon tints across all drawer items and swipe action cards.
+- Unified standalone screens (`Privacy & protection`, `Recycle bin`, `Unlock`, `Contacts`, `Contact profile`) with pure-black night mode, Material You dynamic colors, matching system bar lightness/backgrounds and high-refresh preferences.
+- Reorganized Settings into user-priority order (`Appearance`, `Privacy & security`, `Inbox & contacts`, `Messaging & MMS`, `General`) with live status summaries (`Themes, cards & navigation`, `Privacy & protection`, `Dialing country code`), and refined `Themes` with card-styled switches and conditional artwork/color reset rows.
+- Fixed `Archived` state resetting to `Inbox` when toggling `Unread at the top`, speech-to-text drag-offset initialization check, accent-insensitive search highlight bounds, `TypedArray` resource leaks, unlock completion timing during dialog transitions, early conversation privacy guard in `ContactProfileActivity`, and cropped artwork file cleanup.
+- Moved MMS audio metadata extraction off the UI thread with in-memory part caching across audio, file and vCard attachments, reused `ScrollView` content in `Themes` without window re-inflation, coalesced `Contacts` header collapse to animation frames with stable adapter IDs, and avoided main-thread launcher bitmap decoding on API 28+.
 - Added rendered-pixel parity checks against shared cards and drawer alignment regression coverage.
 
 ## 1.8.0 — 20 October 2026

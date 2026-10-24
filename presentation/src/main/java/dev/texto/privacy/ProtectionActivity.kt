@@ -38,11 +38,16 @@ class ProtectionActivity : AppCompatActivity() {
         else { pendingTool=type; PrivacyGate.session.request(); startActivityForResult(Intent(this,UnlockActivity::class.java).putExtra("utility",true),PrivacyGate.UTILITY_UNLOCK) }
     }
     private var lockedRuleDialog: androidx.appcompat.app.AlertDialog? = null
+    private var appearanceKey = ""
     override fun onPause() { lockedRuleDialog?.dismiss(); lockedRuleDialog = null; super.onPause() }
+    override fun onResume() {
+        super.onResume()
+        if (appearanceKey.isNotEmpty() && appearanceKey != TextoTheme.appearanceKey(this)) recreate()
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.TextoTheme)
-        if (policy.preferences.getBoolean("dynamic_colors", false)) com.google.android.material.color.DynamicColors.applyToActivityIfAvailable(this)
         TextoTheme.apply(this)
+        appearanceKey = TextoTheme.appearanceKey(this)
         super.onCreate(savedInstanceState)
         pendingTool=toolTypes.getOrNull(savedInstanceState?.getInt("pending_tool",-1) ?: -1)
         window.addFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE)
@@ -79,7 +84,7 @@ class ProtectionActivity : AppCompatActivity() {
         label("✓ Sent   ✓✓ Delivered   ↓ Received\nDelivery depends on carrier reports and your delivery-report setting. SMS does not provide read receipts. RCS requires carrier/OEM privileged integration and is unavailable in this build.", 14f)
         button("Back to messages") { finish() }
     }
-    private fun label(value: String, size: Float) { content.addView(TextView(this).apply { text = value; textSize = size; setPadding(0, 16, 0, 16) }) }
+    private fun label(value: String, size: Float) { content.addView(TextView(this).apply { text = value; textSize = size; setTextColor(TextoAppearance.readableText(this@ProtectionActivity)); setPadding(0, 16, 0, 16) }) }
     private fun button(value: String, action: () -> Unit) { content.addView(MaterialButton(this).apply { text = value; isAllCaps = false; setOnClickListener { action() }; TextoAppearance.styleSettingsCard(this) }, LinearLayout.LayoutParams(-1,-2).apply { bottomMargin=12 }) }
     private fun edit(key: String, title: String) {
         if (key in listOf("locked", "archived", "protected_tools") && policy.hasPin() && !PrivacyGate.unlocked) {

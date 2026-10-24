@@ -31,7 +31,12 @@ object PhoneDialing {
         }
     }
 
-    fun settings(context: Context) {
+    fun summary(context: Context): String {
+        val code = TextoAppearance.prefs(context).getString("dial_country_code", "").orEmpty()
+        return "${context.getString(dev.octoshrimpy.quik.R.string.texto_settings_dialing)}  ·  ${code.ifEmpty { "As written" }}"
+    }
+
+    fun settings(context: Context, onSaved: () -> Unit = {}) {
         val field = com.google.android.material.textfield.TextInputEditText(context).apply {
             setSingleLine(); hint = "As written, or a code such as +250"
             inputType = android.text.InputType.TYPE_CLASS_PHONE
@@ -49,6 +54,7 @@ object PhoneDialing {
                     field.error = "Enter + followed by 1–3 digits, or leave empty"
                 } else {
                     TextoAppearance.prefs(context).edit().putString("dial_country_code", value).apply()
+                    onSaved()
                     dialog.dismiss()
                 }
             }

@@ -44,6 +44,7 @@ class VCardBinder @Inject constructor(colors: Colors, private val context: Conte
 
     override val partLayout = R.layout.mms_vcard_list_item
     override var theme = colors.theme()
+    private val nameCache = java.util.concurrent.ConcurrentHashMap<Long, String>()
 
     override fun canBindPart(part: MmsPart) = part.isVCard()
 
@@ -60,17 +61,28 @@ class VCardBinder @Inject constructor(colors: Colors, private val context: Conte
 
         holder.itemView.setOnClickListener { clicks.onNext(part.id) }
 
-        tryOrNull(true) {
-            Observable.just(part.getUri())
-                .map(context.contentResolver::openInputStream)
-                .mapNotNull { inputStream -> inputStream.use { Ezvcard.parse(it).first() } }
-                .map { vcard -> vcard.getDisplayName() ?: "" }
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { displayName ->
-                    binding.name.text = displayName
-                    binding.name.isVisible = displayName.isNotEmpty()
-                }
+        binding.name.tag = part.id
+        val cachedName = nameCache[part.id]
+        if (cachedName != null) {
+            binding.name.text = cachedName
+            binding.name.isVisible = cachedName.isNotEmpty()
+        } else {
+            binding.name.isVisible = false
+            tryOrNull(true) {
+                Observable.just(part.getUri())
+                    .map(context.contentResolver::openInputStream)
+                    .mapNotNull { inputStream -> inputStream.use { Ezvcard.parse(it).first() } }
+                    .map { vcard -> vcard.getDisplayName() ?: "" }
+                    .subscribeOn(Schedulers.computation())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe { displayName ->
+                        nameCache[part.id] = displayName
+                        if (binding.name.tag == part.id) {
+                            binding.name.text = displayName
+                            binding.name.isVisible = displayName.isNotEmpty()
+                        }
+                    }
+            }
         }
 
         val foreground = dev.texto.privacy.MessageBodyStyle.surface(binding.vCardBackground, theme.theme, outgoing = message.isMe())

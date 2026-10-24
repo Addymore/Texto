@@ -12,7 +12,7 @@ See the [complete feature list](docs/FEATURES.md) and [1.8.1 changelog](CHANGELO
 
 ### Fixed in 1.8.1
 
-Message bubbles and MMS cards now share the selected card finish, shape, border and gradient renderer, including OEM presets. The Privacy drawer row matches the other navigation entries. Classic grouping masks and unchanged message backgrounds are reused to reduce scrolling work. Custom sent/received colors remain available.
+Message bubbles and MMS cards now share the selected card finish, shape, border and gradient renderer, including OEM presets. Standalone privacy/contact screens now honour pure-black night mode, Material You dynamic colors and system bar styling. Settings groups are organized by priority (`Appearance`, `Privacy & security`, `Inbox & contacts`, `Messaging & MMS`, `General`) with live summaries, while MMS part metadata caching, in-place theme previews and frame-coalesced contact scrolling keep navigation smooth.
 
 ## Consistent themes in 1.7.2
 

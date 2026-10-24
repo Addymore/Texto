@@ -93,7 +93,7 @@ class AvatarView @JvmOverloads constructor(
         background = android.graphics.drawable.GradientDrawable(android.graphics.drawable.GradientDrawable.Orientation.TL_BR, intArrayOf(fill, accent)).apply { shape=android.graphics.drawable.GradientDrawable.OVAL }
         val ink=dev.texto.privacy.TextoTheme.onColor(accent)
         layout.initial.setTextColor(ink)
-        layout.initial.typeface=android.graphics.Typeface.create("sans-serif-medium",android.graphics.Typeface.NORMAL)
+        layout.initial.typeface=mediumTypeface
         layout.icon.setImageDrawable(dev.texto.privacy.ModernAvatar(address,ink))
         layout.icon.setTint(ink)
 
@@ -119,6 +119,12 @@ class AvatarView @JvmOverloads constructor(
             GlideApp.with(layout.photo)
                     .load(photoUri)
                     .into(layout.photo)
+        }
+    }
+
+    companion object {
+        private val mediumTypeface: android.graphics.Typeface by lazy {
+            android.graphics.Typeface.create("sans-serif-medium", android.graphics.Typeface.NORMAL)
         }
     }
 }

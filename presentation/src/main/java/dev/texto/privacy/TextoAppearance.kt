@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 
 object TextoAppearance {
+    private val mediumTypeface by lazy { android.graphics.Typeface.create("sans-serif-medium", 0) }
+    private val monoTypeface by lazy { android.graphics.Typeface.create("monospace", 0) }
     fun prefs(context: Context) = context.applicationContext.getSharedPreferences("texto_privacy", Context.MODE_PRIVATE)
     fun accent(context: Context): Int {
         if (android.os.Build.VERSION.SDK_INT >= 31 && prefs(context).getBoolean("dynamic_colors",false))
@@ -106,7 +108,7 @@ object TextoAppearance {
                 android.graphics.drawable.GradientDrawable().apply { cornerRadius=16*d; setColor(if(selected) androidx.core.graphics.ColorUtils.setAlphaComponent(accent(context),40) else Color.TRANSPARENT) }
                 else card(context,selected)
             if(profile.isNotEmpty()) {
-                binding.title.typeface=android.graphics.Typeface.create(if(profile=="nothing") "monospace" else "sans-serif-medium",0)
+                binding.title.typeface=if(profile=="nothing") monoTypeface else mediumTypeface
             }
             binding.avatars.visibility = if(p.getBoolean("list_avatars",true)) View.VISIBLE else View.GONE
             val avatarSize = (40*d*scale).toInt()

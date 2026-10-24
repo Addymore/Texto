@@ -134,8 +134,13 @@ abstract class QkThemedActivity : QkActivity() {
 
         // Set the color for the recent apps title
         val toolbarColor = resolveThemeColor(R.attr.colorPrimary)
-        val icon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
-        val taskDesc = ActivityManager.TaskDescription(getString(R.string.app_name), icon, toolbarColor)
+        val taskDesc = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            ActivityManager.TaskDescription(getString(R.string.app_name), R.mipmap.ic_launcher, toolbarColor)
+        } else {
+            val icon = cachedLauncherIcon ?: BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher).also { cachedLauncherIcon = it }
+            @Suppress("DEPRECATION")
+            ActivityManager.TaskDescription(getString(R.string.app_name), icon, toolbarColor)
+        }
         setTaskDescription(taskDesc)
     }
 
@@ -174,6 +179,10 @@ abstract class QkThemedActivity : QkActivity() {
     open fun getActivityThemeRes(black: Boolean) = when {
         black -> R.style.AppTheme_Black
         else -> R.style.AppTheme
+    }
+
+    companion object {
+        private var cachedLauncherIcon: android.graphics.Bitmap? = null
     }
 
 }

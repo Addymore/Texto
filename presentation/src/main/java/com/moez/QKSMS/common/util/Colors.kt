@@ -64,11 +64,23 @@ class Colors @Inject constructor(
         R.array.material_brown,
         R.array.material_gray,
         R.array.material_blue_gray)
-            .map { res -> context.resources.obtainTypedArray(res) }
-            .map { typedArray -> (0 until typedArray.length()).map(typedArray::getColorOrThrow) }
+            .map { res ->
+                val typedArray = context.resources.obtainTypedArray(res)
+                try {
+                    (0 until typedArray.length()).map(typedArray::getColorOrThrow)
+                } finally {
+                    typedArray.recycle()
+                }
+            }
 
     private val randomColors: List<Int> = context.resources.obtainTypedArray(R.array.random_colors)
-            .let { typedArray -> (0 until typedArray.length()).map(typedArray::getColorOrThrow) }
+            .let { typedArray ->
+                try {
+                    (0 until typedArray.length()).map(typedArray::getColorOrThrow)
+                } finally {
+                    typedArray.recycle()
+                }
+            }
 
     private val minimumContrastRatio = 2
 

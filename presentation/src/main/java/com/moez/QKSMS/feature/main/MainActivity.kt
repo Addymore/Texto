@@ -152,10 +152,11 @@ class MainActivity : QkThemedActivity(), MainView {
         }
         binding.drawer.archived.visibility = View.GONE
         val drawerRows = listOf(binding.drawer.inbox, binding.drawer.backup, binding.drawer.scheduled, binding.drawer.blocking, binding.drawer.messageUtils, binding.drawer.settings, binding.drawer.privacy, binding.drawer.about, binding.drawer.invite)
+        val controlTint = ColorStateList.valueOf(dev.texto.privacy.TextoAppearance.controlColor(this))
         drawerRows.forEach { row ->
             dev.texto.privacy.TextoAppearance.styleSettingsCard(row)
             row.layoutParams = row.layoutParams.apply { height = (64*resources.displayMetrics.density).toInt() }
-            for(i in 0 until row.childCount) (row.getChildAt(i) as? android.widget.ImageView)?.imageTintList = ColorStateList.valueOf(dev.texto.privacy.TextoAppearance.accent(this))
+            for(i in 0 until row.childCount) (row.getChildAt(i) as? android.widget.ImageView)?.imageTintList = controlTint
         }
         dev.texto.privacy.TextoAppearance.styleSettingsCard(binding.drawer.rateLayout)
         binding.drawer.privacy.setOnClickListener {
@@ -196,13 +197,8 @@ class MainActivity : QkThemedActivity(), MainView {
                 .autoDisposable(scope())
                 .subscribe { theme ->
                     // Set the color for the drawer icons
-                    val states = arrayOf(
-                            intArrayOf(android.R.attr.state_activated),
-                            intArrayOf(-android.R.attr.state_activated))
-
-                    ColorStateList(states, intArrayOf(theme.theme,
-                        resolveThemeColor(android.R.attr.textColorSecondary)
-                    ))
+                    val controlColor = dev.texto.privacy.TextoAppearance.controlColor(this)
+                    ColorStateList.valueOf(controlColor)
                         .let { tintList ->
                             binding.drawer.inboxIcon.imageTintList = tintList
                             binding.drawer.archivedIcon.imageTintList = tintList

@@ -9,21 +9,22 @@ object SettingsSections {
     fun organize(parent: LinearLayout) {
         val rows=(0 until parent.childCount).map { parent.getChildAt(it) }.filter { it.id != View.NO_ID }
         val groups=listOf(
-            R.string.settings_category_general to listOf(R.id.notifications,R.id.sync,R.id.syncingProgress,R.id.about),
+            R.string.settings_category_appearance to listOf(R.id.textoNavigationSettings,R.id.theme,R.id.night,R.id.black,R.id.nightStart,R.id.nightEnd,R.id.textSize,R.id.autoColor,R.id.systemFont),
+            R.string.texto_settings_privacy to listOf(R.id.textoPrivacySettings,R.id.textoBinSettings,R.id.disableScreenshots,R.id.messsageLinkHandling),
             R.string.texto_settings_inbox_contacts to listOf(R.id.textoContactsSettings,R.id.swipeActions,R.id.unreadAtTop,R.id.mobileOnly,R.id.textoDialingSettings),
             R.string.texto_settings_messaging to listOf(R.id.delayed,R.id.delivery,R.id.signature,R.id.unicode,R.id.longAsMms,R.id.mmsSize,R.id.showStt,R.id.autoEmoji),
-            R.string.settings_category_appearance to listOf(R.id.textoNavigationSettings,R.id.theme,R.id.night,R.id.black,R.id.nightStart,R.id.nightEnd,R.id.textSize,R.id.autoColor,R.id.systemFont),
-            R.string.texto_settings_privacy to listOf(R.id.textoPrivacySettings,R.id.textoBinSettings,R.id.disableScreenshots,R.id.messsageLinkHandling))
+            R.string.settings_category_general to listOf(R.id.notifications,R.id.sync,R.id.syncingProgress,R.id.about))
         val assigned=groups.flatMap { it.second }.toSet()
         val extra=rows.filter { it.id !in assigned }
         parent.removeAllViews()
         val d=parent.resources.displayMetrics.density
+        val headingColor=TextoAppearance.controlColor(parent.context)
         groups.forEachIndexed { index,(title,ids) ->
-            val items=ids.mapNotNull { id -> rows.find { it.id == id } } + if(index==0) extra else emptyList()
+            val items=ids.mapNotNull { id -> rows.find { it.id == id } } + if(index==groups.lastIndex) extra else emptyList()
             if(items.isEmpty()) return@forEachIndexed
             parent.addView(TextView(parent.context).apply {
-                setText(title);isAllCaps=true;setTextColor(TextoAppearance.readableText(parent.context)); textSize=13f; setTypeface(null,android.graphics.Typeface.BOLD)
-                setPadding((20*d).toInt(),(28*d).toInt(),(16*d).toInt(),(8*d).toInt())
+                setText(title);isAllCaps=true;setTextColor(headingColor); textSize=13f; letterSpacing=0.05f; setTypeface(null,android.graphics.Typeface.BOLD)
+                setPadding((20*d).toInt(),((if(index==0) 16 else 26)*d).toInt(),(16*d).toInt(),(8*d).toInt())
                 isClickable=false; isFocusable=false
                 if(android.os.Build.VERSION.SDK_INT>=28) isAccessibilityHeading=true
             })

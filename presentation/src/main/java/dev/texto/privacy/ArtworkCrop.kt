@@ -31,6 +31,10 @@ class ArtworkCrop(context: Context,private val bitmap: Bitmap) : View(context) {
     }
     fun result(): Bitmap = Bitmap.createBitmap(width.coerceAtLeast(1),height.coerceAtLeast(1),Bitmap.Config.ARGB_8888).also { drawImage(Canvas(it),it.width,it.height) }
     companion object {
+        fun clearSaved(context: Context, key: String) {
+            context.filesDir.listFiles { file -> file.name.startsWith("$key-") && file.name.endsWith(".jpg") }
+                ?.forEach { it.delete() }
+        }
         fun show(activity: android.app.Activity,uri: Uri,key: String,done: ()->Unit) {
             Glide.with(activity).asBitmap().load(uri).override(2048,2048).into(object: CustomTarget<Bitmap>() {
                 override fun onResourceReady(bitmap: Bitmap,transition: Transition<in Bitmap>?) {
@@ -40,6 +44,7 @@ class ArtworkCrop(context: Context,private val bitmap: Bitmap) : View(context) {
                     TextoDialogs.builder(activity).setTitle(if(key=="header_image") "Crop header artwork" else "Crop background").setView(panel).setNegativeButton("Cancel",null).setPositiveButton("Use image") { _,_->
                         runCatching {
                             val result=crop.result();val file=java.io.File(activity.filesDir,"$key-${System.currentTimeMillis()}.jpg")
+                            clearSaved(activity, key)
                             file.outputStream().use { result.compress(Bitmap.CompressFormat.JPEG,92,it) };result.recycle()
                             TextoAppearance.prefs(activity).edit().putString(key,Uri.fromFile(file).toString()).apply();done()
                         }.onFailure { Toast.makeText(activity,"Could not save image. Please try another image.",Toast.LENGTH_LONG).show() }

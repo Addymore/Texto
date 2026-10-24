@@ -38,6 +38,7 @@ class ThemesActivity : QkThemedActivity() {
         dialog=dev.texto.privacy.TextoDialogs.builder(this).setTitle(title).setView(field).setNegativeButton("Cancel",null).setPositiveButton("Save") { _,_ -> TextoAppearance.prefs(this).edit().putString(key,field.text.toString().trim()).apply(); render() }.show()
     }
     private var scroller: ScrollView? = null
+    private var bottomBarContainer: LinearLayout? = null
     private var dialog: androidx.appcompat.app.AlertDialog? = null
     private fun dp(n: Int) = (n*resources.displayMetrics.density).toInt()
     override fun onCreate(state: Bundle?) { AndroidInjection.inject(this); super.onCreate(state); imageKey=state?.getString("image_key") ?: "background_image"; render() }
@@ -46,16 +47,23 @@ class ThemesActivity : QkThemedActivity() {
         val position = scroller?.scrollY ?: 0
         val appearance = TextoAppearance.prefs(this)
         val accent = TextoAppearance.accent(this)
-        val shell = LinearLayout(this).apply { orientation=LinearLayout.VERTICAL; setPadding(dp(16),0,dp(16),dp(12)) }
-        val content = LinearLayout(this).apply { orientation=LinearLayout.VERTICAL; setPadding(0,dp(40),0,dp(24)) }
-        fun label(text: String,size: Float=16f) { content.addView(TextView(this).apply { this.text=text; textSize=size; setTextColor(if(resources.configuration.uiMode and 0x30 == 0x20) 0xFFE9EDF4.toInt() else 0xFF343D49.toInt()); setPadding(dp(8),dp(16),dp(8),dp(12)) }) }
+        val ink = TextoAppearance.readableText(this)
+        val headingInk = TextoAppearance.controlColor(this)
+        val content = LinearLayout(this).apply { orientation=LinearLayout.VERTICAL; setPadding(0,dp(32),0,dp(24)) }
+        fun label(text: String,size: Float=16f) {
+            val isHeading = size >= 20f && size < 30f
+            content.addView(TextView(this).apply {
+                this.text=text; textSize=size
+                setTextColor(if (isHeading) headingInk else ink)
+                if (size >= 20f) setTypeface(null, Typeface.BOLD)
+                setPadding(dp(16),dp(if (isHeading) 20 else 8),dp(16),dp(if (isHeading) 8 else 8))
+            })
+        }
         fun row(title: String,value: String,action: () -> Unit) {
             content.addView(MaterialButton(this).apply {
-                setIconResource(when { title.contains("image",true) || title.contains("art",true) -> dev.octoshrimpy.quik.R.drawable.ic_photo_size_select_actual_black_24dp; title.contains("text",true) || title.contains("title",true) -> dev.octoshrimpy.quik.R.drawable.ic_title_black_24dp; else -> dev.octoshrimpy.quik.R.drawable.ic_palette_black_24dp })
+                setIconResource(when { title.contains("image",true) || title.contains("art",true) -> dev.octoshrimpy.quik.R.drawable.ic_photo_size_select_actual_black_24dp; title.contains("text",true) || title.contains("title",true) || title.contains("font",true) -> dev.octoshrimpy.quik.R.drawable.ic_title_black_24dp; else -> dev.octoshrimpy.quik.R.drawable.ic_palette_black_24dp })
                 text=if(value.isEmpty()) title else "$title  ·  $value"; isAllCaps=false; gravity=Gravity.START or Gravity.CENTER_VERTICAL
                 minHeight=dp(56); cornerRadius=dp(18); setPadding(dp(16),dp(12),dp(16),dp(12))
-                backgroundTintList=ColorStateList.valueOf(androidx.core.graphics.ColorUtils.blendARGB(if(resources.configuration.uiMode and 0x30 == 0x20) 0xFF23262D.toInt() else 0xFFF3F5F9.toInt(),accent,.07f))
-                setTextColor(if(resources.configuration.uiMode and 0x30 == 0x20) 0xFFF3F5F9.toInt() else 0xFF20232B.toInt())
                 setOnClickListener { action() }
             }.also { TextoAppearance.styleSettingsCard(it) },LinearLayout.LayoutParams(-1,-2).apply { bottomMargin=dp(8) })
         }
@@ -69,9 +77,9 @@ class ThemesActivity : QkThemedActivity() {
         }
         fun toggle(title: String,key: String,default: Boolean) {
             content.addView(MaterialSwitch(this).apply {
-                text=title; minHeight=dp(56); setPadding(dp(8),dp(8),dp(8),dp(8)); isChecked=appearance.getBoolean(key,default)
+                text=title; minHeight=dp(56); isChecked=appearance.getBoolean(key,default)
                 setOnCheckedChangeListener { _,value -> appearance.edit().putBoolean(key,value).apply(); render() }
-            })
+            }.also { TextoAppearance.styleSettingsCard(it) },LinearLayout.LayoutParams(-1,-2).apply { bottomMargin=dp(8) })
         }
         label("Make it yours",34f)
         label("One look for your inbox, messages and private conversations",15f)
@@ -81,15 +89,11 @@ class ThemesActivity : QkThemedActivity() {
         sample.avatars.recipients=listOf(Recipient().apply { address="Alex"; contact=Contact().apply { name="Alex Morgan" } })
         TextoAppearance.styleConversation(sample,24,2)
         sample.root.isClickable=false; sample.root.contentDescription="Sample conversation preview"
-        content.addView(sample.root)
+        content.addView(sample.root, LinearLayout.LayoutParams(-1, -2).apply { setMargins(dp(16), dp(4), dp(16), dp(4)) })
         val bubbles=LinearLayout(this).apply { orientation=LinearLayout.VERTICAL; setPadding(dp(16),dp(12),dp(16),dp(4)) }
         fun bubble(text: String,outgoing: Boolean) {
-            val night=resources.configuration.uiMode and 0x30 == 0x20
-            val fill=if(!outgoing) accent else if(night) 0xFF333640.toInt() else 0xFFE8EBF1.toInt()
             bubbles.addView(TextView(this).apply {
-                this.text=text; textSize=16f; setTextColor(if(!outgoing) TextoAppearance.onAccent(this@ThemesActivity) else if(night) Color.WHITE else 0xFF20232B.toInt())
-                setPadding(dp(16),dp(12),dp(16),dp(12))
-                background=GradientDrawable().apply { setColor(fill); cornerRadius=dp(if(appearance.getString("bubbles","fluid")=="fluid") 24 else 16).toFloat() }
+                this.text=text; textSize=16f
                 MessageBodyStyle.apply(this,outgoing,accent,false)
             },LinearLayout.LayoutParams(-2,-2).apply { gravity=if(outgoing) Gravity.END else Gravity.START; bottomMargin=dp(6) })
         }
@@ -99,12 +103,12 @@ class ThemesActivity : QkThemedActivity() {
         val paletteNames=arrayOf("Ocean blue","Jade","Coral","Lavender","Graphite","Rose","Amber","Teal")
         val paletteColors=intArrayOf(0xFF375BCD.toInt(),0xFF007E70.toInt(),0xFFB84F43.toInt(),0xFF7953B8.toInt(),0xFF536170.toInt(),0xFFB73873.toInt(),0xFFA76700.toInt(),0xFF006C84.toInt())
         for(group in 0..1) {
-            val swatches=LinearLayout(this)
+            val swatches=LinearLayout(this).apply { setPadding(dp(16), 0, dp(12), dp(6)) }
             for(i in group*4 until group*4+4) swatches.addView(MaterialButton(this).apply {
                 text=(if(accent==paletteColors[i]) "✓ " else "")+paletteNames[i]; textSize=11f; isAllCaps=false; contentDescription=paletteNames[i]; minWidth=0; minimumWidth=0; setPadding(dp(3),0,dp(3),0); cornerRadius=dp(24)
                 backgroundTintList=ColorStateList.valueOf(paletteColors[i]); setTextColor(Color.WHITE)
                 setOnClickListener { saveAccent(paletteColors[i]) }
-            },LinearLayout.LayoutParams(0,dp(56),1f).apply { marginEnd=dp(4) })
+            },LinearLayout.LayoutParams(0,dp(52),1f).apply { marginEnd=dp(4) })
             content.addView(swatches)
         }
         row("Color wheel","Choose any color") { customAccent() }
@@ -115,7 +119,10 @@ class ThemesActivity : QkThemedActivity() {
                 d.dismiss(); nightModeManager.updateNightMode(i); render()
             }.setNegativeButton("Cancel",null).show()
         }
-        content.addView(MaterialSwitch(this).apply { text="Pure black in dark mode"; minHeight=dp(56); isChecked=prefs.black.get(); setOnCheckedChangeListener { _,checked -> prefs.black.set(checked) } })
+        content.addView(MaterialSwitch(this).apply {
+            text="Pure black in dark mode"; minHeight=dp(56); isChecked=prefs.black.get()
+            setOnCheckedChangeListener { _,checked -> prefs.black.set(checked) }
+        }.also { TextoAppearance.styleSettingsCard(it) },LinearLayout.LayoutParams(-1,-2).apply { bottomMargin=dp(8) })
         label("Cards & surfaces",22f)
         choice("Card shape","card_shape",arrayOf("Soft","Round","Minimal","Square","Pill"),arrayOf("soft","round","minimal","square","pill"),"soft")
         choice("Card finish","card_finish",arrayOf("Tonal cards","Neutral","Accent tint","Outlined","Aurora gradient","Frosted glass","AMOLED outline","Pastel","Two-tone gradient","Bold outline","High contrast","No cards — everywhere"),arrayOf("tonal","neutral","tinted","outlined","gradient","glass","amoled","pastel","duotone","bold","contrast","none"),"tonal")
@@ -137,10 +144,14 @@ class ThemesActivity : QkThemedActivity() {
         row("Motto",appearance.getString("inbox_motto","Messages, comfortably within reach").orEmpty()) { customText("Motto","inbox_motto","Messages, comfortably within reach",100) }
         row("Background image",if(appearance.contains("background_image")) "Selected" else "None") { pickImage("background_image") }
         row("Header artwork",if(appearance.contains("header_image")) "Selected" else "None") { pickImage("header_image") }
-        if(appearance.contains("header_image")) row("Adjust header crop","") { ArtworkCrop.show(this,android.net.Uri.parse(appearance.getString("header_image","")!!),"header_image") { render() } }
-        if(appearance.contains("background_image")) row("Adjust background crop","") { ArtworkCrop.show(this,android.net.Uri.parse(appearance.getString("background_image","")!!),"background_image") { render() } }
-        row("Remove background image","") { appearance.edit().remove("background_image").apply(); render() }
-        row("Remove header artwork","") { appearance.edit().remove("header_image").apply(); render() }
+        if(appearance.contains("header_image")) {
+            row("Adjust header crop","") { ArtworkCrop.show(this,android.net.Uri.parse(appearance.getString("header_image","")!!),"header_image") { render() } }
+            row("Remove header artwork","") { ArtworkCrop.clearSaved(this,"header_image"); appearance.edit().remove("header_image").apply(); render() }
+        }
+        if(appearance.contains("background_image")) {
+            row("Adjust background crop","") { ArtworkCrop.show(this,android.net.Uri.parse(appearance.getString("background_image","")!!),"background_image") { render() } }
+            row("Remove background image","") { ArtworkCrop.clearSaved(this,"background_image"); appearance.edit().remove("background_image").apply(); render() }
+        }
         label("Images remain on your device. A readability overlay keeps messages legible. Long press your header title for Archive.",13f)
         label("Messages & motion",22f)
         fun messageColor(title: String,key: String) {
@@ -150,7 +161,9 @@ class ThemesActivity : QkThemedActivity() {
         }
         messageColor("Sent bubble color","sent_color")
         messageColor("Received bubble color","received_color")
-        row("Use theme bubble colors","") { appearance.edit().remove("sent_color").remove("received_color").apply(); render() }
+        if(appearance.contains("sent_color") || appearance.contains("received_color")) {
+            row("Use theme bubble colors","Reset custom bubble colors") { appearance.edit().remove("sent_color").remove("received_color").apply(); render() }
+        }
         label("Custom bubble colors keep text and links readable. No cards still hides bubble surfaces.",13f)
         choice("Message font","message_font",arrayOf("Follow theme","Sans serif","Serif","Monospace"),arrayOf("theme","sans","serif","mono"),"theme")
         choice("Message line spacing","message_line_height",arrayOf("Normal","Relaxed","Spacious"),arrayOf("normal","relaxed","spacious"),"normal")
@@ -180,21 +193,38 @@ class ThemesActivity : QkThemedActivity() {
         row("Reset appearance","") {
             dialog=dev.texto.privacy.TextoDialogs.builder(this).setTitle("Reset appearance?").setMessage("Restore default colors, cards and motion settings. Messages and privacy settings are kept.")
                 .setNegativeButton("Cancel",null).setPositiveButton("Reset") { _,_ ->
+                    ArtworkCrop.clearSaved(this,"background_image"); ArtworkCrop.clearSaved(this,"header_image")
                     val edit=appearance.edit()
                     listOf("sent_color","received_color","message_font","message_line_height","border_width","gradient_direction","bottom_bar_visible","bottom_bar_items","skin_preset","oem_layout","before_oem_preset","card_shape","card_finish","density","preview_lines","unread_style","list_avatars","message_counts","bubbles","high_refresh","reduce_motion","dynamic_colors","card_size","inbox_title","inbox_motto","background_image","header_image").forEach { edit.remove(it) }; edit.apply()
                     prefs.theme().set(0xFF375BCD.toInt()); prefs.autoColor.set(false); prefs.black.set(false); prefs.textSize.set(1)
                     nightModeManager.updateNightMode(0); render()
                 }.show()
         }
-        scroller=ScrollView(this).apply { addView(content); isFillViewport=true }
-        shell.addView(scroller,LinearLayout.LayoutParams(-1,0,1f))
-        if(intent.getBooleanExtra("from_private",false)) shell.addView(MaterialButton(this).apply {
-            text="Back to private messages"; setIconResource(dev.octoshrimpy.quik.R.drawable.ic_texto_privacy); TextoAppearance.styleSettingsCard(this); setOnClickListener { finish() }
-        },LinearLayout.LayoutParams(-1,dp(56)))
-        else if (BottomNavigation.enabled(this)) shell.addView(TextoTabBar(this).apply {
-            select(1); onTabSelected = { tab -> if (tab != 1) { BottomNavigation.open(this@ThemesActivity, tab); finish() } }
-        },LinearLayout.LayoutParams(-1,dp(66)))
-        setContentView(shell); scroller?.post { scroller?.scrollTo(0,position) }
+        val existingScroller = scroller
+        val existingFooter = bottomBarContainer
+        if (existingScroller == null || existingFooter == null) {
+            val shell = LinearLayout(this).apply { orientation=LinearLayout.VERTICAL; setPadding(0,0,0,dp(12)) }
+            val newScroller = ScrollView(this).apply { addView(content); isFillViewport=true }
+            val footer = LinearLayout(this).apply { orientation=LinearLayout.VERTICAL; setPadding(dp(16),0,dp(16),0) }
+            scroller = newScroller
+            bottomBarContainer = footer
+            shell.addView(newScroller, LinearLayout.LayoutParams(-1,0,1f))
+            shell.addView(footer, LinearLayout.LayoutParams(-1,-2))
+            setContentView(shell)
+        } else {
+            existingScroller.removeAllViews()
+            existingScroller.addView(content)
+            existingScroller.scrollTo(0, position)
+        }
+        bottomBarContainer?.apply {
+            removeAllViews()
+            if(intent.getBooleanExtra("from_private",false)) addView(MaterialButton(this@ThemesActivity).apply {
+                text="Back to private messages"; setIconResource(dev.octoshrimpy.quik.R.drawable.ic_texto_privacy); TextoAppearance.styleSettingsCard(this); setOnClickListener { finish() }
+            },LinearLayout.LayoutParams(-1,dp(56)))
+            else if (BottomNavigation.enabled(this@ThemesActivity)) addView(TextoTabBar(this@ThemesActivity).apply {
+                select(1); onTabSelected = { tab -> if (tab != 1) { BottomNavigation.open(this@ThemesActivity, tab); finish() } }
+            },LinearLayout.LayoutParams(-1,dp(66)))
+        }
     }
     private fun saveAccent(color: Int) {
         TextoAppearance.prefs(this).edit().putBoolean("dynamic_colors",false).apply()

@@ -99,13 +99,13 @@ class SettingsController : QkController<SettingsControllerBinding, SettingsView,
         val dialing = com.google.android.material.button.MaterialButton(binding.root.context).apply {
             setIconResource(R.drawable.ic_call_white_24dp)
             id = R.id.textoDialingSettings
-            setText(R.string.texto_settings_dialing); isAllCaps = false
-            setOnClickListener { dev.texto.privacy.PhoneDialing.settings(context) }
+            text = dev.texto.privacy.PhoneDialing.summary(context); isAllCaps = false
+            setOnClickListener { dev.texto.privacy.PhoneDialing.settings(context) { text = dev.texto.privacy.PhoneDialing.summary(context) } }
         }
         binding.preferences.addView(dialing, 1)
         binding.preferences.addView(com.google.android.material.button.MaterialButton(binding.root.context).apply {
             setIconResource(R.drawable.ic_palette_black_24dp)
-            id = R.id.textoNavigationSettings; text = "Bottom bar & visual styles"; isAllCaps = false
+            id = R.id.textoNavigationSettings; text = "Themes, cards & navigation"; isAllCaps = false
             setOnClickListener { activity?.let { it.startActivity(android.content.Intent(it, dev.texto.privacy.ThemesActivity::class.java)) } }
         })
         dev.texto.privacy.TextoAppearance.styleSettingsCard(dialing)
@@ -115,6 +115,7 @@ class SettingsController : QkController<SettingsControllerBinding, SettingsView,
         }
 
         dev.texto.privacy.SettingsSections.organize(binding.preferences)
+        updateTextoSummaries()
 
         when (Build.VERSION.SDK_INT >= 29) {
             true -> nightModeDialog.adapter.setData(R.array.night_modes)
@@ -130,11 +131,39 @@ class SettingsController : QkController<SettingsControllerBinding, SettingsView,
         binding.about.summary = context.getString(R.string.settings_version, BuildConfig.VERSION_NAME)
     }
 
+    private fun updateTextoSummaries() {
+        val ctx = binding.root.context
+        val appearance = dev.texto.privacy.TextoAppearance.prefs(ctx)
+        val finish = when (appearance.getString("card_finish", "tonal")) {
+            "none" -> "No cards"
+            "gradient" -> "Aurora gradient"
+            "glass" -> "Frosted glass"
+            "amoled" -> "AMOLED outline"
+            "pastel" -> "Pastel"
+            "duotone" -> "Two-tone"
+            "bold" -> "Bold outline"
+            "contrast" -> "High contrast"
+            "outlined" -> "Outlined"
+            "tinted" -> "Accent tint"
+            "neutral" -> "Neutral"
+            else -> "Tonal cards"
+        }
+        val preset = appearance.getString("skin_preset", null)
+        binding.preferences.findViewById<com.google.android.material.button.MaterialButton>(R.id.textoNavigationSettings)?.text =
+            "Themes, cards & navigation  ·  ${preset ?: finish}"
+        binding.preferences.findViewById<com.google.android.material.button.MaterialButton>(R.id.textoDialingSettings)?.text =
+            dev.texto.privacy.PhoneDialing.summary(ctx)
+        val policy = dev.texto.privacy.TextoPolicy(ctx)
+        binding.textoPrivacySettings.text =
+            "Privacy & protection  ·  ${if (policy.hasPin()) "PIN active" else "Set up PIN"}"
+    }
+
     override fun onAttach(view: View) {
         super.onAttach(view)
         presenter.bindIntents(this)
         setTitle(R.string.title_settings)
         showBackButton(true)
+        updateTextoSummaries()
     }
 
     override fun preferenceClicks(): Observable<PreferenceView> = (0 until binding.preferences.childCount)

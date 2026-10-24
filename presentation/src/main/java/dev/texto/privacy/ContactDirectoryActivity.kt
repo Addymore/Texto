@@ -59,24 +59,40 @@ class ContactDirectoryActivity : AppCompatActivity() {
     }
     private fun render() {
         val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(20), 0, dp(20), dp(12)) }
+        val ink = TextoAppearance.readableText(this)
         val header = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; gravity = Gravity.BOTTOM; setPadding(dp(8), 0, dp(8), dp(18)) }
-        header.addView(TextView(this).apply { text = "Contacts"; textSize = 36f; setTypeface(null, Typeface.BOLD) })
-        status = TextView(this).apply { text = "Your people, a message away"; textSize = 14f; setPadding(0, dp(6), 0, 0) }
+        header.addView(TextView(this).apply { text = "Contacts"; textSize = 36f; setTextColor(ink); setTypeface(null, Typeface.BOLD) })
+        status = TextView(this).apply { text = "Your people, a message away"; textSize = 14f; setTextColor(ink); setPadding(0, dp(6), 0, 0) }
         header.addView(status)
         val headerHeight = if (resources.configuration.orientation == 2) dp(88) else (resources.displayMetrics.heightPixels * .25f).toInt().coerceAtMost(dp(230))
+        val minHeaderHeight = dp(80)
+        var targetHeaderHeight = headerHeight
+        var headerPosted = false
         root.addView(header, LinearLayout.LayoutParams(-1, headerHeight))
         val searchBox = TextInputLayout(this).apply { boxBackgroundMode = TextInputLayout.BOX_BACKGROUND_OUTLINE; setBoxCornerRadii(dp(24).toFloat(),dp(24).toFloat(),dp(24).toFloat(),dp(24).toFloat()); hint = "Search names or numbers" }
-        val search = TextInputEditText(searchBox.context).apply { setSingleLine(); textSize = 16f }
+        val search = TextInputEditText(searchBox.context).apply { setSingleLine(); textSize = 16f; setTextColor(ink) }
         searchBox.addView(search); root.addView(searchBox)
-        root.addView(MaterialSwitch(this).apply { text = "Contact photos"; isChecked = showPhotos; setOnCheckedChangeListener { _, value -> showPhotos = value; settings.edit().putBoolean("contact_photos", value).apply(); adapter.notifyDataSetChanged() } })
+        root.addView(MaterialSwitch(this).apply { text = "Contact photos"; setTextColor(ink); isChecked = showPhotos; setOnCheckedChangeListener { _, value -> showPhotos = value; settings.edit().putBoolean("contact_photos", value).apply(); adapter.notifyDataSetChanged() } })
         val list = RecyclerView(this).apply { layoutManager = LinearLayoutManager(this@ContactDirectoryActivity); clipToPadding = false; setPadding(0, dp(4), 0, dp(16)) }
         adapter = PeopleAdapter(); list.adapter = adapter
         TextoAppearance.smooth(list); TextoAppearance.refreshRate(this)
         // The title contracts as the list scrolls, bringing more contacts into view.
         list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
-                val height=(header.height-dy).coerceIn(dp(80),headerHeight.coerceAtLeast(dp(80)))
-                if(dy!=0 && height!=header.height) header.layoutParams=header.layoutParams.apply { this.height=height }
+                if (dy == 0) return
+                val next = (targetHeaderHeight - dy).coerceIn(minHeaderHeight, headerHeight.coerceAtLeast(minHeaderHeight))
+                if (next != targetHeaderHeight) {
+                    targetHeaderHeight = next
+                    if (!headerPosted) {
+                        headerPosted = true
+                        header.postOnAnimation {
+                            headerPosted = false
+                            if (header.layoutParams.height != targetHeaderHeight) {
+                                header.layoutParams = header.layoutParams.apply { height = targetHeaderHeight }
+                            }
+                        }
+                    }
+                }
             }
         })
         root.addView(list, LinearLayout.LayoutParams(-1, 0, 1f))
@@ -108,7 +124,12 @@ class ContactDirectoryActivity : AppCompatActivity() {
         }.start()
     }
     private inner class PeopleAdapter : RecyclerView.Adapter<PersonHolder>() {
+        init { setHasStableIds(true) }
         override fun getItemCount() = visibleEntries.size
+        override fun getItemId(position: Int): Long {
+            val entry = visibleEntries[position]
+            return (entry.id * 31L) xor entry.number.hashCode().toLong()
+        }
         override fun onCreateViewHolder(parent: ViewGroup, type: Int): PersonHolder {
             val row = LinearLayout(this@ContactDirectoryActivity).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL; setPadding(dp(14), dp(14), dp(14), dp(14)); background = TextoAppearance.card(context) }
             row.layoutParams = RecyclerView.LayoutParams(-1, -2).apply { bottomMargin = dp(8) }
