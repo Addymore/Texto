@@ -57,7 +57,7 @@ class ProtectionActivity : AppCompatActivity() {
         content = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(48, 40, 48, 56) }
         setContentView(ScrollView(this).apply { addView(content) })
         label("Privacy & protection", 30f)
-        label("Rules follow a number, including future SMS and MMS. Pull down with one finger from the top of your inbox to open Private Messages.", 16f)
+        label("Rules follow a number, including future SMS and MMS. Use international numbers, for example +250788123456. See Settings → About for gesture guidance.", 16f)
         button(if (policy.hasOnlyPin()) "Change privacy PIN" else "Create a privacy PIN") { changePin() }
         button(if (policy.hasPattern()) "Change privacy Pattern (3×3)" else "Create a privacy Pattern (3×3)") {
             PrivacyAuthDialogs.showPatternSetupDialog(this) { render() }

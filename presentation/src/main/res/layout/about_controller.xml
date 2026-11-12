@@ -41,6 +41,13 @@
             tools:summary="3.0.8" />
 
         <dev.octoshrimpy.quik.common.widget.PreferenceView
+            app:icon="@drawable/ic_texto_privacy" android:id="@+id/guidance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:title="Guidance &amp; hidden gestures"
+            app:summary="How to open Private Messages (pull &amp; hold 3s), Archive, Spam filter, and themes" />
+
+        <dev.octoshrimpy.quik.common.widget.PreferenceView
             app:icon="@drawable/ic_person_black_24dp" android:id="@+id/developer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

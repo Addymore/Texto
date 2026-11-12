@@ -71,6 +71,55 @@ class AboutController : QkController<AboutControllerBinding, AboutView, Unit, Ab
 
     override fun onViewCreated() {
         binding.version.summary = BuildConfig.VERSION_NAME
+        binding.guidance.setOnClickListener { showGuidanceDialog() }
+        val host = activity ?: return
+        val d = host.resources.displayMetrics.density
+        val ink = dev.texto.privacy.TextoAppearance.readableText(host)
+        val headingInk = dev.texto.privacy.TextoAppearance.controlColor(host)
+        val sectionTitle = android.widget.TextView(host).apply {
+            text = "Guidance & features"
+            textSize = 20f
+            setTypeface(null, android.graphics.Typeface.BOLD)
+            setTextColor(headingInk)
+            setPadding((16 * d).toInt(), (20 * d).toInt(), (16 * d).toInt(), (8 * d).toInt())
+        }
+        val guideCard = android.widget.TextView(host).apply {
+            text = buildGuidanceText()
+            textSize = 14f
+            setLineSpacing(0f, 1.2f)
+            setTextColor(ink)
+            dev.texto.privacy.TextoAppearance.styleSettingsCard(this)
+            setPadding((20 * d).toInt(), (16 * d).toInt(), (20 * d).toInt(), (16 * d).toInt())
+            setOnClickListener { showGuidanceDialog() }
+        }
+        binding.preferences.addView(sectionTitle)
+        binding.preferences.addView(
+            guideCard,
+            android.widget.LinearLayout.LayoutParams(-1, -2).apply {
+                setMargins((16 * d).toInt(), (4 * d).toInt(), (16 * d).toInt(), (12 * d).toInt())
+            }
+        )
+    }
+
+    private fun buildGuidanceText(): String =
+        "• Private Messages (Pull & hold 3s):\n" +
+        "At the top of your normal inbox, pull down with one finger and hold continuously for 3 seconds. No tip is shown on the header so your private space stays discreet. If no lock or locked SMS exists yet, Texto will propose setting up Fingerprint, PIN, or Pattern.\n\n" +
+        "• Archived Messages & Sticky Spam Section:\n" +
+        "Long-press the top inbox title to open Archived messages. The Spam section sticks to the bottom of Archive with intelligent auto-filtering (Auto: ON/OFF) and manual sender/phrase filtering (+ Filter). Spammer threads stay archived even when new messages arrive.\n\n" +
+        "• Return to Normal Messages on Leave:\n" +
+        "Leaving Texto from Archive, Private Messages, or settings automatically locks your private session and returns to normal messages (Inbox) next time.\n\n" +
+        "• Xiaomi Messages 100% Exclusive Theme:\n" +
+        "Open Settings → Themes, cards & navigation to apply the one-tap Xiaomi Messages (HyperOS) exclusive look and launcher icon.\n\n" +
+        "• One-Tap OTP Copy & Word Selection:\n" +
+        "Tap the verification-code banner in a conversation header to copy 2FA codes instantly, or long-press any word inside a message bubble to copy specific text."
+
+    private fun showGuidanceDialog() {
+        val host = activity ?: return
+        dev.texto.privacy.TextoDialogs.builder(host)
+            .setTitle("Guidance & hidden gestures")
+            .setMessage(buildGuidanceText())
+            .setPositiveButton("Got it", null)
+            .show()
     }
 
     override fun onAttach(view: View) {

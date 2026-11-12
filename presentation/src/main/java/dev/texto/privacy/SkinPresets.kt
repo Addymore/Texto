@@ -11,7 +11,7 @@ object SkinPresets {
         "Large centered, reachable heading; clean conversation list; blue accents; rounded neutral surfaces and a flat navigation bar.",
         "Left-aligned bold heading; soft floating surfaces; green accents and shared glass-style message cards; compact previews and translucent-looking navigation.",
         "Compact heading; clean avatar-led list; pill bubbles; blue tonal surfaces and Material-style navigation.",
-        "100% Xiaomi Messages (HyperOS) exclusive look: signature #0D84FF Xiaomi blue, large left Messages header, pill search bar, one-finger pull-down private space, and rounded fluid bubbles.",
+        "100% Xiaomi Messages (HyperOS) exclusive look: signature #0D84FF Xiaomi blue, large left Messages header, pill search bar, dot unread badge, and rounded fluid bubbles.",
         "Monospaced headings; monochrome surfaces; red controls; outlined settings and squared navigation.",
         "Compact heading; teal tinted message cards; clean conversation list and rounded Material surfaces.",
         "Centered heading; soft blue duotone message cards; generous rounded surfaces and floating navigation.",

@@ -43,9 +43,9 @@ object InboxArtwork {
         val p=TextoAppearance.prefs(activity)
         val profile=SkinPresets.id(activity)
         val defaultTitle = if (profile == "xiaomi") "Messages" else "Texto"
-        val defaultMotto = if (profile == "xiaomi") "↓ Pull down with one finger for private messages" else "Messages, comfortably within reach"
+        val defaultMotto = "Messages, comfortably within reach"
         title.text=p.getString("inbox_title", defaultTitle).orEmpty().ifBlank { defaultTitle }
-        title.contentDescription=title.text.toString()+". Long press for Archive."
+        title.contentDescription=title.text.toString()
         val motto=p.getString("inbox_motto", defaultMotto).orEmpty()
         subtitle.text=motto
         (root as? ReachableMessagesLayout)?.restingSubtitle=motto

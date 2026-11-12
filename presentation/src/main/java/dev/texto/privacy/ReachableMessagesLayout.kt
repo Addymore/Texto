@@ -16,46 +16,72 @@ import androidx.core.view.NestedScrollingParent3
 import androidx.core.view.NestedScrollingParentHelper
 import androidx.core.view.ViewCompat
 
-/** Drag up to collapse the viewing area; pull down with one finger at the top to reach/unlock private messages (Xiaomi Messages style). */
+/**
+ * Drag up to collapse the viewing area; pull down with one finger at the top and hold for 3 seconds
+ * to discreetly reach/unlock private messages without showing any visible header tip.
+ */
 class ReachableMessagesLayout @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : ConstraintLayout(context, attrs), NestedScrollingParent3 {
+    companion object {
+        const val PRIVATE_HOLD_DURATION_MS = 3000L
+    }
+
     private val privateGesture = PrivateHeaderPull()
-    private var armedHapticFired = false
+    private var holdArmed = false
+    private var holdTriggered = false
+
+    private val holdUnlockRunnable = Runnable {
+        if (!holdArmed || holdTriggered || !privatePullEnabled || header.visibility != View.VISIBLE) return@Runnable
+        val list = findViewById<RecyclerView>(R.id.recyclerView)
+        val currentHeight = if (desiredHeight >= 0) desiredHeight else header.height
+        if ((list == null || !list.canScrollVertically(-1)) &&
+            (privateGesture.armed || currentHeight >= restingHeight + dp(68))) {
+            holdTriggered = true
+            holdArmed = false
+            privateGesture.reset()
+            dragging = false
+            settleTo(restingHeight)
+            performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+            onPrivatePull?.invoke()
+        } else {
+            holdArmed = false
+        }
+    }
+
+    private fun cancelHoldTimer() {
+        if (holdArmed) {
+            removeCallbacks(holdUnlockRunnable)
+            holdArmed = false
+        }
+    }
+
+    private fun evaluateHoldState(currentHeight: Int) {
+        if (!privatePullEnabled || header.visibility != View.VISIBLE || holdTriggered) {
+            cancelHoldTimer()
+            return
+        }
+        val list = findViewById<RecyclerView>(R.id.recyclerView)
+        val atTop = list == null || !list.canScrollVertically(-1)
+        val pulledEnough = atTop && (privateGesture.armed || currentHeight >= restingHeight + dp(68))
+        if (pulledEnough) {
+            if (!holdArmed) {
+                holdArmed = true
+                postDelayed(holdUnlockRunnable, PRIVATE_HOLD_DURATION_MS)
+            }
+        } else if (currentHeight < restingHeight + dp(48) || !atTop) {
+            cancelHoldTimer()
+        }
+    }
 
     val isOverscrollingHeader: Boolean
         get() = dragging || (if (desiredHeight >= 0) desiredHeight else header.height) > restingHeight
-
-    private fun updatePullSubtitle(nextHeight: Int) {
-        val subtitle = findViewById<TextView>(R.id.textoSubtitle) ?: return
-        if (!privatePullEnabled || header.visibility != View.VISIBLE) {
-            subtitle.text = restingSubtitle
-            return
-        }
-        val ready = privateGesture.armed || nextHeight >= restingHeight + dp(56)
-        when {
-            ready -> {
-                subtitle.text = "🔒 Release to open private messages"
-                if (!armedHapticFired) {
-                    armedHapticFired = true
-                    performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
-                }
-            }
-            nextHeight > restingHeight + dp(12) -> {
-                armedHapticFired = false
-                subtitle.text = "↓ Pull down for private messages"
-            }
-            else -> {
-                armedHapticFired = false
-                subtitle.text = restingSubtitle
-            }
-        }
-    }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
         val list = findViewById<RecyclerView>(R.id.recyclerView)
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 privateGesture.reset()
-                armedHapticFired = false
+                cancelHoldTimer()
+                holdTriggered = false
                 val nav = findViewById<View>(R.id.textoNavigation)
                 val aboveNav = nav == null || nav.visibility != View.VISIBLE || event.y < nav.top
                 if (privatePullEnabled && header.visibility == View.VISIBLE && aboveNav &&
@@ -65,34 +91,29 @@ class ReachableMessagesLayout @JvmOverloads constructor(context: Context, attrs:
             }
             MotionEvent.ACTION_POINTER_DOWN, MotionEvent.ACTION_CANCEL -> {
                 privateGesture.reset()
-                armedHapticFired = false
+                cancelHoldTimer()
+                holdTriggered = false
             }
             MotionEvent.ACTION_MOVE -> if (event.pointerCount == 1) {
                 if (!privateGesture.active && privatePullEnabled && header.visibility == View.VISIBLE &&
                     list != null && !list.canScrollVertically(-1)) {
                     privateGesture.begin(event.x, event.y)
                 } else {
-                    privateGesture.move(event.x, event.y, dp(64).toFloat())
+                    privateGesture.move(event.x, event.y, dp(88).toFloat())
                 }
+                val currentHeight = if (desiredHeight >= 0) desiredHeight else header.height
+                evaluateHoldState(currentHeight)
             } else {
                 privateGesture.reset()
+                cancelHoldTimer()
             }
         }
         val result = super.dispatchTouchEvent(event)
         if (event.actionMasked == MotionEvent.ACTION_UP || event.actionMasked == MotionEvent.ACTION_CANCEL) {
-            val currentHeight = if (desiredHeight >= 0) desiredHeight else header.height
-            val unlock = event.actionMasked == MotionEvent.ACTION_UP &&
-                privatePullEnabled && header.visibility == View.VISIBLE &&
-                (list == null || !list.canScrollVertically(-1)) &&
-                (privateGesture.armed || currentHeight >= restingHeight + dp(56))
+            cancelHoldTimer()
             privateGesture.reset()
-            armedHapticFired = false
+            holdTriggered = false
             findViewById<TextView>(R.id.textoSubtitle)?.text = restingSubtitle
-            if (unlock) {
-                settleTo(restingHeight)
-                performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-                onPrivatePull?.invoke()
-            }
         }
         return result
     }
@@ -120,7 +141,11 @@ class ReachableMessagesLayout @JvmOverloads constructor(context: Context, attrs:
             addUpdateListener { resize(it.animatedValue as Int) }; start()
         }
     }
-    override fun onDetachedFromWindow() { settle?.cancel(); super.onDetachedFromWindow() }
+    override fun onDetachedFromWindow() {
+        cancelHoldTimer()
+        settle?.cancel()
+        super.onDetachedFromWindow()
+    }
     private var initialLayout = true
     private val slop = ViewConfiguration.get(context).scaledTouchSlop
     private val restingHeight get() = when(SkinPresets.id(context)) {
@@ -159,11 +184,13 @@ class ReachableMessagesLayout @JvmOverloads constructor(context: Context, attrs:
         when (event.actionMasked) {
             MotionEvent.ACTION_MOVE -> {
                 val dy = event.y - downY
-                val next = (initialHeight + dy * 0.7f).toInt().coerceIn(dp(72), restingHeight + dp(110))
+                val next = (initialHeight + dy * 0.65f).toInt().coerceIn(dp(72), restingHeight + dp(110))
                 scheduleResize(next)
-                updatePullSubtitle(next)
+                evaluateHoldState(next)
+                findViewById<TextView>(R.id.textoSubtitle)?.text = restingSubtitle
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                cancelHoldTimer()
                 val target = if (header.height > restingHeight) restingHeight else header.height
                 settleTo(target); dragging = false
                 findViewById<TextView>(R.id.textoSubtitle)?.text = restingSubtitle
@@ -189,15 +216,17 @@ class ReachableMessagesLayout @JvmOverloads constructor(context: Context, attrs:
     override fun onNestedScroll(target: View, dxConsumed: Int, dyConsumed: Int, dxUnconsumed: Int, dyUnconsumed: Int, type: Int, consumed: IntArray) {
         if (dyUnconsumed < 0 && type == ViewCompat.TYPE_TOUCH) {
             val current = if (desiredHeight >= 0) desiredHeight else header.height
-            val next = (current - dyUnconsumed * 0.65f).toInt().coerceAtMost(restingHeight + dp(110))
+            val next = (current - dyUnconsumed * 0.6f).toInt().coerceAtMost(restingHeight + dp(110))
             scheduleResize(next); consumed[1] += dyUnconsumed
-            updatePullSubtitle(next)
+            evaluateHoldState(next)
+            findViewById<TextView>(R.id.textoSubtitle)?.text = restingSubtitle
         }
     }
     override fun onNestedScroll(target: View, dxConsumed: Int, dyConsumed: Int, dxUnconsumed: Int, dyUnconsumed: Int, type: Int) = onNestedScroll(target,dxConsumed,dyConsumed,dxUnconsumed,dyUnconsumed,type,IntArray(2))
     override fun onNestedScroll(target: View, dxConsumed: Int, dyConsumed: Int, dxUnconsumed: Int, dyUnconsumed: Int) = onNestedScroll(target,dxConsumed,dyConsumed,dxUnconsumed,dyUnconsumed,ViewCompat.TYPE_TOUCH)
     override fun onStopNestedScroll(target: View, type: Int) {
         nestedHelper.onStopNestedScroll(target,type)
+        cancelHoldTimer()
         val current = if (desiredHeight >= 0) desiredHeight else header.height
         if (current > restingHeight) settleTo(restingHeight)
         findViewById<TextView>(R.id.textoSubtitle)?.text = restingSubtitle

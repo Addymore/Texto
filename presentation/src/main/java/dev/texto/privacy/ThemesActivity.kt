@@ -152,7 +152,7 @@ class ThemesActivity : QkThemedActivity() {
             row("Adjust background crop","") { ArtworkCrop.show(this,android.net.Uri.parse(appearance.getString("background_image","")!!),"background_image") { render() } }
             row("Remove background image","") { ArtworkCrop.clearSaved(this,"background_image"); appearance.edit().remove("background_image").apply(); render() }
         }
-        label("Images remain on your device. A readability overlay keeps messages legible. Long press your header title for Archive.",13f)
+        label("Images remain on your device. A readability overlay keeps messages legible. See Settings → About for gesture guidance.",13f)
         label("Messages & motion",22f)
         fun messageColor(title: String,key: String) {
             row(title,if(appearance.contains(key)) "Custom" else "Follow theme") {
@@ -180,7 +180,7 @@ class ThemesActivity : QkThemedActivity() {
         row("Xiaomi Messages · 100% Exclusive", if (SkinPresets.isXiaomiExclusive(this)) "Active · HyperOS style" else "One-tap Xiaomi Messages look") {
             dialog = TextoDialogs.builder(this)
                 .setTitle("Xiaomi Messages · 100% Exclusive Theme")
-                .setMessage("Apply the complete Xiaomi Messages (HyperOS) experience:\n• Signature #0D84FF Xiaomi blue & soft surfaces\n• Left-aligned Messages header & pill search bar\n• One-finger pull-down for Private Messages\n• Rounded fluid message bubbles & dot unread badge")
+                .setMessage("Apply the complete Xiaomi Messages (HyperOS) experience:\n• Signature #0D84FF Xiaomi blue & soft surfaces\n• Left-aligned Messages header & pill search bar\n• Rounded fluid message bubbles & dot unread badge")
                 .setNegativeButton("Cancel", null)
                 .setNeutralButton("Apply + Xiaomi Icon") { _, _ ->
                     SkinPresets.applyXiaomiExclusive(this)
