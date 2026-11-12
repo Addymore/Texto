@@ -118,7 +118,13 @@ object PrivacyAuthDialogs {
                         policy.decision(it.address, conversation.lastMessage?.getText().orEmpty(), isKnownContact = it.contact != null)
                     }
                     conversation.textoLocked = rules.any { it.locked }
-                    if (rules.any { it.archived || it.spam }) conversation.archived = true
+                    val isArchiveSpam = rules.any { it.spam } || conversation.recipients.any { policy.normalize(it.address) in policy.entries("spam") }
+                    if (rules.any { it.archived } || isArchiveSpam) conversation.archived = true
+                    if (isArchiveSpam && !rules.any { it.blocked }) {
+                        conversation.blockReason = "Texto archive spam"
+                    } else if (!isArchiveSpam && conversation.blockReason == "Texto archive spam") {
+                        conversation.blockReason = null
+                    }
                     if (rules.any { it.locked } && Build.VERSION.SDK_INT >= 26) {
                         val manager = context.getSystemService(NotificationManager::class.java)
                         manager.getNotificationChannel("notifications_${conversation.id}")?.let { channel ->

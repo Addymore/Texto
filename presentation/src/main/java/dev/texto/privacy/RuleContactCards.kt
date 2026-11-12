@@ -18,11 +18,11 @@ object RuleContactCards {
         policy.entries(key).sorted().forEach { number ->
             val row=LinearLayout(context).apply { gravity=Gravity.CENTER_VERTICAL; setPadding((16*d).toInt(),(12*d).toInt(),(16*d).toInt(),(12*d).toInt()); background=TextoAppearance.card(context) }
             val avatar=FrameLayout(context)
-            val initial=TextView(context).apply { text=number.takeLast(2); textSize=20f; gravity=Gravity.CENTER; setTextColor(TextoAppearance.onAccent(context)); background=android.graphics.drawable.GradientDrawable().apply { shape=1; setColor(TextoAppearance.accent(context)) } }
+            val initial=TextView(context).apply { text=number.takeLast(2); textSize=17f; includeFontPadding=false; maxLines=1; gravity=Gravity.CENTER; setTextColor(TextoAppearance.onAccent(context)); background=android.graphics.drawable.GradientDrawable().apply { shape=1; setColor(TextoAppearance.accent(context)) } }
             val photo=ImageView(context).apply { scaleType=ImageView.ScaleType.CENTER_CROP }
             avatar.addView(initial,FrameLayout.LayoutParams(-1,-1));avatar.addView(photo,FrameLayout.LayoutParams(-1,-1))
             row.addView(avatar,LinearLayout.LayoutParams((48*d).toInt(),(48*d).toInt()))
-            val label=TextView(context).apply { text=number;setTextColor(TextoAppearance.readableText(context)); textSize=16f; setPadding((16*d).toInt(),0,0,0) }
+            val label=TextView(context).apply { text=number;setTextColor(TextoAppearance.readableText(context)); textSize=15f; setLineSpacing(0f,1.15f); setPadding((14*d).toInt(),0,(8*d).toInt(),0) }
             row.addView(label,LinearLayout.LayoutParams(0,-2,1f))
             list.addView(row,LinearLayout.LayoutParams(-1,-2).apply { bottomMargin=(8*d).toInt() })
             loader.execute {

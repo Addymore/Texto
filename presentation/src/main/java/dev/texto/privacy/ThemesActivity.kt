@@ -105,10 +105,14 @@ class ThemesActivity : QkThemedActivity() {
         for(group in 0..1) {
             val swatches=LinearLayout(this).apply { setPadding(dp(16), 0, dp(12), dp(6)) }
             for(i in group*4 until group*4+4) swatches.addView(MaterialButton(this).apply {
-                text=(if(accent==paletteColors[i]) "✓ " else "")+paletteNames[i]; textSize=11f; isAllCaps=false; contentDescription=paletteNames[i]; minWidth=0; minimumWidth=0; setPadding(dp(3),0,dp(3),0); cornerRadius=dp(24)
+                text=(if(accent==paletteColors[i]) "✓ " else "")+paletteNames[i]
+                textSize=10.5f; isAllCaps=false; contentDescription=paletteNames[i]
+                minWidth=0; minimumWidth=0; insetTop=0; insetBottom=0
+                maxLines=1; ellipsize=android.text.TextUtils.TruncateAt.END
+                setPadding(dp(4),0,dp(4),0); cornerRadius=dp(23)
                 backgroundTintList=ColorStateList.valueOf(paletteColors[i]); setTextColor(Color.WHITE)
                 setOnClickListener { saveAccent(paletteColors[i]) }
-            },LinearLayout.LayoutParams(0,dp(52),1f).apply { marginEnd=dp(4) })
+            },LinearLayout.LayoutParams(0,dp(46),1f).apply { marginEnd=dp(4) })
             content.addView(swatches)
         }
         row("Color wheel","Choose any color") { customAccent() }

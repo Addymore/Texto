@@ -102,10 +102,10 @@ class AboutController : QkController<AboutControllerBinding, AboutView, Unit, Ab
     }
 
     private fun buildGuidanceText(): String =
-        "• Private Messages (Pull & hold 3s):\n" +
-        "At the top of your normal inbox, pull down with one finger and hold continuously for 3 seconds. No tip is shown on the header so your private space stays discreet. If no lock or locked SMS exists yet, Texto will propose setting up Fingerprint, PIN, or Pattern.\n\n" +
-        "• Archived Messages & Sticky Spam Section:\n" +
-        "Long-press the top inbox title to open Archived messages. The Spam section sticks to the bottom of Archive with intelligent auto-filtering (Auto: ON/OFF) and manual sender/phrase filtering (+ Filter). Spammer threads stay archived even when new messages arrive.\n\n" +
+        "• Private Messages (Two-finger pull-down):\n" +
+        "At the top of your normal inbox, pull down with two fingers and release. No tip is shown on the header so your private space stays discreet. If no lock or locked SMS exists yet, Texto will propose setting up Fingerprint, PIN, or Pattern.\n\n" +
+        "• Archived Messages & Spam Messages Section:\n" +
+        "Long-press the top inbox title to open Archived messages. Any spam or marked-as-spam conversations are separated from normal archived messages and displayed under the \"Spam messages\" section at the bottom of Archive (with Auto: ON/OFF and + Filter). Spammer threads stay archived even when new messages arrive.\n\n" +
         "• Return to Normal Messages on Leave:\n" +
         "Leaving Texto from Archive, Private Messages, or settings automatically locks your private session and returns to normal messages (Inbox) next time.\n\n" +
         "• Xiaomi Messages 100% Exclusive Theme:\n" +

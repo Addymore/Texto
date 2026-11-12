@@ -45,7 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:title="Guidance &amp; hidden gestures"
-            app:summary="How to open Private Messages (pull &amp; hold 3s), Archive, Spam filter, and themes" />
+            app:summary="How to open Private Messages (2-finger pull-down), Archive, Spam messages, and themes" />
 
         <dev.octoshrimpy.quik.common.widget.PreferenceView
             app:icon="@drawable/ic_person_black_24dp" android:id="@+id/developer"

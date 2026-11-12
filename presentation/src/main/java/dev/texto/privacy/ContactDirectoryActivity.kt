@@ -134,12 +134,12 @@ class ContactDirectoryActivity : AppCompatActivity() {
             val row = LinearLayout(this@ContactDirectoryActivity).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL; setPadding(dp(14), dp(14), dp(14), dp(14)); background = TextoAppearance.card(context) }
             row.layoutParams = RecyclerView.LayoutParams(-1, -2).apply { bottomMargin = dp(8) }
             val avatar = FrameLayout(this@ContactDirectoryActivity)
-            val initial = TextView(this@ContactDirectoryActivity).apply { textSize = 21f; gravity = Gravity.CENTER; setTextColor(TextoTheme.onColor(TextoAppearance.accent(this@ContactDirectoryActivity))); background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(TextoAppearance.accent(this@ContactDirectoryActivity)) } }
+            val initial = TextView(this@ContactDirectoryActivity).apply { textSize = 18f; includeFontPadding = false; maxLines = 1; gravity = Gravity.CENTER; setTextColor(TextoTheme.onColor(TextoAppearance.accent(this@ContactDirectoryActivity))); background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(TextoAppearance.accent(this@ContactDirectoryActivity)) } }
             val image = ImageView(this@ContactDirectoryActivity).apply { scaleType = ImageView.ScaleType.CENTER_CROP }
-            avatar.addView(initial, FrameLayout.LayoutParams(-1,-1)); avatar.addView(image, FrameLayout.LayoutParams(-1,-1)); row.addView(avatar, LinearLayout.LayoutParams(dp(54),dp(54)))
-            val words = LinearLayout(this@ContactDirectoryActivity).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(14),0,dp(4),0) }
-            val name = TextView(this@ContactDirectoryActivity).apply { textSize = 17f; setTextColor(TextoAppearance.readableText(context)); setTypeface(null,Typeface.BOLD); maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END }
-            val number = TextView(this@ContactDirectoryActivity).apply { textSize = 14f; setPadding(0,dp(4),0,0); setTextColor(TextoAppearance.readableText(context)) }
+            avatar.addView(initial, FrameLayout.LayoutParams(-1,-1)); avatar.addView(image, FrameLayout.LayoutParams(-1,-1)); row.addView(avatar, LinearLayout.LayoutParams(dp(50),dp(50)))
+            val words = LinearLayout(this@ContactDirectoryActivity).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(14),0,dp(6),0) }
+            val name = TextView(this@ContactDirectoryActivity).apply { textSize = 16.5f; setTextColor(TextoAppearance.readableText(context)); setTypeface(null,Typeface.BOLD); maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END }
+            val number = TextView(this@ContactDirectoryActivity).apply { textSize = 13.5f; setPadding(0,dp(3),0,0); setTextColor(TextoAppearance.readableText(context)); maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END }
             words.addView(name); words.addView(number); row.addView(words,LinearLayout.LayoutParams(0,-2,1f))
             return PersonHolder(row, avatar, initial, image, name, number)
         }

@@ -94,7 +94,13 @@ class VaultActivity : QkThemedActivity() {
         if(realm == null) realm=Realm.getDefaultInstance()
         load(); conversationsAdapter.notifyDataSetChanged()
         TextoAppearance.smooth(list); TextoAppearance.refreshRate(this)
+        val d = resources.displayMetrics.density
         listOf(R.id.privateThemes,R.id.privateMore,R.id.privateLock).forEach { id -> findViewById<MaterialButton>(id).apply {
+            isAllCaps = false
+            maxLines = 1
+            insetTop = 0
+            insetBottom = 0
+            cornerRadius = (18 * d).toInt()
             backgroundTintList=android.content.res.ColorStateList.valueOf(TextoAppearance.accent(this@VaultActivity)); setTextColor(TextoAppearance.onAccent(this@VaultActivity))
         } }
     }

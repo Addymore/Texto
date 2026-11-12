@@ -101,7 +101,8 @@ object TextoAppearance {
             binding.root.setTag(dev.octoshrimpy.quik.R.id.texto_conversation_style, style)
             val spacing = when(p.getString("density","comfortable")) { "compact" -> 4; "airy" -> 8; else -> 6 }
             val scale = when(p.getString("card_size","medium")) { "small" -> .85f; "large" -> 1.15f; else -> 1f }
-            binding.root.setPadding((12*d*scale).toInt(),(spacing*d*scale).toInt(),(12*d*scale).toInt(),(spacing*d*scale).toInt())
+            val hPad = when(p.getString("card_shape","soft")) { "pill" -> 16; "round" -> 14; else -> 12 }
+            binding.root.setPadding((hPad*d*scale).toInt(),(spacing*d*scale).toInt(),(hPad*d*scale).toInt(),(spacing*d*scale).toInt())
             binding.root.minimumHeight = (60*d*scale).toInt().coerceAtLeast((48*d).toInt())
             val profile=SkinPresets.id(context)
             binding.root.background = if(SkinPresets.usesProfileSurface(context) && profile in listOf("samsung","pixel","xiaomi","motorola"))
@@ -118,13 +119,20 @@ object TextoAppearance {
             binding.snippet.maxLines = lines.coerceAtLeast(1)
             binding.messageCount.visibility = if(p.getBoolean("message_counts",true)) View.VISIBLE else View.GONE
             binding.unread.setTextColor(onAccent(context))
-            binding.unread.minWidth = ((if(dot) 10 else 20)*d).toInt()
+            binding.unread.maxLines = 1
+            binding.unread.includeFontPadding = false
+            binding.unread.gravity = android.view.Gravity.CENTER
+            val badgeHeight = maxOf((20*d).toInt(), kotlin.math.ceil(binding.unread.paint.fontSpacing + 6*d).toInt())
+            binding.unread.minWidth = if (dot) (10*d).toInt() else badgeHeight
             binding.unread.layoutParams = binding.unread.layoutParams.apply {
                 width = if(dot) (10*d).toInt() else -2
-                height = if(dot) (10*d).toInt() else maxOf((20*d).toInt(), kotlin.math.ceil(binding.unread.paint.fontSpacing+4*d).toInt())
+                height = if(dot) (10*d).toInt() else badgeHeight
             }
-            binding.unread.setPadding(if(dot) 0 else (6*d).toInt(),0,if(dot) 0 else (6*d).toInt(),0)
-            binding.unread.background = GradientDrawable().apply { cornerRadius=10*d; setColor(accent(context)) }
+            binding.unread.setPadding(if(dot) 0 else (7*d).toInt(),0,if(dot) 0 else (7*d).toInt(),0)
+            binding.unread.background = GradientDrawable().apply {
+                cornerRadius = if (dot) 5*d else badgeHeight / 2f
+                setColor(accent(context))
+            }
         }
         val countText = "$count ${if(count == 1L) "message" else "messages"}"
         if (binding.messageCount.text.toString() != countText) binding.messageCount.text = countText
@@ -160,7 +168,9 @@ object TextoAppearance {
         if (view is android.widget.TextView) {
             view.setTextColor(readableText(view.context))
             view.gravity = android.view.Gravity.START or android.view.Gravity.CENTER_VERTICAL
-            view.setPaddingRelative((20*d).toInt(),(spacing*d*scale).toInt(),(20*d).toInt(),(spacing*d*scale).toInt())
+            view.setLineSpacing(0f, 1.12f)
+            val vPad = maxOf((10*d).toInt(), (spacing*d*scale).toInt())
+            view.setPaddingRelative((20*d).toInt(), vPad, (20*d).toInt(), vPad)
         }
     }
     fun smooth(list: RecyclerView) {

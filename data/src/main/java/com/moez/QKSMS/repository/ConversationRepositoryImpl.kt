@@ -71,6 +71,7 @@ class ConversationRepositoryImpl @Inject constructor(
             .notEqualTo("id", 0L)
             .equalTo("archived", archived)
             .equalTo("blocked", false)
+            .notEqualTo("blockReason", "Texto archive spam")
             .equalTo("textoLocked", false)
             .isNotEmpty("recipients")
             .beginGroup()
@@ -396,7 +397,11 @@ class ConversationRepositoryImpl @Inject constructor(
                                 decision
                             }
                             conversation.textoLocked = rules.any { it.locked }
-                            if (rules.any { it.archived || it.spam }) conversation.archived = true
+                            val isArchiveSpam = rules.any { it.spam } || conversation.recipients.any { policy.normalize(it.address) in policy.entries("spam") }
+                            if (rules.any { it.archived } || isArchiveSpam) conversation.archived = true
+                            if (isArchiveSpam && !rules.any { it.blocked }) {
+                                conversation.blockReason = "Texto archive spam"
+                            }
                             if (rules.any { it.blocked }) { conversation.blocked = true; conversation.blockReason = "Texto spam rule" }
                         }
                     }
@@ -413,7 +418,15 @@ class ConversationRepositoryImpl @Inject constructor(
 
             val policy=dev.texto.privacy.TextoPolicy(context)
             policy.save("archived",policy.entries("archived") + conversations.flatMap { c -> c.recipients.map { it.address } })
-            realm.executeTransaction { conversations.forEach { it.archived = true } }
+            val spamSet = policy.entries("spam")
+            realm.executeTransaction {
+                conversations.forEach { conv ->
+                    conv.archived = true
+                    if (conv.recipients.any { policy.normalize(it.address) in spamSet } && !conv.blocked) {
+                        conv.blockReason = "Texto archive spam"
+                    }
+                }
+            }
         }
 
     override fun markUnarchived(threadIds: Collection<Long>, userInitiated: Boolean) =
@@ -426,7 +439,14 @@ class ConversationRepositoryImpl @Inject constructor(
             val numbers=conversations.filter { !it.textoLocked }.flatMap { c -> c.recipients.map { policy.normalize(it.address) } }.toSet()
             policy.save("archived",policy.entries("archived")-numbers)
             policy.save("spam",policy.entries("spam")-numbers)
-            realm.executeTransaction { conversations.forEach { conversation -> if (conversation.recipients.none { policy.decision(it.address).archived }) conversation.archived = false } }
+            realm.executeTransaction {
+                conversations.forEach { conversation ->
+                    if (conversation.recipients.none { policy.decision(it.address).archived }) {
+                        conversation.archived = false
+                        if (conversation.blockReason == "Texto archive spam") conversation.blockReason = null
+                    }
+                }
+            }
         }
 
     override fun markPinned(vararg threadIds: Long) =

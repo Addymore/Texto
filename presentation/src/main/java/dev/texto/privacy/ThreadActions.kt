@@ -33,17 +33,30 @@ object ThreadActions {
                             val thread = realm.where(Conversation::class.java).equalTo("id", id).findFirst() ?: return@use
                             if (state.third) {
                                 thread.recipients.forEach { policy.unmarkSpamSender(it.address, alsoUnarchive = false) }
+                                realm.executeTransaction {
+                                    if (thread.blockReason == "Texto archive spam") thread.blockReason = null
+                                }
                             } else {
                                 thread.recipients.forEach { policy.recordSpamSender(it.address) }
-                                realm.executeTransaction { thread.archived = true }
+                                realm.executeTransaction {
+                                    thread.archived = true
+                                    if (!thread.blocked) thread.blockReason = "Texto archive spam"
+                                }
                             }
                         }
                         activity.runOnUiThread {
-                            if (!activity.isDestroyed) Toast.makeText(
-                                activity,
-                                if (state.third) "Removed from Archive Spam." else "Moved to Archive Spam (stays archived).",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            if (!activity.isDestroyed) {
+                                activity.findViewById<android.widget.FrameLayout>(dev.octoshrimpy.quik.R.id.archiveSpamHost)?.let { host ->
+                                    if (host.visibility == android.view.View.VISIBLE) {
+                                        ArchiveSpamSection.bind(activity, host) {}
+                                    }
+                                }
+                                Toast.makeText(
+                                    activity,
+                                    if (state.third) "Removed from Spam messages." else "Moved to Spam messages in Archive.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
                     }.start()
                     return@setItems
@@ -110,6 +123,7 @@ object ThreadActions {
                         r.where(Conversation::class.java).findAll().filter { c -> c.recipients.any { policy.normalize(it.address) in numbers } }.forEach { c ->
                             c.textoLocked=c.recipients.any { policy.decision(it.address).locked }
                             c.archived=c.recipients.any { policy.decision(it.address).archived }
+                            if (c.blockReason == "Texto archive spam") c.blockReason = null
                         }
                     }
                 }

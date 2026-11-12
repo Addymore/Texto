@@ -23,49 +23,56 @@ import io.realm.Realm
 import io.realm.Sort
 
 /**
- * Sticky bottom Spam section inside Archived messages.
- * Supports intelligent auto-spam filtering and manual sender/keyword filtering,
- * and keeps spammer threads archived even when new messages arrive.
+ * Sticky bottom "Spam messages" section inside Archived messages.
+ * Excludes spam conversations from the normal archived list above and shows them
+ * under the "Spam messages" section title at the bottom of Archive.
  */
 object ArchiveSpamSection {
-    private var expanded = false
-
     private data class SpamThreadItem(
         val id: Long,
         val title: String,
         val addresses: List<String>,
-        val snippet: String
+        val snippet: String,
+        val count: Long
     )
 
     fun scanAndApplyAutoSpam(activity: Activity): Int {
         val policy = TextoPolicy(activity)
-        if (!policy.autoSpamEnabled()) return 0
+        val autoEnabled = policy.autoSpamEnabled()
         var newlyFlagged = 0
         runCatching {
             Realm.getDefaultInstance().use { realm ->
+                val spamSet = policy.entries("spam")
                 val candidates = realm.where(Conversation::class.java)
                     .equalTo("textoLocked", false)
                     .findAll()
-                val toArchive = mutableListOf<Conversation>()
+                val toUpdate = mutableListOf<Conversation>()
                 for (conv in candidates) {
                     val body = conv.lastMessage?.getText().orEmpty()
                     val matched = conv.recipients.any { r ->
                         val norm = policy.normalize(r.address)
-                        val alreadySpam = norm in policy.entries("spam")
-                        val intelligent = policy.isSpamSender(r.address, body, isKnownContact = r.contact != null)
+                        val alreadySpam = norm in spamSet
+                        val intelligent = if (autoEnabled) {
+                            policy.isSpamSender(r.address, body, isKnownContact = r.contact != null)
+                        } else {
+                            alreadySpam
+                        }
                         if (intelligent && !alreadySpam) {
                             policy.recordSpamSender(r.address)
                             newlyFlagged++
                         }
-                        intelligent
+                        alreadySpam || intelligent
                     }
-                    if (matched && !conv.archived) {
-                        toArchive.add(conv)
+                    if (matched && (!conv.archived || conv.blockReason != "Texto archive spam")) {
+                        toUpdate.add(conv)
                     }
                 }
-                if (toArchive.isNotEmpty()) {
+                if (toUpdate.isNotEmpty()) {
                     realm.executeTransaction {
-                        toArchive.forEach { it.archived = true }
+                        toUpdate.forEach { conv ->
+                            conv.archived = true
+                            if (!conv.blocked) conv.blockReason = "Texto archive spam"
+                        }
                     }
                 }
             }
@@ -85,15 +92,17 @@ object ArchiveSpamSection {
                     .sort("lastMessage.date", Sort.DESCENDING)
                     .findAll()
                     .filter { conv ->
-                        (conv.archived || conv.blocked) &&
-                            (conv.blocked || conv.recipients.any { policy.normalize(it.address) in spamSet })
+                        conv.blockReason == "Texto archive spam" ||
+                            ((conv.archived || conv.blocked) &&
+                                (conv.blocked || conv.recipients.any { policy.normalize(it.address) in spamSet }))
                     }
                     .map { conv ->
                         SpamThreadItem(
                             id = conv.id,
                             title = conv.getTitle().ifBlank { conv.recipients.joinToString { it.address } },
                             addresses = conv.recipients.map { it.address },
-                            snippet = conv.snippet.orEmpty().ifBlank { "Spam message" }
+                            snippet = conv.snippet.orEmpty().ifBlank { "Spam message" },
+                            count = conv.messageCount.toLong()
                         )
                     }
             }
@@ -121,7 +130,7 @@ object ArchiveSpamSection {
             orientation = LinearLayout.VERTICAL
             background = TextoAppearance.card(activity)
             val padH = (14 * d).toInt()
-            val padV = (10 * d).toInt()
+            val padV = (12 * d).toInt()
             setPadding(padH, padV, padH, padV)
         }
 
@@ -133,26 +142,23 @@ object ArchiveSpamSection {
         val titleCol = LinearLayout(activity).apply {
             orientation = LinearLayout.VERTICAL
             layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
-            isClickable = true
-            isFocusable = true
-            setOnClickListener {
-                expanded = !expanded
-                bind(activity, container, onChanged)
-            }
         }
 
-        val arrow = if (expanded) "▼" else "▲"
         titleCol.addView(TextView(activity).apply {
-            text = "Spam in Archive · ${spamThreads.size}  $arrow"
-            textSize = 15f
+            text = "Spam messages"
+            textSize = 16f
             setTypeface(null, Typeface.BOLD)
             setTextColor(ink)
+            maxLines = 1
+            ellipsize = TextUtils.TruncateAt.END
         })
         titleCol.addView(TextView(activity).apply {
             val autoState = if (policy.autoSpamEnabled()) "Auto-filter ON" else "Auto-filter OFF"
-            text = "$autoState · Stays archived on new SMS"
+            text = "${spamThreads.size} spam · $autoState"
             textSize = 12f
             setTextColor(ColorUtils.setAlphaComponent(ink, 190))
+            maxLines = 1
+            ellipsize = TextUtils.TruncateAt.END
         })
         headerRow.addView(titleCol)
 
@@ -160,6 +166,7 @@ object ArchiveSpamSection {
             text = label
             textSize = 11f
             isAllCaps = false
+            maxLines = 1
             minWidth = 0
             minimumWidth = 0
             minHeight = (34 * d).toInt()
@@ -202,62 +209,73 @@ object ArchiveSpamSection {
 
         card.addView(headerRow)
 
-        if (expanded) {
-            val listBox = LinearLayout(activity).apply {
-                orientation = LinearLayout.VERTICAL
-                setPadding(0, (8 * d).toInt(), 0, 0)
-            }
-            if (spamThreads.isEmpty()) {
-                listBox.addView(TextView(activity).apply {
-                    text = "No spam conversations in Archive. Tap '+ Filter' to mark senders or phrases as spam."
-                    textSize = 13f
-                    setTextColor(ColorUtils.setAlphaComponent(ink, 180))
-                    setPadding(0, (6 * d).toInt(), 0, (4 * d).toInt())
-                })
-            } else {
-                spamThreads.forEach { item ->
-                    val row = LinearLayout(activity).apply {
-                        orientation = LinearLayout.VERTICAL
-                        setPadding((10 * d).toInt(), (8 * d).toInt(), (10 * d).toInt(), (8 * d).toInt())
-                        background = android.graphics.drawable.GradientDrawable().apply {
-                            cornerRadius = 12f * d
-                            setColor(ColorUtils.setAlphaComponent(accent, 22))
-                        }
-                        isClickable = true
-                        isFocusable = true
-                        setOnClickListener {
-                            showSpamThreadDialog(activity, item, container, onChanged)
-                        }
-                    }
-                    row.addView(TextView(activity).apply {
-                        text = "🚫 ${item.title}"
-                        textSize = 14f
-                        setTypeface(null, Typeface.BOLD)
-                        setTextColor(ink)
-                        maxLines = 1
-                        ellipsize = TextUtils.TruncateAt.END
-                    })
-                    row.addView(TextView(activity).apply {
-                        text = item.snippet
-                        textSize = 12f
-                        setTextColor(ColorUtils.setAlphaComponent(ink, 195))
-                        maxLines = 1
-                        ellipsize = TextUtils.TruncateAt.END
-                    })
-                    listBox.addView(
-                        row,
-                        LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
-                            bottomMargin = (6 * d).toInt()
-                        }
-                    )
-                }
-            }
-            val scroller = ScrollView(activity).apply {
-                addView(listBox)
-            }
-            val maxListHeight = if (spamThreads.size > 2) (160 * d).toInt() else ViewGroup.LayoutParams.WRAP_CONTENT
-            card.addView(scroller, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, maxListHeight))
+        val listBox = LinearLayout(activity).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(0, (8 * d).toInt(), 0, 0)
         }
+        if (spamThreads.isEmpty()) {
+            listBox.addView(TextView(activity).apply {
+                text = "No spam messages in Archive. Tap '+ Filter' or long-press a conversation to mark as spam."
+                textSize = 12.5f
+                setTextColor(ColorUtils.setAlphaComponent(ink, 180))
+                setPadding(0, (4 * d).toInt(), 0, (2 * d).toInt())
+            })
+        } else {
+            spamThreads.forEach { item ->
+                val row = LinearLayout(activity).apply {
+                    orientation = LinearLayout.VERTICAL
+                    setPadding((12 * d).toInt(), (8 * d).toInt(), (12 * d).toInt(), (8 * d).toInt())
+                    background = android.graphics.drawable.GradientDrawable().apply {
+                        cornerRadius = 12f * d
+                        setColor(ColorUtils.setAlphaComponent(accent, 22))
+                    }
+                    isClickable = true
+                    isFocusable = true
+                    setOnClickListener {
+                        showSpamThreadDialog(activity, item, container, onChanged)
+                    }
+                }
+                val topLine = LinearLayout(activity).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    gravity = Gravity.CENTER_VERTICAL
+                }
+                topLine.addView(TextView(activity).apply {
+                    text = "🚫 ${item.title}"
+                    textSize = 14f
+                    setTypeface(null, Typeface.BOLD)
+                    setTextColor(ink)
+                    maxLines = 1
+                    ellipsize = TextUtils.TruncateAt.END
+                }, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+                topLine.addView(TextView(activity).apply {
+                    text = "${item.count} ${if (item.count == 1L) "msg" else "msgs"}"
+                    textSize = 11.5f
+                    setTextColor(ColorUtils.setAlphaComponent(ink, 180))
+                    setPadding((8 * d).toInt(), 0, 0, 0)
+                    maxLines = 1
+                })
+                row.addView(topLine)
+                row.addView(TextView(activity).apply {
+                    text = item.snippet
+                    textSize = 12.5f
+                    setTextColor(ColorUtils.setAlphaComponent(ink, 195))
+                    maxLines = 1
+                    ellipsize = TextUtils.TruncateAt.END
+                    setPadding(0, (2 * d).toInt(), 0, 0)
+                })
+                listBox.addView(
+                    row,
+                    LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                        bottomMargin = (6 * d).toInt()
+                    }
+                )
+            }
+        }
+        val scroller = ScrollView(activity).apply {
+            addView(listBox)
+        }
+        val maxListHeight = if (spamThreads.size > 3) (180 * d).toInt() else ViewGroup.LayoutParams.WRAP_CONTENT
+        card.addView(scroller, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, maxListHeight))
 
         container.addView(
             card,
@@ -310,6 +328,7 @@ object ArchiveSpamSection {
                                 realm.where(Conversation::class.java).equalTo("id", item.id).findFirst()?.apply {
                                     archived = true
                                     blocked = false
+                                    blockReason = null
                                 }
                             }
                         }
@@ -364,7 +383,6 @@ object ArchiveSpamSection {
                     3 -> {
                         policy.setAutoSpamEnabled(true)
                         val count = scanAndApplyAutoSpam(activity)
-                        expanded = true
                         onChanged()
                         bind(activity, container, onChanged)
                         Toast.makeText(activity, "Intelligent scan complete: $count new spam conversation(s) archived.", Toast.LENGTH_SHORT).show()
@@ -388,7 +406,7 @@ object ArchiveSpamSection {
                 .greaterThan("messageCount", 0)
                 .sort("lastMessage.date", Sort.DESCENDING)
                 .findAll()
-                .filter { conv -> conv.recipients.none { policy.normalize(it.address) in spamSet } }
+                .filter { conv -> conv.blockReason != "Texto archive spam" && conv.recipients.none { policy.normalize(it.address) in spamSet } }
                 .map { conv ->
                     Triple(
                         conv.id,
@@ -423,13 +441,15 @@ object ArchiveSpamSection {
                             realm.where(Conversation::class.java)
                                 .`in`("id", selectedIds.toTypedArray())
                                 .findAll()
-                                .forEach { it.archived = true }
+                                .forEach {
+                                    it.archived = true
+                                    if (!it.blocked) it.blockReason = "Texto archive spam"
+                                }
                         }
                     }
-                    expanded = true
                     onChanged()
                     bind(activity, container, onChanged)
-                    Toast.makeText(activity, "Moved ${selectedIds.size} conversation(s) to Archive Spam.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity, "Moved ${selectedIds.size} conversation(s) to Spam messages.", Toast.LENGTH_SHORT).show()
                 }
             }
             .show()
@@ -447,7 +467,7 @@ object ArchiveSpamSection {
         }
         TextoDialogs.builder(activity)
             .setTitle("Add spam sender")
-            .setMessage("Messages from this sender will stay archived in the Spam section even when new messages arrive.")
+            .setMessage("Messages from this sender will stay archived in the Spam messages section even when new messages arrive.")
             .setView(field)
             .setNegativeButton("Cancel", null)
             .setPositiveButton("Add to Spam") { _, _ ->
@@ -455,7 +475,6 @@ object ArchiveSpamSection {
                 if (raw.isNotEmpty()) {
                     policy.recordSpamSender(raw)
                     PrivacyAuthDialogs.applyRulesToRealm(activity)
-                    expanded = true
                     onChanged()
                     bind(activity, container, onChanged)
                 }
