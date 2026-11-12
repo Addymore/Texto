@@ -10,23 +10,52 @@ import io.realm.Realm
 
 object ThreadActions {
     fun show(activity: Activity, id: Long, select: () -> Unit) {
-        val state = Realm.getDefaultInstance().use { r -> r.where(Conversation::class.java).equalTo("id",id).findFirst()?.let { it.textoLocked to it.archived } } ?: return
-        if(state.first && !PrivacyGate.unlocked) return
-        val labels = if(state.first) arrayOf("Move to normal messages", "Move to archive (remove lock)", "Move to recycle bin")
-            else if(state.second) arrayOf("Move to normal messages", "Lock & archive this number", "Move to recycle bin", "Select multiple")
-            else arrayOf("Archive", "Lock & archive this number", "Move to recycle bin", "Select multiple")
+        val policy = TextoPolicy(activity)
+        val state = Realm.getDefaultInstance().use { r ->
+            r.where(Conversation::class.java).equalTo("id", id).findFirst()?.let { conv ->
+                val isSpam = conv.recipients.any { policy.normalize(it.address) in policy.entries("spam") }
+                Triple(conv.textoLocked, conv.archived, isSpam)
+            }
+        } ?: return
+        if (state.first && !PrivacyGate.unlocked) return
+        val labels = when {
+            state.first -> arrayOf("Move to normal messages", "Move to archive (remove lock)", "Move to recycle bin")
+            state.second && state.third -> arrayOf("Not spam · Move to normal messages", "Lock & archive this number", "Move to recycle bin", "Select multiple", "Keep archived (remove spam flag)")
+            state.second -> arrayOf("Move to normal messages", "Lock & archive this number", "Move to recycle bin", "Select multiple", "Mark as spam (keep in Archive Spam)")
+            else -> arrayOf("Archive", "Lock & archive this number", "Move to recycle bin", "Select multiple", "Mark as spam (move to Archive Spam)")
+        }
         dev.texto.privacy.TextoDialogs.builder(activity).setTitle("Conversation actions")
             .setItems(labels) { _, which ->
                 if (which == 3) { select(); return@setItems }
+                if (which == 4) {
+                    Thread {
+                        Realm.getDefaultInstance().use { realm ->
+                            val thread = realm.where(Conversation::class.java).equalTo("id", id).findFirst() ?: return@use
+                            if (state.third) {
+                                thread.recipients.forEach { policy.unmarkSpamSender(it.address, alsoUnarchive = false) }
+                            } else {
+                                thread.recipients.forEach { policy.recordSpamSender(it.address) }
+                                realm.executeTransaction { thread.archived = true }
+                            }
+                        }
+                        activity.runOnUiThread {
+                            if (!activity.isDestroyed) Toast.makeText(
+                                activity,
+                                if (state.third) "Removed from Archive Spam." else "Moved to Archive Spam (stays archived).",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }.start()
+                    return@setItems
+                }
                 if ((state.first && which < 2) || (state.second && which == 0)) {
                     TextoDialogs.builder(activity).setTitle(labels[which]).setMessage("This changes the number rules for every conversation containing these participants, including future messages.")
                         .setNegativeButton("Cancel",null).setPositiveButton("Move") { _,_ -> moveOut(activity,id,state.first && which == 1) }.show()
                     return@setItems
                 }
-                val policy = TextoPolicy(activity)
                 if (which == 1 && !policy.hasPin()) {
-                    Toast.makeText(activity,"Create a privacy PIN, then long-press the conversation to lock it.",Toast.LENGTH_LONG).show()
-                    activity.startActivity(Intent(activity,ProtectionActivity::class.java)); return@setItems
+                    PrivacyAuthDialogs.showSetupProposal(activity)
+                    return@setItems
                 }
                 Thread {
                     val result = runCatching {
@@ -75,6 +104,7 @@ object ThreadActions {
                     check(!thread.textoLocked || PrivacyGate.unlocked)
                     val numbers=thread.recipients.map { policy.normalize(it.address) }.toSet()
                     policy.save("locked",policy.entries("locked")-numbers)
+                    policy.save("spam",policy.entries("spam")-numbers)
                     policy.save("archived",if(archive) policy.entries("archived")+numbers else policy.entries("archived")-numbers)
                     r.executeTransaction {
                         r.where(Conversation::class.java).findAll().filter { c -> c.recipients.any { policy.normalize(it.address) in numbers } }.forEach { c ->

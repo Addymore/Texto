@@ -164,14 +164,18 @@ object TextoAppearance {
         }
     }
     fun smooth(list: RecyclerView) {
-        list.setHasFixedSize(true); list.setItemViewCacheSize(20)
-        (list.layoutManager as? LinearLayoutManager)?.initialPrefetchItemCount = 4
+        list.setHasFixedSize(true); list.setItemViewCacheSize(24)
+        list.recycledViewPool.setMaxRecycledViews(0, 24)
+        (list.layoutManager as? LinearLayoutManager)?.apply {
+            isItemPrefetchEnabled = true
+            initialPrefetchItemCount = 6
+        }
         (list.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         if (prefs(list.context).getBoolean("reduce_motion",false)) list.itemAnimator = null
         list.overScrollMode = View.OVER_SCROLL_IF_CONTENT_SCROLLS
     }
     fun refreshRate(activity: Activity) {
-        if (!prefs(activity).getBoolean("high_refresh", false)) { if (activity.window.attributes.preferredDisplayModeId != 0) activity.window.attributes = activity.window.attributes.apply { preferredDisplayModeId = 0 }; return }
+        if (!prefs(activity).getBoolean("high_refresh", true)) { if (activity.window.attributes.preferredDisplayModeId != 0) activity.window.attributes = activity.window.attributes.apply { preferredDisplayModeId = 0 }; return }
         @Suppress("DEPRECATION") val display = activity.windowManager.defaultDisplay
         val current = display.mode
         val best = display.supportedModes.filter { it.physicalWidth == current.physicalWidth && it.physicalHeight == current.physicalHeight }.maxByOrNull { it.refreshRate } ?: return

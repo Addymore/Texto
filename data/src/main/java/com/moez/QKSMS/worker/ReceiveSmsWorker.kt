@@ -62,11 +62,17 @@ class ReceiveSmsWorker(appContext: Context, workerParams: WorkerParameters)
         val message = messageRepo.getMessage(messageId) ?: return Result.failure(inputData)
 
         val textoPolicy = dev.texto.privacy.TextoPolicy(applicationContext)
-        val textoRules = listOf(textoPolicy.decision(message.address, message.getText())) +
-            (conversationRepo.getOrCreateConversation(message.threadId)?.recipients?.map { textoPolicy.decision(it.address, message.getText()) } ?: emptyList())
-        if (textoRules.any { it.archived || it.blocked }) {
+        val existingConv = conversationRepo.getOrCreateConversation(message.threadId)
+        val isContact = existingConv?.recipients?.any { it.contact != null } == true
+        val textoRules = listOf(textoPolicy.decision(message.address, message.getText(), isKnownContact = isContact)) +
+            (existingConv?.recipients?.map { textoPolicy.decision(it.address, message.getText(), isKnownContact = it.contact != null) } ?: emptyList())
+        if (textoRules.any { it.archived || it.blocked || it.spam }) {
+            if (textoRules.any { it.spam && !it.blocked }) {
+                textoPolicy.recordSpamSender(message.address)
+                existingConv?.recipients?.forEach { textoPolicy.recordSpamSender(it.address) }
+            }
             conversationRepo.updateConversations(listOf(message.threadId))
-            if (textoRules.any { it.archived }) conversationRepo.markArchived(message.threadId)
+            if (textoRules.any { it.archived || it.spam }) conversationRepo.markArchived(message.threadId)
             if (textoRules.any { it.blocked }) conversationRepo.markBlocked(listOf(message.threadId), -1, "Texto spam rule")
             notificationManager.cancel(message.threadId.toInt())
             shortcutManager.updateShortcuts()

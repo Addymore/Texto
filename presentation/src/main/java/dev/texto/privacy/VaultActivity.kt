@@ -32,22 +32,59 @@ class VaultActivity : QkThemedActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
         if (!PrivacyGate.unlocked) { finish(); return }
         setContentView(R.layout.texto_vault)
-        findViewById<ReachableMessagesLayout>(R.id.textoReachable).apply { privatePullEnabled=false; restingSubtitle="Only visible while unlocked" }
+        findViewById<ReachableMessagesLayout>(R.id.textoReachable).apply {
+            privatePullEnabled = true
+            privateActionLabel = "Lock private messages"
+            restingSubtitle = "Only visible while unlocked"
+            onPrivatePull = { PrivacyGate.session.lock(); finish() }
+        }
         InboxArtwork.background(findViewById(R.id.textoReachable),"background_image")
         InboxArtwork.background(findViewById(R.id.textoHeader),"header_image")
         list = findViewById(R.id.recyclerView)
         list.layoutManager = LinearLayoutManager(this)
         list.adapter = conversationsAdapter
-        conversationsAdapter.emptyView = findViewById(R.id.privateEmpty)
+        val emptyView = findViewById<android.widget.TextView>(R.id.privateEmpty).apply {
+            text = "No locked SMS conversations yet.\nTap here to choose numbers/conversations to lock or configure Fingerprint / PIN / Pattern."
+            isClickable = true
+            isFocusable = true
+            setOnClickListener {
+                PrivacyAuthDialogs.showSetupProposal(this@VaultActivity) { load() }
+            }
+        }
+        conversationsAdapter.emptyView = emptyView
         findViewById<TextInputEditText>(R.id.privateSearch).doAfterTextChanged { query=it.toString(); load() }
         findViewById<MaterialButton>(R.id.privateThemes).setOnClickListener { startActivity(Intent(this,ThemesActivity::class.java).putExtra("from_private",true)) }
         findViewById<MaterialButton>(R.id.privateMore).setOnClickListener {
-            val destinations = arrayOf(ProtectionActivity::class.java,TrashActivity::class.java,dev.octoshrimpy.quik.feature.backup.BackupActivity::class.java,dev.octoshrimpy.quik.feature.scheduled.ScheduledActivity::class.java)
-            dialog = dev.texto.privacy.TextoDialogs.builder(this).setTitle("Private options").setItems(arrayOf("Privacy & protection","Recycle bin","Backup & restore","Scheduled messages")) { _, i ->
-                if(PrivacyGate.unlocked) startActivity(Intent(this,destinations[i]).putExtra("protected_tools",true))
+            val labels = arrayOf(
+                "Choose conversations / numbers to lock",
+                "Set Fingerprint / PIN / Pattern",
+                "Privacy & protection",
+                "Recycle bin",
+                "Backup & restore",
+                "Scheduled messages"
+            )
+            dialog = dev.texto.privacy.TextoDialogs.builder(this).setTitle("Private options").setItems(labels) { _, i ->
+                if (!PrivacyGate.unlocked) return@setItems
+                when (i) {
+                    0 -> PrivacyAuthDialogs.showLockPicker(this) { load() }
+                    1 -> PrivacyAuthDialogs.showSetupProposal(this) { load() }
+                    else -> {
+                        val destinations = arrayOf(
+                            ProtectionActivity::class.java,
+                            TrashActivity::class.java,
+                            dev.octoshrimpy.quik.feature.backup.BackupActivity::class.java,
+                            dev.octoshrimpy.quik.feature.scheduled.ScheduledActivity::class.java
+                        )
+                        startActivity(Intent(this, destinations[i - 2]).putExtra("protected_tools", true))
+                    }
+                }
             }.show()
         }
         findViewById<MaterialButton>(R.id.privateLock).setOnClickListener { PrivacyGate.session.lock(); finish() }
+        if (state == null && intent.getBooleanExtra("propose_lock_picker", false)) {
+            intent.removeExtra("propose_lock_picker")
+            list.post { if (!isFinishing && PrivacyGate.unlocked) PrivacyAuthDialogs.showLockPicker(this) { load() } }
+        }
     }
     override fun onResume() {
         super.onResume()

@@ -19,18 +19,35 @@ object PrivacyGate : Application.ActivityLifecycleCallbacks {
     val session = VaultSession()
     val unlocked get() = session.unlocked
     private var started = 0
+    private val openSecondaryScreens = java.util.Collections.newSetFromMap(java.util.WeakHashMap<Activity, Boolean>())
+    @Volatile var returnToInboxOnResume = false
+    @Volatile var launchingExternalPicker = false
+
+    fun consumeReturnToInbox(): Boolean {
+        val value = returnToInboxOnResume
+        returnToInboxOnResume = false
+        return value
+    }
+
+    fun openPrivateSpace(activity: Activity, proposeLockPicker: Boolean = false) {
+        session.request()
+        activity.startActivity(
+            Intent(activity, UnlockActivity::class.java)
+                .putExtra("propose_lock_picker", proposeLockPicker)
+        )
+    }
+
     fun pullDown(activity: MainActivity) {
-        if (!TextoPolicy(activity).hasPin()) {
-            Toast.makeText(activity, "Create your privacy PIN in Settings → Privacy & protection first.", Toast.LENGTH_LONG).show()
+        if (!TextoPolicy(activity).hasPin() || !PrivacyAuthDialogs.hasLockedSms(activity)) {
+            PrivacyAuthDialogs.showSetupProposal(activity)
             return
         }
-        session.request()
-        activity.startActivity(Intent(activity, UnlockActivity::class.java))
+        openPrivateSpace(activity, proposeLockPicker = false)
     }
     fun openBin(activity: Activity) {
         if (!TextoPolicy(activity).hasPin()) {
-            Toast.makeText(activity, "Create your privacy PIN first, then open Recycle bin.", Toast.LENGTH_LONG).show()
-            activity.startActivity(Intent(activity, ProtectionActivity::class.java)); return
+            PrivacyAuthDialogs.showSetupProposal(activity)
+            return
         }
         session.request()
         activity.startActivity(Intent(activity, UnlockActivity::class.java).putExtra("bin", true))
@@ -66,6 +83,9 @@ object PrivacyGate : Application.ActivityLifecycleCallbacks {
         a.finish()
     }
     override fun onActivityCreated(a: Activity, state: Bundle?) {
+        if (a !is MainActivity && a.javaClass.simpleName !in setOf("ComposeActivity", "SelectionProbeActivity")) {
+            openSecondaryScreens.add(a)
+        }
         if (protected(a)) {
             a.window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
             if (!unlocked) a.window.decorView.visibility = View.INVISIBLE
@@ -74,6 +94,7 @@ object PrivacyGate : Application.ActivityLifecycleCallbacks {
     override fun onActivityStarted(a: Activity) { started++ }
     override fun onActivityResumed(a: Activity) {
         if (a.isFinishing) return
+        launchingExternalPicker = false
         if (a is MainActivity) session.lock()
         if (protected(a)) {
             a.window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
@@ -87,8 +108,21 @@ object PrivacyGate : Application.ActivityLifecycleCallbacks {
     override fun onActivityPaused(a: Activity) { if (protected(a)) a.window.decorView.visibility = View.INVISIBLE }
     override fun onActivityStopped(a: Activity) {
         started = (started - 1).coerceAtLeast(0)
-        if (started == 0 && !a.isChangingConfigurations) session.lock()
+        if (started == 0 && !a.isChangingConfigurations) {
+            session.lock()
+            if (!launchingExternalPicker) {
+                returnToInboxOnResume = true
+                openSecondaryScreens.toList().forEach { screen ->
+                    if (!screen.isFinishing && !screen.isDestroyed) {
+                        runCatching { screen.finish() }
+                    }
+                }
+                openSecondaryScreens.clear()
+            }
+        }
     }
     override fun onActivitySaveInstanceState(a: Activity, state: Bundle) {}
-    override fun onActivityDestroyed(a: Activity) {}
+    override fun onActivityDestroyed(a: Activity) {
+        openSecondaryScreens.remove(a)
+    }
 }

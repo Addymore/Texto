@@ -5,13 +5,13 @@ import org.json.JSONObject
 
 /** Explicitly applied visual profiles. Texto remains unchanged until Apply is chosen. */
 object SkinPresets {
-    val names = arrayOf("Samsung One UI inspired", "ColorOS / OxygenOS inspired", "Pixel inspired", "Xiaomi HyperOS inspired", "Nothing inspired", "Motorola inspired", "Honor inspired", "vivo inspired")
+    val names = arrayOf("Samsung One UI inspired", "ColorOS / OxygenOS inspired", "Pixel inspired", "Xiaomi Messages · Exclusive (HyperOS)", "Nothing inspired", "Motorola inspired", "Honor inspired", "vivo inspired")
     val ids = arrayOf("samsung", "oppo", "pixel", "xiaomi", "nothing", "motorola", "honor", "vivo")
     val descriptions = arrayOf(
         "Large centered, reachable heading; clean conversation list; blue accents; rounded neutral surfaces and a flat navigation bar.",
         "Left-aligned bold heading; soft floating surfaces; green accents and shared glass-style message cards; compact previews and translucent-looking navigation.",
         "Compact heading; clean avatar-led list; pill bubbles; blue tonal surfaces and Material-style navigation.",
-        "Large left heading; compact list; blue accents and pastel message cards; rounded grouped settings.",
+        "100% Xiaomi Messages (HyperOS) exclusive look: signature #0D84FF Xiaomi blue, large left Messages header, pill search bar, one-finger pull-down private space, and rounded fluid bubbles.",
         "Monospaced headings; monochrome surfaces; red controls; outlined settings and squared navigation.",
         "Compact heading; teal tinted message cards; clean conversation list and rounded Material surfaces.",
         "Centered heading; soft blue duotone message cards; generous rounded surfaces and floating navigation.",
@@ -28,6 +28,11 @@ object SkinPresets {
         return p.getString("oem_layout",null)?.takeIf { it in ids }
             ?: names.indexOf(p.getString("skin_preset",null)).takeIf { it>=0 }?.let { ids[it] }.orEmpty()
     }
+    fun isXiaomiExclusive(context: Context): Boolean = id(context) == "xiaomi"
+    fun applyXiaomiExclusive(context: Context) {
+        apply(context, 3)
+        TextoAppearance.prefs(context).edit().putBoolean("xiaomi_exclusive", true).apply()
+    }
     fun apply(context: Context, index: Int) {
         require(index in names.indices)
         val prefs = TextoAppearance.prefs(context)
@@ -41,12 +46,13 @@ object SkinPresets {
         if(!original.has("dynamic_colors")) original.put("dynamic_colors",if(prefs.contains("dynamic_colors")) prefs.getBoolean("dynamic_colors",false) else JSONObject.NULL)
         edit.putString("before_oem_preset",original.toString())
         val shape = arrayOf("round", "soft", "pill", "round", "minimal", "round", "round", "soft")
-        val accents=intArrayOf(0xFF1473E6.toInt(),0xFF087F60.toInt(),0xFF285EA8.toInt(),0xFF176FE8.toInt(),0xFFBD2636.toInt(),0xFF007E89.toInt(),0xFF366AE2.toInt(),0xFF7054C9.toInt())
+        val accents=intArrayOf(0xFF1473E6.toInt(),0xFF087F60.toInt(),0xFF285EA8.toInt(),0xFF0D84FF.toInt(),0xFFBD2636.toInt(),0xFF007E89.toInt(),0xFF366AE2.toInt(),0xFF7054C9.toInt())
         edit.putString("skin_preset", names[index]).putString("oem_layout",ids[index])
             .putString("card_shape", shape[index]).putString("card_finish", finishes[index])
             .putString("card_size", "small").putString("density", "compact")
             .putString("preview_lines",if(index==1 || index==3) "1" else "2")
-            .putString("unread_style",if(index==0 || index==4) "dot" else "count")
+            .putString("unread_style",if(index==0 || index==3 || index==4) "dot" else "count")
+            .putBoolean("xiaomi_exclusive", index == 3)
             .putBoolean("dynamic_colors",false).putString("bubbles", "fluid").apply()
         defaults.edit().putInt("theme",accents[index]).apply()
     }
@@ -67,6 +73,6 @@ object SkinPresets {
         if(original.has("theme")) android.preference.PreferenceManager.getDefaultSharedPreferences(context).edit().apply {
             if(original.isNull("theme")) remove("theme") else putInt("theme",original.getInt("theme"))
         }.apply()
-        edit.remove("before_oem_preset").remove("skin_preset").apply()
+        edit.remove("before_oem_preset").remove("skin_preset").remove("xiaomi_exclusive").apply()
     }
 }

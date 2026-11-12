@@ -41,21 +41,32 @@ object InboxArtwork {
     }
     fun apply(activity: Activity, root: View, header: View, title: TextView, subtitle: TextView) {
         val p=TextoAppearance.prefs(activity)
-        title.text=p.getString("inbox_title","Texto").orEmpty().ifBlank { "Texto" }
+        val profile=SkinPresets.id(activity)
+        val defaultTitle = if (profile == "xiaomi") "Messages" else "Texto"
+        val defaultMotto = if (profile == "xiaomi") "↓ Pull down with one finger for private messages" else "Messages, comfortably within reach"
+        title.text=p.getString("inbox_title", defaultTitle).orEmpty().ifBlank { defaultTitle }
         title.contentDescription=title.text.toString()+". Long press for Archive."
-        val motto=p.getString("inbox_motto","Messages, comfortably within reach").orEmpty()
+        val motto=p.getString("inbox_motto", defaultMotto).orEmpty()
         subtitle.text=motto
         (root as? ReachableMessagesLayout)?.restingSubtitle=motto
-        val profile=SkinPresets.id(activity)
         if(profile.isNotEmpty()) {
             val centered=profile in listOf("samsung","honor")
             title.gravity=if(centered) android.view.Gravity.CENTER else android.view.Gravity.START
             subtitle.gravity=title.gravity
-            title.textSize=when(profile) { "samsung" -> 38f; "pixel","motorola" -> 28f; "nothing" -> 34f; else -> 36f }
+            title.textSize=when(profile) { "samsung" -> 38f; "xiaomi" -> 34f; "pixel","motorola" -> 28f; "nothing" -> 34f; else -> 36f }
             title.typeface=android.graphics.Typeface.create(if(profile=="nothing") "monospace" else "sans-serif",if(profile in listOf("oppo","xiaomi","vivo")) 1 else 0)
             root.findViewById<View>(dev.octoshrimpy.quik.R.id.toolbarSearch)?.let { search ->
                 search.backgroundTintList=null
-                search.background=TextoAppearance.card(activity)
+                if (profile == "xiaomi") {
+                    val dark = activity.resources.configuration.uiMode and 0x30 == 0x20
+                    val d = activity.resources.displayMetrics.density
+                    search.background = android.graphics.drawable.GradientDrawable().apply {
+                        cornerRadius = 24f * d
+                        setColor(if (dark) 0xFF1F2126.toInt() else 0xFFF2F3F7.toInt())
+                    }
+                } else {
+                    search.background=TextoAppearance.card(activity)
+                }
             }
         }
         background(root,"background_image"); background(header,"header_image")

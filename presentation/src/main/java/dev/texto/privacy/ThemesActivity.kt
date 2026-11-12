@@ -32,7 +32,7 @@ class ThemesActivity : QkThemedActivity() {
             } catch(e: SecurityException) { Toast.makeText(this,"Could not keep access to this image. Choose another image.",Toast.LENGTH_LONG).show() }
         }
     }
-    private fun pickImage(key: String) { imageKey=key; imagePicker.launch(arrayOf("image/*")) }
+    private fun pickImage(key: String) { PrivacyGate.launchingExternalPicker = true; imageKey=key; imagePicker.launch(arrayOf("image/*")) }
     private fun customText(title: String,key: String,default: String,max: Int) {
         val field=TextInputEditText(this).apply { setSingleLine(); filters=arrayOf(android.text.InputFilter.LengthFilter(max)); setText(TextoAppearance.prefs(this@ThemesActivity).getString(key,default)); setPadding(dp(24),dp(16),dp(24),dp(16)) }
         dialog=dev.texto.privacy.TextoDialogs.builder(this).setTitle(title).setView(field).setNegativeButton("Cancel",null).setPositiveButton("Save") { _,_ -> TextoAppearance.prefs(this).edit().putString(key,field.text.toString().trim()).apply(); render() }.show()
@@ -172,11 +172,29 @@ class ThemesActivity : QkThemedActivity() {
         row("Text size",sizes[prefs.textSize.get().coerceIn(0,4)]) {
             dialog=dev.texto.privacy.TextoDialogs.builder(this).setTitle("Text size").setSingleChoiceItems(sizes,prefs.textSize.get()) { d,i -> d.dismiss(); prefs.textSize.set(i) }.setNegativeButton("Cancel",null).show()
         }
-        toggle("Prefer highest display refresh rate","high_refresh",false)
+        toggle("Prefer highest display refresh rate","high_refresh",true)
         toggle("Reduce motion","reduce_motion",false)
         label("Changes apply to public and private conversations. Your phone controls the available refresh rate.",13f)
         row("Fonts, scheduled dark mode & more","") { startActivity(Intent(this,dev.octoshrimpy.quik.feature.settings.SettingsActivity::class.java)) }
         label("OEM-inspired presets · optional",22f)
+        row("Xiaomi Messages · 100% Exclusive", if (SkinPresets.isXiaomiExclusive(this)) "Active · HyperOS style" else "One-tap Xiaomi Messages look") {
+            dialog = TextoDialogs.builder(this)
+                .setTitle("Xiaomi Messages · 100% Exclusive Theme")
+                .setMessage("Apply the complete Xiaomi Messages (HyperOS) experience:\n• Signature #0D84FF Xiaomi blue & soft surfaces\n• Left-aligned Messages header & pill search bar\n• One-finger pull-down for Private Messages\n• Rounded fluid message bubbles & dot unread badge")
+                .setNegativeButton("Cancel", null)
+                .setNeutralButton("Apply + Xiaomi Icon") { _, _ ->
+                    SkinPresets.applyXiaomiExclusive(this)
+                    runCatching { LauncherIcons.apply(this, "xiaomi") }
+                    render()
+                    Toast.makeText(this, "Xiaomi Messages 100% Exclusive Theme & Icon applied.", Toast.LENGTH_SHORT).show()
+                }
+                .setPositiveButton("Apply Theme") { _, _ ->
+                    SkinPresets.applyXiaomiExclusive(this)
+                    render()
+                    Toast.makeText(this, "Xiaomi Messages 100% Exclusive Theme applied.", Toast.LENGTH_SHORT).show()
+                }
+                .show()
+        }
         row("App icon",LauncherIcons.names[LauncherIcons.ids.indexOf(LauncherIcons.selected(this))]) { iconPicker() }
         label("Your current Texto theme stays unchanged. Browse a preset, then choose Apply to use it. Presets include their own palette, heading, conversation list, bubbles and navigation. Your previous theme can be restored; images and privacy settings are kept.",13f)
         row("Browse OEM presets", appearance.getString("skin_preset", "Current Texto theme").orEmpty()) {
@@ -195,7 +213,7 @@ class ThemesActivity : QkThemedActivity() {
                 .setNegativeButton("Cancel",null).setPositiveButton("Reset") { _,_ ->
                     ArtworkCrop.clearSaved(this,"background_image"); ArtworkCrop.clearSaved(this,"header_image")
                     val edit=appearance.edit()
-                    listOf("sent_color","received_color","message_font","message_line_height","border_width","gradient_direction","bottom_bar_visible","bottom_bar_items","skin_preset","oem_layout","before_oem_preset","card_shape","card_finish","density","preview_lines","unread_style","list_avatars","message_counts","bubbles","high_refresh","reduce_motion","dynamic_colors","card_size","inbox_title","inbox_motto","background_image","header_image").forEach { edit.remove(it) }; edit.apply()
+                    listOf("sent_color","received_color","message_font","message_line_height","border_width","gradient_direction","bottom_bar_visible","bottom_bar_items","skin_preset","oem_layout","xiaomi_exclusive","before_oem_preset","card_shape","card_finish","density","preview_lines","unread_style","list_avatars","message_counts","bubbles","high_refresh","reduce_motion","dynamic_colors","card_size","inbox_title","inbox_motto","background_image","header_image").forEach { edit.remove(it) }; edit.apply()
                     prefs.theme().set(0xFF375BCD.toInt()); prefs.autoColor.set(false); prefs.black.set(false); prefs.textSize.set(1)
                     nightModeManager.updateNightMode(0); render()
                 }.show()

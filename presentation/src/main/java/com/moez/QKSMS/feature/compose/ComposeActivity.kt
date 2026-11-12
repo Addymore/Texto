@@ -451,9 +451,30 @@ class ComposeActivity : QkThemedActivity(), ComposeView {
             else -> state.conversationtitle
         }
 
-        binding.toolbarSubtitle.setVisible(state.query.isNotEmpty())
-        binding.toolbarSubtitle.text = getString(R.string.compose_subtitle_results, state.searchSelectionPosition,
-            state.searchResults)
+        val latestOtp = if (state.query.isEmpty() && !state.editingMode) {
+            state.messages?.second?.firstOrNull()?.takeIf { !it.isMe() }?.let { msg ->
+                dev.texto.privacy.RuleEngine.extractOtpCode(msg.getText())
+            }
+        } else null
+        if (state.query.isNotEmpty()) {
+            binding.toolbarSubtitle.setVisible(true)
+            binding.toolbarSubtitle.text = getString(R.string.compose_subtitle_results, state.searchSelectionPosition, state.searchResults)
+            binding.toolbarSubtitle.setOnClickListener(null)
+            binding.toolbarSubtitle.isClickable = false
+        } else if (latestOtp != null) {
+            binding.toolbarSubtitle.setVisible(true)
+            binding.toolbarSubtitle.text = "🔑 Tap to copy code: $latestOtp"
+            binding.toolbarSubtitle.isClickable = true
+            binding.toolbarSubtitle.setOnClickListener {
+                val cm = getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                cm.setPrimaryClip(android.content.ClipData.newPlainText("Verification code", latestOtp))
+                android.widget.Toast.makeText(this, "Copied verification code: $latestOtp", android.widget.Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            binding.toolbarSubtitle.setVisible(false)
+            binding.toolbarSubtitle.setOnClickListener(null)
+            binding.toolbarSubtitle.isClickable = false
+        }
 
         binding.toolbarTitle.setVisible(!state.editingMode)
         binding.chips.setVisible(state.editingMode)

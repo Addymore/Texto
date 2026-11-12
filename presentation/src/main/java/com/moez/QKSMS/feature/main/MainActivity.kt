@@ -224,11 +224,29 @@ class MainActivity : QkThemedActivity(), MainView {
         super.onResume()
         activityResumedIntent.onNext(true)
         if (::binding.isInitialized) {
+            dev.texto.privacy.ArchiveSpamSection.scanAndApplyAutoSpam(this)
+            if (dev.texto.privacy.PrivacyGate.consumeReturnToInbox()) {
+                conversationsAdapter.clearSelection()
+                binding.toolbarSearch.text?.clear()
+                binding.drawerLayout.closeDrawers()
+                backPressedSubject.onNext(NavItem.INBOX)
+            }
+            dev.texto.privacy.InboxArtwork.apply(this, binding.textoReachable, binding.textoHeader, binding.textoTitle, binding.textoSubtitle)
             dev.texto.privacy.TextoAppearance.smooth(binding.recyclerView)
             dev.texto.privacy.TextoAppearance.refreshRate(this)
             binding.textoNavigation.rebuild()
             binding.textoNavigation.isVisible = !searchVisible && dev.texto.privacy.BottomNavigation.enabled(this)
         }
+    }
+
+    override fun onStop() {
+        if (!isChangingConfigurations && ::binding.isInitialized) {
+            conversationsAdapter.clearSelection()
+            binding.toolbarSearch.text?.clear()
+            binding.drawerLayout.closeDrawers()
+            backPressedSubject.onNext(NavItem.INBOX)
+        }
+        super.onStop()
     }
 
     override fun onNewIntent(intent: Intent?) =
@@ -316,6 +334,7 @@ class MainActivity : QkThemedActivity(), MainView {
 
         when (state.page) {
             is Inbox -> {
+                dev.texto.privacy.ArchiveSpamSection.hide(binding.archiveSpamHost)
                 showBackButton(state.page.selected > 0)
                 title = getString(R.string.main_title_selected, state.page.selected)
                 if (binding.recyclerView.adapter !== conversationsAdapter)
@@ -326,6 +345,7 @@ class MainActivity : QkThemedActivity(), MainView {
             }
 
             is Searching -> {
+                dev.texto.privacy.ArchiveSpamSection.hide(binding.archiveSpamHost)
                 showBackButton(true)
                 if (binding.recyclerView.adapter !== searchAdapter) binding.recyclerView.adapter = searchAdapter
                 searchAdapter.data = state.page.data ?: listOf()
@@ -344,6 +364,9 @@ class MainActivity : QkThemedActivity(), MainView {
                 conversationsAdapter.updateData(state.page.data)
                 itemTouchHelper.attachToRecyclerView(null)
                 binding.empty.setText(R.string.archived_empty_text)
+                dev.texto.privacy.ArchiveSpamSection.bind(this, binding.archiveSpamHost) {
+                    conversationsAdapter.notifyDataSetChanged()
+                }
             }
 
             else -> {}

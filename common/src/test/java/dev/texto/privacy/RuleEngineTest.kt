@@ -26,4 +26,29 @@ class RuleEngineTest {
     }
     @Test fun exactRulesDoNotMatchSuffixes() { assertFalse(decide(block = setOf("788123456")).blocked) }
     @Test fun emptyRulesNeverBlock() { assertFalse(decide(prefix = setOf(""), words = setOf(" ")).blocked) }
+    @Test fun intelligentSpamCatchesScamsAndPreservesOtpAndContacts() {
+        assertTrue(RuleEngine.isIntelligentSpam("+18005559999", "CONGRATULATIONS YOU HAVE WON a $1000 reward! Click here to claim"))
+        assertTrue(RuleEngine.isIntelligentSpam("PROMO", "Flash sale! 50% off today. Reply STOP to unsubscribe"))
+        assertTrue(RuleEngine.isIntelligentSpam("+18005550000", "Urgent: verify your account at https://bit.ly/3xYzAbc before it is suspended"))
+        assertFalse(RuleEngine.isIntelligentSpam("+18005559999", "CONGRATULATIONS YOU HAVE WON", isKnownContact = true))
+        assertFalse(RuleEngine.isIntelligentSpam("GOOGLE", "Your verification code is 482910. Do not share this OTP."))
+        assertEquals("482910", RuleEngine.extractOtpCode("Your verification code is 482910. Do not share this OTP."))
+    }
+    @Test fun spamSendersStayArchivedEvenOnNewNormalMessage() {
+        val d = RuleEngine.decide(
+            address = "+250788999000",
+            body = "Hey are you still there?",
+            locked = emptySet(),
+            archived = emptySet(),
+            blocked = emptySet(),
+            allowed = emptySet(),
+            prefixes = emptySet(),
+            words = emptySet(),
+            spamSenders = setOf("+250788999000"),
+            autoSpam = true
+        )
+        assertTrue(d.archived)
+        assertTrue(d.spam)
+        assertFalse(d.locked)
+    }
 }

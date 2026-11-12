@@ -57,14 +57,33 @@ class ProtectionActivity : AppCompatActivity() {
         content = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(48, 40, 48, 56) }
         setContentView(ScrollView(this).apply { addView(content) })
         label("Privacy & protection", 30f)
-        label("Rules follow a number, including future SMS and MMS. Use international numbers, for example +250788123456.", 16f)
-        button(if (policy.hasPin()) "Change PIN" else "Create a privacy PIN") { changePin() }
+        label("Rules follow a number, including future SMS and MMS. Pull down with one finger from the top of your inbox to open Private Messages.", 16f)
+        button(if (policy.hasOnlyPin()) "Change privacy PIN" else "Create a privacy PIN") { changePin() }
+        button(if (policy.hasPattern()) "Change privacy Pattern (3×3)" else "Create a privacy Pattern (3×3)") {
+            PrivacyAuthDialogs.showPatternSetupDialog(this) { render() }
+        }
+        button(if (policy.biometricEnabled()) "Fingerprint / Biometric unlock: on" else "Fingerprint / Biometric unlock: off") {
+            policy.setBiometricEnabled(!policy.biometricEnabled())
+            render()
+        }
         label("Locked numbers stay hidden and silent. Normal messages open freely. Android’s shared SMS storage is not encrypted by Texto.", 14f)
-        listOf("locked" to "Locked & archived", "archived" to "Always archived", "blocked" to "Blocked numbers",
-            "allowed" to "Trusted numbers", "prefixes" to "Blocked number prefixes", "words" to "Spam phrases").forEach { (key, title) ->
+        listOf(
+            "locked" to "Locked & archived",
+            "archived" to "Always archived",
+            "spam" to "Archive spam senders (stay archived)",
+            "blocked" to "Blocked numbers",
+            "allowed" to "Trusted numbers",
+            "prefixes" to "Blocked number prefixes",
+            "words" to "Spam phrases"
+        ).forEach { (key, title) ->
             button("$title · ${policy.entries(key).size}") {
                 if (key == "locked" && !policy.hasPin()) changePin() else edit(key, title)
             }
+        }
+        button(if (policy.autoSpamEnabled()) "Intelligent auto-spam filter: on" else "Intelligent auto-spam filter: off") {
+            policy.setAutoSpamEnabled(!policy.autoSpamEnabled())
+            applyRules()
+            render()
         }
         label("Protected message tools",22f)
         label("Locked and archived conversations, plus selected numbers, are excluded from ordinary backup and cleanup. These tools require authentication. Automatic cleanup applies only to ordinary messages.",14f)
@@ -102,6 +121,7 @@ class ProtectionActivity : AppCompatActivity() {
             .setView(field).setNegativeButton("Cancel", null).setPositiveButton("Save") { _, _ ->
                 if (key in listOf("locked","archived","protected_tools") && policy.hasPin() && !PrivacyGate.unlocked) return@setPositiveButton
                 policy.save(key, field.text.toString().lines())
+                if (key == "spam") policy.save("archived", policy.entries("archived") + policy.entries("spam"))
                 applyRules()
                 render()
             }.show()
@@ -111,9 +131,13 @@ class ProtectionActivity : AppCompatActivity() {
         Realm.getDefaultInstance().use { realm ->
             realm.executeTransaction {
                 realm.where(Conversation::class.java).findAll().forEach { conversation ->
-                    val rules = conversation.recipients.map { policy.decision(it.address, conversation.lastMessage?.getText().orEmpty()) }
-                    conversation.textoLocked = rules.any { it.locked }
-                            if (rules.any { it.archived }) conversation.archived = true
+                val rules = conversation.recipients.map {
+                    val d = policy.decision(it.address, conversation.lastMessage?.getText().orEmpty(), isKnownContact = it.contact != null)
+                    if (d.spam && !d.blocked) policy.recordSpamSender(it.address)
+                    d
+                }
+                conversation.textoLocked = rules.any { it.locked }
+                if (rules.any { it.archived || it.spam }) conversation.archived = true
                     if (rules.any { it.locked } && Build.VERSION.SDK_INT >= 26) {
                         val manager = getSystemService(NotificationManager::class.java)
                         manager.getNotificationChannel("notifications_${conversation.id}")?.let { channel ->

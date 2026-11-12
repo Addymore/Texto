@@ -99,7 +99,12 @@ class ConversationsAdapter @Inject constructor(
 
         binding.avatars.recipients = conversation.recipients
         binding.title.collapseEnabled = conversation.recipients.size > 1
-        val title = conversation.getTitle()
+        val isSpam = conversation.archived && run {
+            val policy = dev.texto.privacy.TextoPolicy(context)
+            val spamSet = policy.entries("spam")
+            spamSet.isNotEmpty() && conversation.recipients.any { policy.normalize(it.address) in spamSet }
+        }
+        val title = if (isSpam) "🚫 ${conversation.getTitle()}" else conversation.getTitle()
         if (!android.text.TextUtils.equals(binding.title.text, title)) binding.title.text = title
         val date = conversation.date.takeIf { it > 0 }?.let(dateFormatter::getConversationTimestamp)
         if (!android.text.TextUtils.equals(binding.date.text, date)) binding.date.text = date

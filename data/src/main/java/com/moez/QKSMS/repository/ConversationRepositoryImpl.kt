@@ -389,9 +389,14 @@ class ConversationRepositoryImpl @Inject constructor(
                         conversationAndMessages.forEach { (conversation, message) ->
                             conversation.lastMessage = message
                             dev.texto.privacy.TrashStore.refresh(realm, listOf(conversation.id))
-                            val rules = conversation.recipients.map { dev.texto.privacy.TextoPolicy(context).decision(it.address, message?.getText().orEmpty()) }
+                            val policy = dev.texto.privacy.TextoPolicy(context)
+                            val rules = conversation.recipients.map {
+                                val decision = policy.decision(it.address, message?.getText().orEmpty(), isKnownContact = it.contact != null)
+                                if (decision.spam && !decision.blocked) policy.recordSpamSender(it.address)
+                                decision
+                            }
                             conversation.textoLocked = rules.any { it.locked }
-                            if (rules.any { it.archived }) conversation.archived = true
+                            if (rules.any { it.archived || it.spam }) conversation.archived = true
                             if (rules.any { it.blocked }) { conversation.blocked = true; conversation.blockReason = "Texto spam rule" }
                         }
                     }
@@ -420,6 +425,7 @@ class ConversationRepositoryImpl @Inject constructor(
             val policy=dev.texto.privacy.TextoPolicy(context)
             val numbers=conversations.filter { !it.textoLocked }.flatMap { c -> c.recipients.map { policy.normalize(it.address) } }.toSet()
             policy.save("archived",policy.entries("archived")-numbers)
+            policy.save("spam",policy.entries("spam")-numbers)
             realm.executeTransaction { conversations.forEach { conversation -> if (conversation.recipients.none { policy.decision(it.address).archived }) conversation.archived = false } }
         }
 

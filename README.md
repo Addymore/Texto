@@ -10,9 +10,12 @@ A customizable Kotlin SMS/MMS app for Android by **[Addymore](https://github.com
 
 See the [complete feature list](docs/FEATURES.md) and [1.8.1 changelog](CHANGELOG.md).
 
-### Fixed in 1.8.1
+### Fixed & Added in 1.8.1
 
-Message bubbles and MMS cards now share the selected card finish, shape, border and gradient renderer, including OEM presets. Standalone privacy/contact screens now honour pure-black night mode, Material You dynamic colors and system bar styling. Settings groups are organized by priority (`Appearance`, `Privacy & security`, `Inbox & contacts`, `Messaging & MMS`, `General`) with live summaries, while MMS part metadata caching, in-place theme previews and frame-coalesced contact scrolling keep navigation smooth.
+- **One-Finger Private Pull & Fingerprint / PIN / Pattern Setup**: Pull down with one finger from the top of the inbox (Xiaomi Messages style) to access Private Messages, with guided onboarding for **Fingerprint + PIN**, **Fingerprint + Pattern (3×3)** and locking conversations when none are set.
+- **Xiaomi Messages · 100% Exclusive Theme**: One-tap HyperOS/Xiaomi Messages look (`#0D84FF` Xiaomi blue, left-aligned `Messages` header, pill search bar, rounded fluid bubbles and Xiaomi launcher icon option).
+- **Sticky Bottom Spam Section in Archived Messages**: Intelligent offline auto-spam filtering + manual sender/phrase filtering pinned to the bottom of `Archived`; spammer threads stay archived even when new SMS/MMS arrive.
+- **Return to Normal Messages on Leave & Smoothness**: Leaving the app from Archive, Private or utility screens automatically returns you to normal messages (`Inbox`) next time; includes one-tap OTP verification code copy, default 120Hz/high-refresh support and shared card rendering across SMS/MMS.
 
 ## Consistent themes in 1.7.2
 

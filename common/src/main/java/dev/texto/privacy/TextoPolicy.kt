@@ -29,29 +29,83 @@ class TextoPolicy(context: Context) {
             PhoneNumberUtils.normalizeNumber(it.trim()) else normalize(it) }.filter { it.isNotBlank() }.toSet()
         check(preferences.edit().putStringSet(key, normalized).commit())
     }
-    fun decision(address: String, body: String = ""): RuleEngine.Decision = RuleEngine.decide(
+    fun decision(address: String, body: String = "", isKnownContact: Boolean = false): RuleEngine.Decision = RuleEngine.decide(
         normalize(address), body, entries("locked"), entries("archived"), entries("blocked"),
-        entries("allowed"), entries("prefixes"), entries("words"))
+        entries("allowed"), entries("prefixes"), entries("words"),
+        spamSenders = entries("spam"), autoSpam = autoSpamEnabled() && body.isNotBlank(), isKnownContact = isKnownContact
+    )
+    fun autoSpamEnabled(): Boolean = preferences.getBoolean("auto_spam_filter", true)
+    fun setAutoSpamEnabled(enabled: Boolean) {
+        preferences.edit().putBoolean("auto_spam_filter", enabled).commit()
+    }
+    fun recordSpamSender(address: String) {
+        val norm = normalize(address)
+        if (norm.isBlank() || norm in entries("allowed") || norm in entries("locked")) return
+        save("spam", entries("spam") + norm)
+        save("archived", entries("archived") + norm)
+    }
+    fun unmarkSpamSender(address: String, alsoUnarchive: Boolean = true) {
+        val norm = normalize(address)
+        if (norm.isBlank()) return
+        save("spam", entries("spam") - norm)
+        if (alsoUnarchive) save("archived", entries("archived") - norm)
+    }
+    fun isSpamSender(address: String, body: String = "", isKnownContact: Boolean = false): Boolean {
+        val norm = normalize(address)
+        if (norm.isBlank() || norm in entries("allowed") || norm in entries("locked")) return false
+        return norm in entries("spam") || (autoSpamEnabled() && body.isNotBlank() && RuleEngine.isIntelligentSpam(norm, body, isKnownContact))
+    }
     fun hasLocks() = entries("locked").isNotEmpty()
-    fun hasPin() = preferences.contains("pin_hash")
+    fun hasOnlyPin() = preferences.contains("pin_hash")
+    fun hasPattern() = preferences.contains("pattern_hash")
+    fun hasPin() = hasOnlyPin() || hasPattern()
+    fun biometricEnabled(): Boolean = preferences.getBoolean("biometric_enabled", true)
+    fun setBiometricEnabled(enabled: Boolean) {
+        preferences.edit().putBoolean("biometric_enabled", enabled).commit()
+    }
     fun setPin(pin: String) {
         require(pin.matches(Regex("[0-9]{6,12}")))
         val salt = ByteArray(32).also { SecureRandom().nextBytes(it) }
         check(preferences.edit().putString("pin_salt", encode(salt))
-            .putString("pin_hash", encode(derive(pin, salt))).putInt("attempts", 0)
+            .putString("pin_hash", encode(derive(pin, salt)))
+            .putString("preferred_auth", "pin")
+            .putInt("attempts", 0)
+            .putLong("retry_at", 0).commit())
+    }
+    fun setPattern(pattern: String) {
+        val nodes = pattern.split("-").mapNotNull { it.toIntOrNull() }
+        require(nodes.size >= 4 && nodes.distinct().size == nodes.size && nodes.all { it in 0..8 })
+        val salt = ByteArray(32).also { SecureRandom().nextBytes(it) }
+        check(preferences.edit().putString("pattern_salt", encode(salt))
+            .putString("pattern_hash", encode(derive(pattern, salt)))
+            .putString("preferred_auth", "pattern")
+            .putInt("attempts", 0)
             .putLong("retry_at", 0).commit())
     }
     fun retrySeconds(): Long = ((preferences.getLong("retry_at", 0) - System.currentTimeMillis() + 999) / 1000).coerceAtLeast(0)
     @Synchronized fun verifyPin(pin: String): Boolean {
-        if (!hasPin() || retrySeconds() > 0) return false
+        if (!hasOnlyPin() || retrySeconds() > 0) return false
         val valid = pin.matches(Regex("[0-9]{6,12}")) && runCatching {
             val actual = derive(pin, decode(preferences.getString("pin_salt", "")!!))
             MessageDigest.isEqual(actual, decode(preferences.getString("pin_hash", "")!!))
         }.getOrDefault(false)
+        recordAttempt(valid)
+        return valid
+    }
+    @Synchronized fun verifyPattern(pattern: String): Boolean {
+        if (!hasPattern() || retrySeconds() > 0) return false
+        val nodes = pattern.split("-").mapNotNull { it.toIntOrNull() }
+        val valid = nodes.size >= 4 && runCatching {
+            val actual = derive(pattern, decode(preferences.getString("pattern_salt", "")!!))
+            MessageDigest.isEqual(actual, decode(preferences.getString("pattern_hash", "")!!))
+        }.getOrDefault(false)
+        recordAttempt(valid)
+        return valid
+    }
+    private fun recordAttempt(valid: Boolean) {
         val attempts = if (valid) 0 else preferences.getInt("attempts", 0) + 1
         preferences.edit().putInt("attempts", attempts).putLong("retry_at",
             if (attempts >= 5) System.currentTimeMillis() + (30_000L * (1L shl (attempts - 5).coerceAtMost(6))) else 0).commit()
-        return valid
     }
     private fun derive(pin: String, salt: ByteArray): ByteArray {
         val spec = PBEKeySpec(pin.toCharArray(), salt, 210_000, 256)

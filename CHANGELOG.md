@@ -2,6 +2,12 @@
 
 ## 1.8.1 — 24 October 2026
 
+- **Xiaomi Messages One-Finger Private Pull & Security Onboarding**: Pull down with a single finger anywhere at the top of the inbox (header, search bar or conversation list) with live stretch/release prompts and haptic feedback to open Private Messages. When no privacy credentials or no locked SMS conversations exist yet, pulling down proposes setting up **Fingerprint + PIN**, **Fingerprint + Pattern (3×3 grid)**, or choosing conversations to lock.
+- **100% Xiaomi Messages (HyperOS) Exclusive Theme**: Added one-tap `Xiaomi Messages · 100% Exclusive` styling in `Themes` with signature `#0D84FF` Xiaomi blue, left-aligned `Messages` header, soft pill search bar, dot unread indicator, rounded fluid bubbles and optional Xiaomi launcher icon.
+- **Always Return to Normal Messages (Inbox) on App Leave**: Leaving Texto from `Archived`, `Private messages`, `Searching` or secondary screens automatically locks the private session, closes secondary screens and resets the main screen back to normal messages (`Inbox`) for the next launch.
+- **Sticky Bottom Spam Section in Archived Messages & Intelligent Auto-Spam Filter**: Added a sticky bottom `Spam in Archive` bar and expandable list inside `Archived` with one-tap `Auto: ON/OFF` intelligent spam detection (catching phishing shortlinks, prize/crypto/loan scams and bulk promo opt-out blasts while preserving saved contacts and 2FA OTP codes) plus manual sender/conversation/phrase filtering. Spammer conversations stay archived and silent even when new SMS/MMS arrive from that sender.
+- **One-Tap OTP Verification Code Copy & Smoothness**: Conversations automatically detect incoming 4–8 digit verification/OTP codes and offer a one-tap `🔑 Tap to copy code` subtitle action; enabled default high-refresh-rate rendering and expanded `RecyclerView` prefetch/recycled pools.
+
 - Fixed message bubbles bypassing the chosen card finish under OEM presets. SMS and MMS surfaces now use the same renderer as other cards, including outlines, gradients, shapes and no-card mode.
 - Custom sent/received colors remain available and now retain the selected finish and borders.
 - Fixed the Privacy navigation row using different icon/text spacing and height from other drawer entries, and applied contrast-safe icon tints across all drawer items and swipe action cards.
