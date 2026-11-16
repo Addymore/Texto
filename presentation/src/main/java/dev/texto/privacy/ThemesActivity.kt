@@ -32,7 +32,7 @@ class ThemesActivity : QkThemedActivity() {
             } catch(e: SecurityException) { Toast.makeText(this,"Could not keep access to this image. Choose another image.",Toast.LENGTH_LONG).show() }
         }
     }
-    private fun pickImage(key: String) { imageKey=key; imagePicker.launch(arrayOf("image/*")) }
+    private fun pickImage(key: String) { PrivacyGate.launchingExternalPicker = true; imageKey=key; imagePicker.launch(arrayOf("image/*")) }
     private fun customText(title: String,key: String,default: String,max: Int) {
         val field=TextInputEditText(this).apply { setSingleLine(); filters=arrayOf(android.text.InputFilter.LengthFilter(max)); setText(TextoAppearance.prefs(this@ThemesActivity).getString(key,default)); setPadding(dp(24),dp(16),dp(24),dp(16)) }
         dialog=dev.texto.privacy.TextoDialogs.builder(this).setTitle(title).setView(field).setNegativeButton("Cancel",null).setPositiveButton("Save") { _,_ -> TextoAppearance.prefs(this).edit().putString(key,field.text.toString().trim()).apply(); render() }.show()
@@ -105,10 +105,14 @@ class ThemesActivity : QkThemedActivity() {
         for(group in 0..1) {
             val swatches=LinearLayout(this).apply { setPadding(dp(16), 0, dp(12), dp(6)) }
             for(i in group*4 until group*4+4) swatches.addView(MaterialButton(this).apply {
-                text=(if(accent==paletteColors[i]) "✓ " else "")+paletteNames[i]; textSize=11f; isAllCaps=false; contentDescription=paletteNames[i]; minWidth=0; minimumWidth=0; setPadding(dp(3),0,dp(3),0); cornerRadius=dp(24)
+                text=(if(accent==paletteColors[i]) "✓ " else "")+paletteNames[i]
+                textSize=10.5f; isAllCaps=false; contentDescription=paletteNames[i]
+                minWidth=0; minimumWidth=0; insetTop=0; insetBottom=0
+                maxLines=1; ellipsize=android.text.TextUtils.TruncateAt.END
+                setPadding(dp(4),0,dp(4),0); cornerRadius=dp(23)
                 backgroundTintList=ColorStateList.valueOf(paletteColors[i]); setTextColor(Color.WHITE)
                 setOnClickListener { saveAccent(paletteColors[i]) }
-            },LinearLayout.LayoutParams(0,dp(52),1f).apply { marginEnd=dp(4) })
+            },LinearLayout.LayoutParams(0,dp(46),1f).apply { marginEnd=dp(4) })
             content.addView(swatches)
         }
         row("Color wheel","Choose any color") { customAccent() }
@@ -172,7 +176,7 @@ class ThemesActivity : QkThemedActivity() {
         row("Text size",sizes[prefs.textSize.get().coerceIn(0,4)]) {
             dialog=dev.texto.privacy.TextoDialogs.builder(this).setTitle("Text size").setSingleChoiceItems(sizes,prefs.textSize.get()) { d,i -> d.dismiss(); prefs.textSize.set(i) }.setNegativeButton("Cancel",null).show()
         }
-        toggle("Prefer highest display refresh rate","high_refresh",false)
+        toggle("Prefer highest display refresh rate","high_refresh",true)
         toggle("Reduce motion","reduce_motion",false)
         label("Changes apply to public and private conversations. Your phone controls the available refresh rate.",13f)
         row("Fonts, scheduled dark mode & more","") { startActivity(Intent(this,dev.octoshrimpy.quik.feature.settings.SettingsActivity::class.java)) }

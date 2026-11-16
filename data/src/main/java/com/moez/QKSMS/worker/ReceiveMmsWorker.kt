@@ -222,10 +222,6 @@ class ReceiveMmsWorker(appContext: Context, workerParams: WorkerParameters)
                         }
 
                         // unarchive conversation if necessary
-                        if (conversation.archived)
-                            conversationRepo.markUnarchived(listOf(conversation.id))
-
-                        // unarchive conversation if necessary
                         if (conversation.archived) {
                             Timber.v("conversation unarchived")
                             conversationRepo.markUnarchived(listOf(conversation.id))

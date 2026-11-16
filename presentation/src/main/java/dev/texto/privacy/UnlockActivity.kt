@@ -32,13 +32,16 @@ class UnlockActivity : AppCompatActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
         if (!PrivacyGate.session.pending) { finish(); return }
         val policy = TextoPolicy(this)
+        val d = resources.displayMetrics.density
         val ink = TextoAppearance.readableText(this)
-        val box = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(48, 100, 48, 48) }
-        val title = TextView(this).apply { text = if (intent.getBooleanExtra("utility", false)) "Confirm access" else if (intent.getBooleanExtra("bin", false)) "Recycle bin" else "Private messages"; textSize = 32f; setTextColor(ink) }
-        val note = TextView(this).apply { text = "Use fingerprint or your PIN to continue."; textSize = 16f; setTextColor(ink) }
+        val box = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(0, (36*d).toInt(), 0, (24*d).toInt()) }
+        val title = TextView(this).apply { text = if (intent.getBooleanExtra("utility", false)) "Confirm access" else if (intent.getBooleanExtra("bin", false)) "Recycle bin" else "Private messages"; textSize = 32f; setTextColor(ink); setPadding((20*d).toInt(), 0, (20*d).toInt(), (4*d).toInt()) }
+        val note = TextView(this).apply { text = "Use fingerprint or your PIN to continue."; textSize = 16f; setTextColor(ink); setPadding((20*d).toInt(), (4*d).toInt(), (20*d).toInt(), (8*d).toInt()) }
         val pin = TextInputEditText(this).apply { hint = "6–12 digit PIN"; setTextColor(ink); inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD }
-        val error = TextView(this).apply { setTextColor(ink) }
-        box.addView(title); box.addView(note); box.addView(pin); box.addView(error)
+        val error = TextView(this).apply { setTextColor(ink); setPadding((20*d).toInt(), (4*d).toInt(), (20*d).toInt(), (8*d).toInt()) }
+        box.addView(title); box.addView(note)
+        box.addView(pin, LinearLayout.LayoutParams(-1, -2).apply { setMargins((20*d).toInt(), 0, (20*d).toInt(), 0) })
+        box.addView(error)
         box.addView(MaterialButton(this).apply {
             text = "Unlock"
             setIconResource(R.drawable.ic_texto_privacy)

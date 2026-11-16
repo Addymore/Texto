@@ -54,7 +54,8 @@ class ProtectionActivity : AppCompatActivity() {
         render()
     }
     private fun render() {
-        content = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(48, 40, 48, 56) }
+        val d = resources.displayMetrics.density
+        content = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(0, (24*d).toInt(), 0, (32*d).toInt()) }
         setContentView(ScrollView(this).apply { addView(content) })
         label("Privacy & protection", 30f)
         label("Rules follow a number, including future SMS and MMS. Use international numbers, for example +250788123456.", 16f)
@@ -84,8 +85,21 @@ class ProtectionActivity : AppCompatActivity() {
         label("✓ Sent   ✓✓ Delivered   ↓ Received\nDelivery depends on carrier reports and your delivery-report setting. SMS does not provide read receipts. RCS requires carrier/OEM privileged integration and is unavailable in this build.", 14f)
         button("Back to messages") { finish() }
     }
-    private fun label(value: String, size: Float) { content.addView(TextView(this).apply { text = value; textSize = size; setTextColor(TextoAppearance.readableText(this@ProtectionActivity)); setPadding(0, 16, 0, 16) }) }
-    private fun button(value: String, action: () -> Unit) { content.addView(MaterialButton(this).apply { text = value; isAllCaps = false; setOnClickListener { action() }; TextoAppearance.styleSettingsCard(this) }, LinearLayout.LayoutParams(-1,-2).apply { bottomMargin=12 }) }
+    private fun label(value: String, size: Float) {
+        val d = resources.displayMetrics.density
+        content.addView(TextView(this).apply {
+            text = value; textSize = size
+            setTextColor(TextoAppearance.readableText(this@ProtectionActivity))
+            setPadding((20*d).toInt(), (8*d).toInt(), (20*d).toInt(), (8*d).toInt())
+        })
+    }
+    private fun button(value: String, action: () -> Unit) {
+        val d = resources.displayMetrics.density
+        content.addView(
+            MaterialButton(this).apply { text = value; isAllCaps = false; setOnClickListener { action() }; TextoAppearance.styleSettingsCard(this) },
+            LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = (6*d).toInt() }
+        )
+    }
     private fun edit(key: String, title: String) {
         if (key in listOf("locked", "archived", "protected_tools") && policy.hasPin() && !PrivacyGate.unlocked) {
             openTool(ProtectionActivity::class.java)

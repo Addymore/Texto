@@ -27,8 +27,15 @@ class TrashStore(context: Context) {
             val parts = key.split(':')
             val query = realm.where(Message::class.java)
             val message = when {
-                parts.size == 4 -> query.equalTo("type",parts[0]).equalTo("contentId",parts[1].toLong()).equalTo("date",parts[2].toLong()).equalTo("threadId",parts[3].toLong()).findFirst()
-                parts.size == 2 && parts[0] == "local" -> query.equalTo("id",parts[1].toLong()).findFirst()
+                parts.size == 4 -> {
+                    val contentId = parts[1].toLongOrNull()
+                    val date = parts[2].toLongOrNull()
+                    val threadId = parts[3].toLongOrNull()
+                    if (contentId != null && date != null && threadId != null) {
+                        query.equalTo("type",parts[0]).equalTo("contentId",contentId).equalTo("date",date).equalTo("threadId",threadId).findFirst()
+                    } else null
+                }
+                parts.size == 2 && parts[0] == "local" -> parts[1].toLongOrNull()?.let { query.equalTo("id",it).findFirst() }
                 else -> null
             }
             if (message != null && value is Long && message.trashedAt != value) { message.trashedAt = value; changed += message.threadId }

@@ -44,9 +44,10 @@ class TextoTabBar @JvmOverloads constructor(context: Context, attrs: AttributeSe
         BottomNavigation.items(context).forEach { i ->
             val label = BottomNavigation.labels[i]
             val button = MaterialButton(context, null, com.google.android.material.R.attr.materialButtonStyle).apply {
-                text = label; textSize = 11f; isAllCaps = false; minWidth = 0; minimumWidth = 0
+                text = label; textSize = 10.5f; isAllCaps = false; minWidth = 0; minimumWidth = 0
+                maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END
                 insetTop = 0; insetBottom = 0; cornerRadius = dp(if(profile=="nothing") 8 else if(profile=="samsung") 16 else 28); strokeWidth = 0
-                setPadding(dp(4), dp(4), dp(4), dp(4)); iconSize = dp(21); iconPadding = dp(2)
+                setPadding(dp(2), dp(4), dp(2), dp(4)); iconSize = dp(20); iconPadding = dp(2)
                 tag = i; setIconResource(BottomNavigation.icons[i]); iconGravity = MaterialButton.ICON_GRAVITY_TEXT_TOP
                 setOnClickListener { onTabSelected?.invoke(i) }
             }

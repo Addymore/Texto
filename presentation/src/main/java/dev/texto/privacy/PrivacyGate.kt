@@ -18,6 +18,7 @@ object PrivacyGate : Application.ActivityLifecycleCallbacks {
     fun protectedTools(a: Activity?) = a?.intent?.getBooleanExtra("protected_tools", false) == true && unlocked
     val session = VaultSession()
     val unlocked get() = session.unlocked
+    var launchingExternalPicker = false
     private var started = 0
     fun pullDown(activity: MainActivity) {
         if (!TextoPolicy(activity).hasPin()) {
@@ -74,6 +75,7 @@ object PrivacyGate : Application.ActivityLifecycleCallbacks {
     override fun onActivityStarted(a: Activity) { started++ }
     override fun onActivityResumed(a: Activity) {
         if (a.isFinishing) return
+        launchingExternalPicker = false
         if (a is MainActivity) session.lock()
         if (protected(a)) {
             a.window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
@@ -87,7 +89,7 @@ object PrivacyGate : Application.ActivityLifecycleCallbacks {
     override fun onActivityPaused(a: Activity) { if (protected(a)) a.window.decorView.visibility = View.INVISIBLE }
     override fun onActivityStopped(a: Activity) {
         started = (started - 1).coerceAtLeast(0)
-        if (started == 0 && !a.isChangingConfigurations) session.lock()
+        if (started == 0 && !a.isChangingConfigurations && !launchingExternalPicker) session.lock()
     }
     override fun onActivitySaveInstanceState(a: Activity, state: Bundle) {}
     override fun onActivityDestroyed(a: Activity) {}

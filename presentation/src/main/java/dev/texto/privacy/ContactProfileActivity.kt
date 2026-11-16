@@ -23,10 +23,11 @@ class ContactProfileActivity : AppCompatActivity() {
             realm.where(Conversation::class.java).equalTo("id", id).findFirst()?.let { realm.copyFromRealm(it) }
         }
         if (conversation == null) { finish(); return }
+        val d = resources.displayMetrics.density
         val ink = TextoAppearance.readableText(this)
-        val panel = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(48, 56, 48, 32) }
-        fun label(value: String, size: Float) { panel.addView(TextView(this).apply { text = value; textSize = size; setTextColor(ink); setPadding(0, 16, 0, 16) }) }
-        fun button(value: String, action: () -> Unit) { panel.addView(MaterialButton(this).apply { text = value; isAllCaps = false; setOnClickListener { action() }; TextoAppearance.styleSettingsCard(this) }) }
+        val panel = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(0, (28*d).toInt(), 0, (24*d).toInt()) }
+        fun label(value: String, size: Float) { panel.addView(TextView(this).apply { text = value; textSize = size; setTextColor(ink); setPadding((20*d).toInt(), (8*d).toInt(), (20*d).toInt(), (8*d).toInt()) }) }
+        fun button(value: String, action: () -> Unit) { panel.addView(MaterialButton(this).apply { text = value; isAllCaps = false; setOnClickListener { action() }; TextoAppearance.styleSettingsCard(this) }, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = (6*d).toInt() }) }
         label(conversation.getTitle().take(1).uppercase(), 64f)
         label(conversation.getTitle(), 30f)
         label(if (conversation.recipients.size > 1) "Group profile" else "Contact profile", 16f)

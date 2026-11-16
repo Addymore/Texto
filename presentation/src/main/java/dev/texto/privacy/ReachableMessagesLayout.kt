@@ -18,32 +18,67 @@ import androidx.core.view.ViewCompat
 /** Drag up to collapse the viewing area; pull down at the top to reach/unlock private messages. */
 class ReachableMessagesLayout @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : ConstraintLayout(context, attrs), NestedScrollingParent3 {
     private val privateGesture = TwoFingerPull()
+    private var twoFingerStartY = -1f
+    private var twoFingerInitialHeight = 0
+
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        val list = findViewById<RecyclerView>(R.id.recyclerView)
+        val nav = findViewById<View>(R.id.textoNavigation)
         when (event.actionMasked) {
-            MotionEvent.ACTION_DOWN -> privateGesture.reset()
+            MotionEvent.ACTION_DOWN, MotionEvent.ACTION_CANCEL -> {
+                privateGesture.reset()
+                twoFingerStartY = -1f
+            }
             MotionEvent.ACTION_POINTER_DOWN -> {
-                if (event.pointerCount == 2 && !findViewById<RecyclerView>(R.id.recyclerView).canScrollVertically(-1)
-                    && event.getY(0) < findViewById<View>(R.id.textoNavigation).top
-                    && event.getY(1) < findViewById<View>(R.id.textoNavigation).top) privateGesture.begin(
-                    event.getPointerId(0), event.getY(0), event.getPointerId(1), event.getY(1))
-                else privateGesture.reset()
+                val aboveNav = nav == null || nav.visibility != View.VISIBLE ||
+                    (event.getY(0) < nav.top && event.getY(1) < nav.top)
+                val atTop = list == null || !list.canScrollVertically(-1) ||
+                    (event.getY(0) < list.top && event.getY(1) < list.top)
+                if (event.pointerCount == 2 && privatePullEnabled && header.visibility == View.VISIBLE && atTop && aboveNav) {
+                    settle?.cancel()
+                    privateGesture.begin(event.getPointerId(0), event.getY(0), event.getPointerId(1), event.getY(1))
+                    twoFingerStartY = (event.getY(0) + event.getY(1)) * 0.5f
+                    twoFingerInitialHeight = if (desiredHeight >= 0) desiredHeight else header.height
+                } else {
+                    privateGesture.reset()
+                    twoFingerStartY = -1f
+                }
             }
             MotionEvent.ACTION_MOVE -> if (event.pointerCount == 2) {
                 privateGesture.move(event.getPointerId(0), event.getY(0), event.getPointerId(1), event.getY(1), dp(72).toFloat())
+                if (twoFingerStartY > 0f && privatePullEnabled && header.visibility == View.VISIBLE) {
+                    val avgDy = ((event.getY(0) + event.getY(1)) * 0.5f) - twoFingerStartY
+                    if (avgDy > 0f) {
+                        val next = (twoFingerInitialHeight + avgDy * 0.65f).toInt().coerceIn(dp(72), restingHeight + dp(110))
+                        scheduleResize(next)
+                        findViewById<TextView>(R.id.textoSubtitle)?.text =
+                            if (privateGesture.armed && next >= restingHeight + dp(72)) "Private messages" else restingSubtitle
+                    }
+                }
             }
-            MotionEvent.ACTION_CANCEL -> privateGesture.reset()
         }
         val result = super.dispatchTouchEvent(event)
-        if (event.actionMasked == MotionEvent.ACTION_UP) {
-            val list = findViewById<RecyclerView>(R.id.recyclerView)
+        if ((event.actionMasked == MotionEvent.ACTION_POINTER_UP || event.actionMasked == MotionEvent.ACTION_UP) && privateGesture.armed) {
             val unlock = privatePullEnabled && header.visibility == View.VISIBLE &&
-                !list.canScrollVertically(-1) && privateGesture.armed
+                (list == null || !list.canScrollVertically(-1))
             privateGesture.reset()
+            twoFingerStartY = -1f
+            dragging = false
+            findViewById<TextView>(R.id.textoSubtitle)?.text = restingSubtitle
             if (unlock) {
                 settleTo(restingHeight)
                 performHapticFeedback(android.view.HapticFeedbackConstants.LONG_PRESS)
                 onPrivatePull?.invoke()
+                return true
             }
+        }
+        if (event.actionMasked == MotionEvent.ACTION_UP || event.actionMasked == MotionEvent.ACTION_CANCEL) {
+            privateGesture.reset()
+            if (twoFingerStartY > 0f) {
+                twoFingerStartY = -1f
+                if (header.height > restingHeight) settleTo(restingHeight)
+            }
+            findViewById<TextView>(R.id.textoSubtitle)?.text = restingSubtitle
         }
         return result
     }

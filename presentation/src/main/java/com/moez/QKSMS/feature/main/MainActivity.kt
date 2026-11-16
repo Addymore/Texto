@@ -224,6 +224,7 @@ class MainActivity : QkThemedActivity(), MainView {
         super.onResume()
         activityResumedIntent.onNext(true)
         if (::binding.isInitialized) {
+            dev.texto.privacy.InboxArtwork.apply(this, binding.textoReachable, binding.textoHeader, binding.textoTitle, binding.textoSubtitle)
             dev.texto.privacy.TextoAppearance.smooth(binding.recyclerView)
             dev.texto.privacy.TextoAppearance.refreshRate(this)
             binding.textoNavigation.rebuild()
