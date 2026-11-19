@@ -23,7 +23,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 
-class GlideCompletionListener<T>(private val listener: () -> Unit) : RequestListener<T> {
+class GlideCompletionListener<T : Any>(private val listener: () -> Unit) : RequestListener<T> {
     override fun onLoadFailed(
         e: GlideException?,
         model: Any?,
