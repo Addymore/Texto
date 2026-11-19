@@ -19,7 +19,7 @@ Repo: https://github.com/Addymore/Texto.git
 Builds:
   - versionName: 1.8.1
     versionCode: 2345
-    commit: 1436ee86eff87f950e4df0c0d9a1cf6c7fe326f2
+    commit: 4412f599ad8df86e6369e2493dc532580bd87200
     subdir: presentation
     gradle:
       - yes
