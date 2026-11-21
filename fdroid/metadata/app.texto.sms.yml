@@ -15,6 +15,7 @@ AutoName: Texto
 
 RepoType: git
 Repo: https://github.com/Addymore/Texto.git
+Binaries: https://github.com/Addymore/Texto/releases/download/v%v/Texto-%v-release.apk
 
 Builds:
   - versionName: 1.8.1
@@ -23,6 +24,8 @@ Builds:
     subdir: presentation
     gradle:
       - yes
+
+AllowedAPKSigningKeys: ca8e5a7493fd4b607335d51f1643666e81bd8a4df7a6cd34dc924175b21100a4
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags ^v[0-9]+\.[0-9]+\.[0-9]+-fdroid[0-9]+$
